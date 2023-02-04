@@ -1,0 +1,617 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E95E84E6298EA10F0051D834 /* Saikou_BetaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E5298EA10F0051D834 /* Saikou_BetaApp.swift */; };
+		E95E84E8298EA10F0051D834 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E7298EA10F0051D834 /* ContentView.swift */; };
+		E95E84EA298EA1100051D834 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84E9298EA1100051D834 /* Assets.xcassets */; };
+		E95E84EE298EA1100051D834 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84ED298EA1100051D834 /* Preview Assets.xcassets */; };
+		E95E84F8298EA1100051D834 /* Saikou_BetaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84F7298EA1100051D834 /* Saikou_BetaTests.swift */; };
+		E95E8502298EA1100051D834 /* Saikou_BetaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8501298EA1100051D834 /* Saikou_BetaUITests.swift */; };
+		E95E8504298EA1100051D834 /* Saikou_BetaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8503298EA1100051D834 /* Saikou_BetaUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E95E84F4298EA1100051D834 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E95E84DA298EA10F0051D834 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E95E84E1298EA10F0051D834;
+			remoteInfo = "Saikou Beta";
+		};
+		E95E84FE298EA1100051D834 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E95E84DA298EA10F0051D834 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E95E84E1298EA10F0051D834;
+			remoteInfo = "Saikou Beta";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		E95E84E2298EA10F0051D834 /* Saikou Beta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Saikou Beta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E95E84E5298EA10F0051D834 /* Saikou_BetaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saikou_BetaApp.swift; sourceTree = "<group>"; };
+		E95E84E7298EA10F0051D834 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E95E84E9298EA1100051D834 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E95E84EB298EA1100051D834 /* Saikou_Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Saikou_Beta.entitlements; sourceTree = "<group>"; };
+		E95E84ED298EA1100051D834 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E95E84F3298EA1100051D834 /* Saikou BetaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Saikou BetaTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E95E84F7298EA1100051D834 /* Saikou_BetaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saikou_BetaTests.swift; sourceTree = "<group>"; };
+		E95E84FD298EA1100051D834 /* Saikou BetaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Saikou BetaUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E95E8501298EA1100051D834 /* Saikou_BetaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saikou_BetaUITests.swift; sourceTree = "<group>"; };
+		E95E8503298EA1100051D834 /* Saikou_BetaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saikou_BetaUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E95E84DF298EA10F0051D834 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E95E84F0298EA1100051D834 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E95E84FA298EA1100051D834 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E95E84D9298EA10F0051D834 = {
+			isa = PBXGroup;
+			children = (
+				E95E84E4298EA10F0051D834 /* Saikou Beta */,
+				E95E84F6298EA1100051D834 /* Saikou BetaTests */,
+				E95E8500298EA1100051D834 /* Saikou BetaUITests */,
+				E95E84E3298EA10F0051D834 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E95E84E3298EA10F0051D834 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E95E84E2298EA10F0051D834 /* Saikou Beta.app */,
+				E95E84F3298EA1100051D834 /* Saikou BetaTests.xctest */,
+				E95E84FD298EA1100051D834 /* Saikou BetaUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E95E84E4298EA10F0051D834 /* Saikou Beta */ = {
+			isa = PBXGroup;
+			children = (
+				E95E84E5298EA10F0051D834 /* Saikou_BetaApp.swift */,
+				E95E84E7298EA10F0051D834 /* ContentView.swift */,
+				E95E84E9298EA1100051D834 /* Assets.xcassets */,
+				E95E84EB298EA1100051D834 /* Saikou_Beta.entitlements */,
+				E95E84EC298EA1100051D834 /* Preview Content */,
+			);
+			path = "Saikou Beta";
+			sourceTree = "<group>";
+		};
+		E95E84EC298EA1100051D834 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				E95E84ED298EA1100051D834 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E95E84F6298EA1100051D834 /* Saikou BetaTests */ = {
+			isa = PBXGroup;
+			children = (
+				E95E84F7298EA1100051D834 /* Saikou_BetaTests.swift */,
+			);
+			path = "Saikou BetaTests";
+			sourceTree = "<group>";
+		};
+		E95E8500298EA1100051D834 /* Saikou BetaUITests */ = {
+			isa = PBXGroup;
+			children = (
+				E95E8501298EA1100051D834 /* Saikou_BetaUITests.swift */,
+				E95E8503298EA1100051D834 /* Saikou_BetaUITestsLaunchTests.swift */,
+			);
+			path = "Saikou BetaUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E95E84E1298EA10F0051D834 /* Saikou Beta */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E95E8507298EA1100051D834 /* Build configuration list for PBXNativeTarget "Saikou Beta" */;
+			buildPhases = (
+				E95E84DE298EA10F0051D834 /* Sources */,
+				E95E84DF298EA10F0051D834 /* Frameworks */,
+				E95E84E0298EA10F0051D834 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Saikou Beta";
+			productName = "Saikou Beta";
+			productReference = E95E84E2298EA10F0051D834 /* Saikou Beta.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E95E84F2298EA1100051D834 /* Saikou BetaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E95E850A298EA1100051D834 /* Build configuration list for PBXNativeTarget "Saikou BetaTests" */;
+			buildPhases = (
+				E95E84EF298EA1100051D834 /* Sources */,
+				E95E84F0298EA1100051D834 /* Frameworks */,
+				E95E84F1298EA1100051D834 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E95E84F5298EA1100051D834 /* PBXTargetDependency */,
+			);
+			name = "Saikou BetaTests";
+			productName = "Saikou BetaTests";
+			productReference = E95E84F3298EA1100051D834 /* Saikou BetaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		E95E84FC298EA1100051D834 /* Saikou BetaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E95E850D298EA1100051D834 /* Build configuration list for PBXNativeTarget "Saikou BetaUITests" */;
+			buildPhases = (
+				E95E84F9298EA1100051D834 /* Sources */,
+				E95E84FA298EA1100051D834 /* Frameworks */,
+				E95E84FB298EA1100051D834 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E95E84FF298EA1100051D834 /* PBXTargetDependency */,
+			);
+			name = "Saikou BetaUITests";
+			productName = "Saikou BetaUITests";
+			productReference = E95E84FD298EA1100051D834 /* Saikou BetaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E95E84DA298EA10F0051D834 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					E95E84E1298EA10F0051D834 = {
+						CreatedOnToolsVersion = 14.0;
+					};
+					E95E84F2298EA1100051D834 = {
+						CreatedOnToolsVersion = 14.0;
+						TestTargetID = E95E84E1298EA10F0051D834;
+					};
+					E95E84FC298EA1100051D834 = {
+						CreatedOnToolsVersion = 14.0;
+						TestTargetID = E95E84E1298EA10F0051D834;
+					};
+				};
+			};
+			buildConfigurationList = E95E84DD298EA10F0051D834 /* Build configuration list for PBXProject "Saikou Beta" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E95E84D9298EA10F0051D834;
+			productRefGroup = E95E84E3298EA10F0051D834 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E95E84E1298EA10F0051D834 /* Saikou Beta */,
+				E95E84F2298EA1100051D834 /* Saikou BetaTests */,
+				E95E84FC298EA1100051D834 /* Saikou BetaUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E95E84E0298EA10F0051D834 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E95E84EE298EA1100051D834 /* Preview Assets.xcassets in Resources */,
+				E95E84EA298EA1100051D834 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E95E84F1298EA1100051D834 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E95E84FB298EA1100051D834 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E95E84DE298EA10F0051D834 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E95E84E8298EA10F0051D834 /* ContentView.swift in Sources */,
+				E95E84E6298EA10F0051D834 /* Saikou_BetaApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E95E84EF298EA1100051D834 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E95E84F8298EA1100051D834 /* Saikou_BetaTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E95E84F9298EA1100051D834 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E95E8504298EA1100051D834 /* Saikou_BetaUITestsLaunchTests.swift in Sources */,
+				E95E8502298EA1100051D834 /* Saikou_BetaUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E95E84F5298EA1100051D834 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E95E84E1298EA10F0051D834 /* Saikou Beta */;
+			targetProxy = E95E84F4298EA1100051D834 /* PBXContainerItemProxy */;
+		};
+		E95E84FF298EA1100051D834 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E95E84E1298EA10F0051D834 /* Saikou Beta */;
+			targetProxy = E95E84FE298EA1100051D834 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E95E8505298EA1100051D834 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E95E8506298EA1100051D834 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		E95E8508298EA1100051D834 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Saikou Beta/Saikou_Beta.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Saikou Beta/Preview Content\"";
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.inumaki.Saikou-Beta";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E95E8509298EA1100051D834 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Saikou Beta/Saikou_Beta.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Saikou Beta/Preview Content\"";
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.inumaki.Saikou-Beta";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E95E850B298EA1100051D834 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.inumaki.Saikou-BetaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Saikou Beta.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Saikou Beta";
+			};
+			name = Debug;
+		};
+		E95E850C298EA1100051D834 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.inumaki.Saikou-BetaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Saikou Beta.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Saikou Beta";
+			};
+			name = Release;
+		};
+		E95E850E298EA1100051D834 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.inumaki.Saikou-BetaUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Saikou Beta";
+			};
+			name = Debug;
+		};
+		E95E850F298EA1100051D834 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.inumaki.Saikou-BetaUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Saikou Beta";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E95E84DD298EA10F0051D834 /* Build configuration list for PBXProject "Saikou Beta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E95E8505298EA1100051D834 /* Debug */,
+				E95E8506298EA1100051D834 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E95E8507298EA1100051D834 /* Build configuration list for PBXNativeTarget "Saikou Beta" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E95E8508298EA1100051D834 /* Debug */,
+				E95E8509298EA1100051D834 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E95E850A298EA1100051D834 /* Build configuration list for PBXNativeTarget "Saikou BetaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E95E850B298EA1100051D834 /* Debug */,
+				E95E850C298EA1100051D834 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E95E850D298EA1100051D834 /* Build configuration list for PBXNativeTarget "Saikou BetaUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E95E850E298EA1100051D834 /* Debug */,
+				E95E850F298EA1100051D834 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E95E84DA298EA10F0051D834 /* Project object */;
+}
