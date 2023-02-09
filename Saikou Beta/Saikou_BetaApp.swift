@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-@main
 struct Saikou_BetaApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Search()
         }
     }
 }

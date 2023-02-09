@@ -8,12 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		E95E84E6298EA10F0051D834 /* Saikou_BetaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E5298EA10F0051D834 /* Saikou_BetaApp.swift */; };
-		E95E84E8298EA10F0051D834 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E7298EA10F0051D834 /* ContentView.swift */; };
+		E95E84E8298EA10F0051D834 /* Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E7298EA10F0051D834 /* Info.swift */; };
 		E95E84EA298EA1100051D834 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84E9298EA1100051D834 /* Assets.xcassets */; };
 		E95E84EE298EA1100051D834 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84ED298EA1100051D834 /* Preview Assets.xcassets */; };
 		E95E84F8298EA1100051D834 /* Saikou_BetaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84F7298EA1100051D834 /* Saikou_BetaTests.swift */; };
 		E95E8502298EA1100051D834 /* Saikou_BetaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8501298EA1100051D834 /* Saikou_BetaUITests.swift */; };
 		E95E8504298EA1100051D834 /* Saikou_BetaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8503298EA1100051D834 /* Saikou_BetaUITestsLaunchTests.swift */; };
+		E95E8512298EA1840051D834 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = E95E8511298EA1840051D834 /* Kingfisher */; };
+		E95E8515298EE24D0051D834 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = E95E8514298EE24D0051D834 /* Shimmer */; };
+		E95E8517298EEB5F0051D834 /* Watch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8516298EEB5F0051D834 /* Watch.swift */; };
+		E95E851A298EEB7E0051D834 /* SwiftUIFontIcon in Frameworks */ = {isa = PBXBuildFile; productRef = E95E8519298EEB7E0051D834 /* SwiftUIFontIcon */; };
+		E95E851D298EEBB10051D834 /* SwiftWebVTT in Frameworks */ = {isa = PBXBuildFile; productRef = E95E851C298EEBB10051D834 /* SwiftWebVTT */; };
+		E95E8520298EEBC60051D834 /* ActivityIndicatorView in Frameworks */ = {isa = PBXBuildFile; productRef = E95E851F298EEBC60051D834 /* ActivityIndicatorView */; };
+		E95E8524298EECDB0051D834 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8521298EECDA0051D834 /* AppDelegate.swift */; };
+		E95E8525298EECDB0051D834 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8522298EECDA0051D834 /* HostingController.swift */; };
+		E95E8526298EECDB0051D834 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8523298EECDA0051D834 /* SceneDelegate.swift */; };
+		E95E8528298EECFB0051D834 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8527298EECFB0051D834 /* DataController.swift */; };
+		E95E852C298EF0C50051D834 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E852B298EF0C50051D834 /* Search.swift */; };
+		E98FE1C629959A8F00909E8D /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1C529959A8F00909E8D /* Notifications.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +48,7 @@
 /* Begin PBXFileReference section */
 		E95E84E2298EA10F0051D834 /* Saikou Beta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Saikou Beta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95E84E5298EA10F0051D834 /* Saikou_BetaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saikou_BetaApp.swift; sourceTree = "<group>"; };
-		E95E84E7298EA10F0051D834 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E95E84E7298EA10F0051D834 /* Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Info.swift; sourceTree = "<group>"; };
 		E95E84E9298EA1100051D834 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E95E84EB298EA1100051D834 /* Saikou_Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Saikou_Beta.entitlements; sourceTree = "<group>"; };
 		E95E84ED298EA1100051D834 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -45,6 +57,14 @@
 		E95E84FD298EA1100051D834 /* Saikou BetaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Saikou BetaUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95E8501298EA1100051D834 /* Saikou_BetaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saikou_BetaUITests.swift; sourceTree = "<group>"; };
 		E95E8503298EA1100051D834 /* Saikou_BetaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saikou_BetaUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		E95E8516298EEB5F0051D834 /* Watch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Watch.swift; sourceTree = "<group>"; };
+		E95E8521298EECDA0051D834 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E95E8522298EECDA0051D834 /* HostingController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
+		E95E8523298EECDA0051D834 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		E95E8527298EECFB0051D834 /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		E95E852B298EF0C50051D834 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
+		E98FE1C0299582D800909E8D /* Saikou-Beta-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Saikou-Beta-Info.plist"; sourceTree = SOURCE_ROOT; };
+		E98FE1C529959A8F00909E8D /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +72,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E95E8520298EEBC60051D834 /* ActivityIndicatorView in Frameworks */,
+				E95E851D298EEBB10051D834 /* SwiftWebVTT in Frameworks */,
+				E95E851A298EEB7E0051D834 /* SwiftUIFontIcon in Frameworks */,
+				E95E8515298EE24D0051D834 /* Shimmer in Frameworks */,
+				E95E8512298EA1840051D834 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,11 +120,19 @@
 		E95E84E4298EA10F0051D834 /* Saikou Beta */ = {
 			isa = PBXGroup;
 			children = (
+				E98FE1C0299582D800909E8D /* Saikou-Beta-Info.plist */,
 				E95E84E5298EA10F0051D834 /* Saikou_BetaApp.swift */,
-				E95E84E7298EA10F0051D834 /* ContentView.swift */,
+				E95E84E7298EA10F0051D834 /* Info.swift */,
+				E95E8516298EEB5F0051D834 /* Watch.swift */,
+				E95E8521298EECDA0051D834 /* AppDelegate.swift */,
+				E95E8522298EECDA0051D834 /* HostingController.swift */,
+				E95E8523298EECDA0051D834 /* SceneDelegate.swift */,
+				E95E8527298EECFB0051D834 /* DataController.swift */,
 				E95E84E9298EA1100051D834 /* Assets.xcassets */,
 				E95E84EB298EA1100051D834 /* Saikou_Beta.entitlements */,
 				E95E84EC298EA1100051D834 /* Preview Content */,
+				E95E852B298EF0C50051D834 /* Search.swift */,
+				E98FE1C529959A8F00909E8D /* Notifications.swift */,
 			);
 			path = "Saikou Beta";
 			sourceTree = "<group>";
@@ -145,6 +178,13 @@
 			dependencies = (
 			);
 			name = "Saikou Beta";
+			packageProductDependencies = (
+				E95E8511298EA1840051D834 /* Kingfisher */,
+				E95E8514298EE24D0051D834 /* Shimmer */,
+				E95E8519298EEB7E0051D834 /* SwiftUIFontIcon */,
+				E95E851C298EEBB10051D834 /* SwiftWebVTT */,
+				E95E851F298EEBC60051D834 /* ActivityIndicatorView */,
+			);
 			productName = "Saikou Beta";
 			productReference = E95E84E2298EA10F0051D834 /* Saikou Beta.app */;
 			productType = "com.apple.product-type.application";
@@ -217,6 +257,13 @@
 				Base,
 			);
 			mainGroup = E95E84D9298EA10F0051D834;
+			packageReferences = (
+				E95E8510298EA1830051D834 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				E95E8513298EE24D0051D834 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
+				E95E8518298EEB7E0051D834 /* XCRemoteSwiftPackageReference "SwiftUIFontIcon" */,
+				E95E851B298EEBB10051D834 /* XCRemoteSwiftPackageReference "SwiftWebVTT" */,
+				E95E851E298EEBC60051D834 /* XCRemoteSwiftPackageReference "ActivityIndicatorView" */,
+			);
 			productRefGroup = E95E84E3298EA10F0051D834 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -259,8 +306,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E95E84E8298EA10F0051D834 /* ContentView.swift in Sources */,
+				E98FE1C629959A8F00909E8D /* Notifications.swift in Sources */,
+				E95E8528298EECFB0051D834 /* DataController.swift in Sources */,
+				E95E8525298EECDB0051D834 /* HostingController.swift in Sources */,
+				E95E8524298EECDB0051D834 /* AppDelegate.swift in Sources */,
+				E95E84E8298EA10F0051D834 /* Info.swift in Sources */,
+				E95E8517298EEB5F0051D834 /* Watch.swift in Sources */,
+				E95E852C298EF0C50051D834 /* Search.swift in Sources */,
 				E95E84E6298EA10F0051D834 /* Saikou_BetaApp.swift in Sources */,
+				E95E8526298EECDB0051D834 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,6 +473,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Saikou-Beta-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Saikou S";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -429,7 +485,8 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
@@ -457,6 +514,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Saikou-Beta-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Saikou S";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -467,7 +526,8 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
@@ -612,6 +672,77 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E95E8510298EA1830051D834 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		E95E8513298EE24D0051D834 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		E95E8518298EEB7E0051D834 /* XCRemoteSwiftPackageReference "SwiftUIFontIcon" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/huybuidac/SwiftUIFontIcon";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		E95E851B298EEBB10051D834 /* XCRemoteSwiftPackageReference "SwiftWebVTT" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/thisIsTheFoxe/SwiftWebVTT";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		E95E851E298EEBC60051D834 /* XCRemoteSwiftPackageReference "ActivityIndicatorView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/exyte/ActivityIndicatorView.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E95E8511298EA1840051D834 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E95E8510298EA1830051D834 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		E95E8514298EE24D0051D834 /* Shimmer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E95E8513298EE24D0051D834 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
+			productName = Shimmer;
+		};
+		E95E8519298EEB7E0051D834 /* SwiftUIFontIcon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E95E8518298EEB7E0051D834 /* XCRemoteSwiftPackageReference "SwiftUIFontIcon" */;
+			productName = SwiftUIFontIcon;
+		};
+		E95E851C298EEBB10051D834 /* SwiftWebVTT */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E95E851B298EEBB10051D834 /* XCRemoteSwiftPackageReference "SwiftWebVTT" */;
+			productName = SwiftWebVTT;
+		};
+		E95E851F298EEBC60051D834 /* ActivityIndicatorView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E95E851E298EEBC60051D834 /* XCRemoteSwiftPackageReference "ActivityIndicatorView" */;
+			productName = ActivityIndicatorView;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E95E84DA298EA10F0051D834 /* Project object */;
 }

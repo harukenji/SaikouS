@@ -1,0 +1,50 @@
+{
+  "pins" : [
+    {
+      "identity" : "activityindicatorview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/exyte/ActivityIndicatorView.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "b90e88d4e9b17aa391e101384f461543dcae8c45"
+      }
+    },
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher",
+      "state" : {
+        "branch" : "master",
+        "revision" : "99726553bede2d32befaaa36d6b3b6d83a45645a"
+      }
+    },
+    {
+      "identity" : "swiftui-shimmer",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/markiv/SwiftUI-Shimmer.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "965a7cbcbf094cbcf22b9251a2323bdc3432e171"
+      }
+    },
+    {
+      "identity" : "swiftuifonticon",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/huybuidac/SwiftUIFontIcon",
+      "state" : {
+        "branch" : "master",
+        "revision" : "4f170fbf443d985ae518a14a12ec8194ec6b08eb"
+      }
+    },
+    {
+      "identity" : "swiftwebvtt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/thisIsTheFoxe/SwiftWebVTT",
+      "state" : {
+        "branch" : "main",
+        "revision" : "a02faf7e8ba5d1369e390661768482618581c192"
+      }
+    }
+  ],
+  "version" : 2
+}
