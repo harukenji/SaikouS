@@ -426,20 +426,22 @@ struct CustomControlsView: View {
                         Spacer()
                             .frame(maxWidth: 12)
                         
-                        VStack {
-                            Text("\(String(animeData.episodes![episodeIndex].number ?? 0)): \(animeData.episodes![episodeIndex].title ?? "")")
+                        if(animeData.episodes != nil) {
+                            VStack {
+                                Text("\(String(animeData.episodes![episodeIndex].number ?? 0)): \(animeData.episodes![episodeIndex].title ?? "")")
                                     .foregroundColor(.white)
                                     .font(.system(size: 16))
                                     .bold()
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                            
-                            Text("\(animeData.title.romaji)")
-                                .foregroundColor(.white.opacity(0.7))
-                                .font(.system(size: 14))
-                                .bold()
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                                Text("\(animeData.title.romaji)")
+                                    .foregroundColor(.white.opacity(0.7))
+                                    .font(.system(size: 14))
+                                    .bold()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                         Spacer()
                         
                         VStack {

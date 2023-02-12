@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E95E84E6298EA10F0051D834 /* Saikou_BetaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E5298EA10F0051D834 /* Saikou_BetaApp.swift */; };
 		E95E84E8298EA10F0051D834 /* Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E7298EA10F0051D834 /* Info.swift */; };
 		E95E84EA298EA1100051D834 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84E9298EA1100051D834 /* Assets.xcassets */; };
 		E95E84EE298EA1100051D834 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84ED298EA1100051D834 /* Preview Assets.xcassets */; };
@@ -26,6 +25,34 @@
 		E95E8528298EECFB0051D834 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E8527298EECFB0051D834 /* DataController.swift */; };
 		E95E852C298EF0C50051D834 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E852B298EF0C50051D834 /* Search.swift */; };
 		E98FE1C629959A8F00909E8D /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1C529959A8F00909E8D /* Notifications.swift */; };
+		E98FE1CD2999380D00909E8D /* AnilistApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1CC2999380D00909E8D /* AnilistApiService.swift */; };
+		E98FE1CF299938B000909E8D /* AnilistRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1CE299938B000909E8D /* AnilistRepository.swift */; };
+		E98FE1D12999398800909E8D /* InfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1D02999398800909E8D /* InfoViewModel.swift */; };
+		E98FE1D629993AAE00909E8D /* InfoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1D529993AAE00909E8D /* InfoData.swift */; };
+		E98FE1D829993AD000909E8D /* Title.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1D729993AD000909E8D /* Title.swift */; };
+		E98FE1DA29993AE300909E8D /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1D929993AE300909E8D /* Date.swift */; };
+		E98FE1DC29993AF400909E8D /* AiringDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1DB29993AF400909E8D /* AiringDate.swift */; };
+		E98FE1DF29993B1400909E8D /* Trailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1DE29993B1400909E8D /* Trailer.swift */; };
+		E98FE1E129993B2C00909E8D /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1E029993B2C00909E8D /* Episode.swift */; };
+		E98FE1E329993B3F00909E8D /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1E229993B3F00909E8D /* Character.swift */; };
+		E98FE1E529993B4F00909E8D /* Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1E429993B4F00909E8D /* Name.swift */; };
+		E98FE1E829993B6900909E8D /* VoiceActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1E729993B6900909E8D /* VoiceActor.swift */; };
+		E98FE1EA29993B7700909E8D /* Related.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1E929993B7700909E8D /* Related.swift */; };
+		E98FE1EC29993B8500909E8D /* Recommended.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1EB29993B8500909E8D /* Recommended.swift */; };
+		E98FE1EF29993B9E00909E8D /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1EE29993B9E00909E8D /* SearchResults.swift */; };
+		E98FE1F129993BB700909E8D /* SearchData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1F029993BB700909E8D /* SearchData.swift */; };
+		E98FE1F42999407F00909E8D /* AnilistFetchError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1F32999407F00909E8D /* AnilistFetchError.swift */; };
+		E98FE1F62999419A00909E8D /* InfoFetchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1F52999419A00909E8D /* InfoFetchResult.swift */; };
+		E98FE1F8299941E300909E8D /* SearchFetchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1F7299941E300909E8D /* SearchFetchResult.swift */; };
+		E98FE1FA2999429800909E8D /* EpisodeFetchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1F92999429800909E8D /* EpisodeFetchResult.swift */; };
+		E98FE1FC299946CC00909E8D /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1FB299946CC00909E8D /* SearchViewModel.swift */; };
+		E98FE1FE299947D800909E8D /* WatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE1FD299947D800909E8D /* WatchViewModel.swift */; };
+		E98FE201299948BB00909E8D /* Dropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE200299948BB00909E8D /* Dropdown.swift */; };
+		E98FE20329994FFD00909E8D /* ContinueWatchingCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE20229994FFD00909E8D /* ContinueWatchingCard.swift */; };
+		E98FE205299950FA00909E8D /* EpisodePaginationChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE204299950FA00909E8D /* EpisodePaginationChip.swift */; };
+		E98FE207299952C400909E8D /* EpisodeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE206299952C400909E8D /* EpisodeCard.swift */; };
+		E98FE209299966C500909E8D /* TopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE208299966C500909E8D /* TopView.swift */; };
+		E98FE20B2999683700909E8D /* FillAspectImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE20A2999683700909E8D /* FillAspectImage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,7 +74,6 @@
 
 /* Begin PBXFileReference section */
 		E95E84E2298EA10F0051D834 /* Saikou Beta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Saikou Beta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E95E84E5298EA10F0051D834 /* Saikou_BetaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saikou_BetaApp.swift; sourceTree = "<group>"; };
 		E95E84E7298EA10F0051D834 /* Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Info.swift; sourceTree = "<group>"; };
 		E95E84E9298EA1100051D834 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E95E84EB298EA1100051D834 /* Saikou_Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Saikou_Beta.entitlements; sourceTree = "<group>"; };
@@ -65,6 +91,34 @@
 		E95E852B298EF0C50051D834 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		E98FE1C0299582D800909E8D /* Saikou-Beta-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Saikou-Beta-Info.plist"; sourceTree = SOURCE_ROOT; };
 		E98FE1C529959A8F00909E8D /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		E98FE1CC2999380D00909E8D /* AnilistApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnilistApiService.swift; sourceTree = "<group>"; };
+		E98FE1CE299938B000909E8D /* AnilistRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnilistRepository.swift; sourceTree = "<group>"; };
+		E98FE1D02999398800909E8D /* InfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewModel.swift; sourceTree = "<group>"; };
+		E98FE1D529993AAE00909E8D /* InfoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoData.swift; sourceTree = "<group>"; };
+		E98FE1D729993AD000909E8D /* Title.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Title.swift; sourceTree = "<group>"; };
+		E98FE1D929993AE300909E8D /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		E98FE1DB29993AF400909E8D /* AiringDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiringDate.swift; sourceTree = "<group>"; };
+		E98FE1DE29993B1400909E8D /* Trailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trailer.swift; sourceTree = "<group>"; };
+		E98FE1E029993B2C00909E8D /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
+		E98FE1E229993B3F00909E8D /* Character.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Character.swift; sourceTree = "<group>"; };
+		E98FE1E429993B4F00909E8D /* Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Name.swift; sourceTree = "<group>"; };
+		E98FE1E729993B6900909E8D /* VoiceActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceActor.swift; sourceTree = "<group>"; };
+		E98FE1E929993B7700909E8D /* Related.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Related.swift; sourceTree = "<group>"; };
+		E98FE1EB29993B8500909E8D /* Recommended.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recommended.swift; sourceTree = "<group>"; };
+		E98FE1EE29993B9E00909E8D /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
+		E98FE1F029993BB700909E8D /* SearchData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchData.swift; sourceTree = "<group>"; };
+		E98FE1F32999407F00909E8D /* AnilistFetchError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnilistFetchError.swift; sourceTree = "<group>"; };
+		E98FE1F52999419A00909E8D /* InfoFetchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoFetchResult.swift; sourceTree = "<group>"; };
+		E98FE1F7299941E300909E8D /* SearchFetchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFetchResult.swift; sourceTree = "<group>"; };
+		E98FE1F92999429800909E8D /* EpisodeFetchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeFetchResult.swift; sourceTree = "<group>"; };
+		E98FE1FB299946CC00909E8D /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		E98FE1FD299947D800909E8D /* WatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchViewModel.swift; sourceTree = "<group>"; };
+		E98FE200299948BB00909E8D /* Dropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dropdown.swift; sourceTree = "<group>"; };
+		E98FE20229994FFD00909E8D /* ContinueWatchingCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinueWatchingCard.swift; sourceTree = "<group>"; };
+		E98FE204299950FA00909E8D /* EpisodePaginationChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodePaginationChip.swift; sourceTree = "<group>"; };
+		E98FE206299952C400909E8D /* EpisodeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCard.swift; sourceTree = "<group>"; };
+		E98FE208299966C500909E8D /* TopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopView.swift; sourceTree = "<group>"; };
+		E98FE20A2999683700909E8D /* FillAspectImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FillAspectImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,10 +174,14 @@
 		E95E84E4298EA10F0051D834 /* Saikou Beta */ = {
 			isa = PBXGroup;
 			children = (
+				E98FE1FF299948A000909E8D /* Components */,
+				E98FE1F22999406A00909E8D /* Errors */,
+				E98FE1CB2999379600909E8D /* Services */,
+				E98FE1CA2999376B00909E8D /* Repositories */,
+				E98FE1C92999375C00909E8D /* Models */,
+				E98FE1C82999375600909E8D /* ViewModels */,
+				E98FE1C72999374F00909E8D /* Views */,
 				E98FE1C0299582D800909E8D /* Saikou-Beta-Info.plist */,
-				E95E84E5298EA10F0051D834 /* Saikou_BetaApp.swift */,
-				E95E84E7298EA10F0051D834 /* Info.swift */,
-				E95E8516298EEB5F0051D834 /* Watch.swift */,
 				E95E8521298EECDA0051D834 /* AppDelegate.swift */,
 				E95E8522298EECDA0051D834 /* HostingController.swift */,
 				E95E8523298EECDA0051D834 /* SceneDelegate.swift */,
@@ -131,7 +189,6 @@
 				E95E84E9298EA1100051D834 /* Assets.xcassets */,
 				E95E84EB298EA1100051D834 /* Saikou_Beta.entitlements */,
 				E95E84EC298EA1100051D834 /* Preview Content */,
-				E95E852B298EF0C50051D834 /* Search.swift */,
 				E98FE1C529959A8F00909E8D /* Notifications.swift */,
 			);
 			path = "Saikou Beta";
@@ -160,6 +217,126 @@
 				E95E8503298EA1100051D834 /* Saikou_BetaUITestsLaunchTests.swift */,
 			);
 			path = "Saikou BetaUITests";
+			sourceTree = "<group>";
+		};
+		E98FE1C72999374F00909E8D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE1D429993A4C00909E8D /* Watch */,
+				E98FE1D329993A4700909E8D /* Info */,
+				E98FE1D229993A4200909E8D /* Home */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E98FE1C82999375600909E8D /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE1D02999398800909E8D /* InfoViewModel.swift */,
+				E98FE1FB299946CC00909E8D /* SearchViewModel.swift */,
+				E98FE1FD299947D800909E8D /* WatchViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E98FE1C92999375C00909E8D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE1ED29993B9100909E8D /* Search */,
+				E98FE1E629993B5400909E8D /* VoiceActor */,
+				E98FE1D529993AAE00909E8D /* InfoData.swift */,
+				E98FE1D729993AD000909E8D /* Title.swift */,
+				E98FE1D929993AE300909E8D /* Date.swift */,
+				E98FE1DB29993AF400909E8D /* AiringDate.swift */,
+				E98FE1DE29993B1400909E8D /* Trailer.swift */,
+				E98FE1E029993B2C00909E8D /* Episode.swift */,
+				E98FE1E229993B3F00909E8D /* Character.swift */,
+				E98FE1E929993B7700909E8D /* Related.swift */,
+				E98FE1EB29993B8500909E8D /* Recommended.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E98FE1CA2999376B00909E8D /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE1CE299938B000909E8D /* AnilistRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		E98FE1CB2999379600909E8D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE1CC2999380D00909E8D /* AnilistApiService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E98FE1D229993A4200909E8D /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				E95E852B298EF0C50051D834 /* Search.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		E98FE1D329993A4700909E8D /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				E95E84E7298EA10F0051D834 /* Info.swift */,
+				E98FE208299966C500909E8D /* TopView.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
+		E98FE1D429993A4C00909E8D /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				E95E8516298EEB5F0051D834 /* Watch.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
+		E98FE1E629993B5400909E8D /* VoiceActor */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE1E429993B4F00909E8D /* Name.swift */,
+				E98FE1E729993B6900909E8D /* VoiceActor.swift */,
+			);
+			path = VoiceActor;
+			sourceTree = "<group>";
+		};
+		E98FE1ED29993B9100909E8D /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE1EE29993B9E00909E8D /* SearchResults.swift */,
+				E98FE1F029993BB700909E8D /* SearchData.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		E98FE1F22999406A00909E8D /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE1F32999407F00909E8D /* AnilistFetchError.swift */,
+				E98FE1F52999419A00909E8D /* InfoFetchResult.swift */,
+				E98FE1F7299941E300909E8D /* SearchFetchResult.swift */,
+				E98FE1F92999429800909E8D /* EpisodeFetchResult.swift */,
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
+		E98FE1FF299948A000909E8D /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE200299948BB00909E8D /* Dropdown.swift */,
+				E98FE20229994FFD00909E8D /* ContinueWatchingCard.swift */,
+				E98FE204299950FA00909E8D /* EpisodePaginationChip.swift */,
+				E98FE206299952C400909E8D /* EpisodeCard.swift */,
+				E98FE20A2999683700909E8D /* FillAspectImage.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -306,14 +483,41 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E98FE1EF29993B9E00909E8D /* SearchResults.swift in Sources */,
+				E98FE1F62999419A00909E8D /* InfoFetchResult.swift in Sources */,
+				E98FE1FE299947D800909E8D /* WatchViewModel.swift in Sources */,
+				E98FE1EA29993B7700909E8D /* Related.swift in Sources */,
+				E98FE1EC29993B8500909E8D /* Recommended.swift in Sources */,
 				E98FE1C629959A8F00909E8D /* Notifications.swift in Sources */,
 				E95E8528298EECFB0051D834 /* DataController.swift in Sources */,
+				E98FE207299952C400909E8D /* EpisodeCard.swift in Sources */,
 				E95E8525298EECDB0051D834 /* HostingController.swift in Sources */,
+				E98FE201299948BB00909E8D /* Dropdown.swift in Sources */,
+				E98FE20329994FFD00909E8D /* ContinueWatchingCard.swift in Sources */,
+				E98FE1D629993AAE00909E8D /* InfoData.swift in Sources */,
 				E95E8524298EECDB0051D834 /* AppDelegate.swift in Sources */,
 				E95E84E8298EA10F0051D834 /* Info.swift in Sources */,
+				E98FE20B2999683700909E8D /* FillAspectImage.swift in Sources */,
+				E98FE1E829993B6900909E8D /* VoiceActor.swift in Sources */,
+				E98FE1D12999398800909E8D /* InfoViewModel.swift in Sources */,
+				E98FE1E529993B4F00909E8D /* Name.swift in Sources */,
+				E98FE1D829993AD000909E8D /* Title.swift in Sources */,
+				E98FE1CD2999380D00909E8D /* AnilistApiService.swift in Sources */,
+				E98FE1E329993B3F00909E8D /* Character.swift in Sources */,
+				E98FE1DA29993AE300909E8D /* Date.swift in Sources */,
+				E98FE209299966C500909E8D /* TopView.swift in Sources */,
 				E95E8517298EEB5F0051D834 /* Watch.swift in Sources */,
+				E98FE1FC299946CC00909E8D /* SearchViewModel.swift in Sources */,
+				E98FE1DF29993B1400909E8D /* Trailer.swift in Sources */,
+				E98FE205299950FA00909E8D /* EpisodePaginationChip.swift in Sources */,
+				E98FE1F42999407F00909E8D /* AnilistFetchError.swift in Sources */,
+				E98FE1DC29993AF400909E8D /* AiringDate.swift in Sources */,
+				E98FE1FA2999429800909E8D /* EpisodeFetchResult.swift in Sources */,
+				E98FE1F129993BB700909E8D /* SearchData.swift in Sources */,
+				E98FE1E129993B2C00909E8D /* Episode.swift in Sources */,
 				E95E852C298EF0C50051D834 /* Search.swift in Sources */,
-				E95E84E6298EA10F0051D834 /* Saikou_BetaApp.swift in Sources */,
+				E98FE1CF299938B000909E8D /* AnilistRepository.swift in Sources */,
+				E98FE1F8299941E300909E8D /* SearchFetchResult.swift in Sources */,
 				E95E8526298EECDB0051D834 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

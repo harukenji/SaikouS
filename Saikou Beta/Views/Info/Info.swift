@@ -83,175 +83,12 @@ struct MaterialToggleStyle: ToggleStyle {
     }
 }
 
-struct InfoData: Codable {
-    let id: String
-    let title: Title
-    let malId: Int?
-    let synonyms: [String]?
-    let isLicensed, isAdult: Bool?
-    let countryOfOrigin: String?
-    let trailer: Trailer?
-    let image: String
-    let popularity: Int
-    let color: String?
-    let cover: String
-    let description, status: String
-    let releaseDate: Int
-    let startDate: Date
-    let endDate: Date?
-    let nextAiringEpisode: AiringData?
-    let totalEpisodes: Int?
-    let currentEpisodeCount: Int?
-    let duration: Int?
-    let rating: Int?
-    let genres: [String]
-    let season: String?
-    let studios: [String]
-    let subOrDub: String?
-    let type: String?
-    let recommendations: [Recommended]?
-    let characters: [Character]
-    let relations: [Related]?
-    var episodes: [Episode]?
-}
-
-struct AnilistInfo: Codable {
-    let id: String
-    let title: Title
-    let malId: Int?
-    let synonyms: [String]?
-    let isLicensed, isAdult: Bool?
-    let countryOfOrigin: String?
-    let trailer: Trailer?
-    let image: String
-    let popularity: Int
-    let color: String?
-    let cover: String
-    let description, status: String
-    let releaseDate: Int
-    let startDate: Date
-    let endDate: Date?
-    let nextAiringEpisode: AiringData?
-    let totalEpisodes: Int?
-    let currentEpisodeCount: Int?
-    let duration: Int?
-    let rating: Int?
-    let genres: [String]
-    let season: String?
-    let studios: [String]
-    let subOrDub: String?
-    let type: String?
-    let recommendations: [Recommended]?
-    let characters: [Character]
-    let relations: [Related]?
-    var episodes: [Episode]?
-}
-
-struct Title: Codable, Hashable {
-    let romaji: String
-    var english: String?
-    let native: String?
-    var userPreferred: String?
-}
-
-struct Date: Codable {
-    let year: Int?
-    let month: Int?
-    let day: Int?
-}
-
-struct AiringData: Codable {
-    let airingTime: Int
-    let timeUntilAiring: Int
-    let episode: Int
-}
-
-struct Trailer: Codable {
-    let id, site: String
-    let thumbnail: String
-}
-
-struct Episode: Codable, Identifiable {
-    let id: String
-    let title: String?
-    let description: String?
-    let number: Int?
-    let image: String
-    let isFiller: Bool?
-}
-
-struct Character: Codable {
-    let id: Int?
-    let role: String
-    let name: Name
-    let image: String
-    let voiceActors: [VoiceActor]?
-}
-
-struct Name: Codable {
-    let first, last, full: String?
-    let native: String?
-    let userPreferred: String
-}
-
-struct VoiceActor: Codable {
-    let id: Int
-    let name: Name
-    let image: String
-}
-
-struct Related: Codable {
-    let id: Int?
-    let relationType: String
-    let malId: Int?
-    let title: Title
-    let status: String
-    var episodes: Int?
-    let image: String
-    let color, type: String?
-    let cover: String
-    let rating: Int?
-}
-
-struct Recommended: Codable {
-    let id: Int?
-    let malId: Int?
-    let title: Title
-    let status: String
-    let episodes: Int?
-    let image, cover: String
-    let rating: Int?
-    let type: String?
-}
-
-struct SearchResults: Codable {
-    let currentPage: Int
-    let hasNextPage: Bool
-    let results: [SearchData]
-}
-
-struct SearchData: Codable {
-    let id: String
-    let malId: Int?
-    let title: Title
-    let status: String
-    let image: String
-    let cover: String?
-    let popularity: Int
-    let description: String?
-    let rating: Int?
-    let genres: [String]
-    let color: String?
-    let totalEpisodes: Int?
-    let currentEpisodeCount: Int?
-    let type: String?
-    let releaseDate: Int?
-}
 
 class Anilist : ObservableObject{
     @Published var infodata: InfoData? = nil
     @Published var searchresults: SearchResults? = nil
     @Published var episodes: [Episode]? = nil
+    @Published var error: Error? = nil
     
     let baseUrl: String = "https://api.consumet.org/meta/anilist"
     
@@ -263,8 +100,12 @@ class Anilist : ObservableObject{
         print(url)
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            self.searchresults = try! JSONDecoder().decode(SearchResults.self, from: data)
-            
+            do {
+                self.searchresults = try JSONDecoder().decode(SearchResults.self, from: data)
+            } catch let error {
+                self.error = error
+                print("Something went wrong.")
+            }
         } catch {
             print("couldnt load data")
         }
@@ -277,7 +118,12 @@ class Anilist : ObservableObject{
         }
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            self.infodata = try! JSONDecoder().decode(InfoData.self, from: data)
+            do {
+                self.infodata = try JSONDecoder().decode(InfoData.self, from: data)
+            } catch let error {
+                self.error = error
+                print("Something went wrong.")
+            }
             
         } catch {
             print("couldnt load data")
@@ -291,187 +137,29 @@ class Anilist : ObservableObject{
         }
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            self.episodes = try! JSONDecoder().decode([Episode].self, from: data)
-            
+            do {
+                self.episodes = try JSONDecoder().decode([Episode].self, from: data)
+            } catch let error {
+                self.error = error
+                print("Something went wrong.")
+            }
         } catch {
             print("couldnt load data")
         }
     }
 }
 
-public struct FillAspectImage: View {
-    let url: URL?
-    
-    @State private var finishedLoading: Bool = false
-    
-    public init(url: URL?) {
-        self.url = url
-    }
-    
-    public var body: some View {
-        GeometryReader { proxy in
-            KFImage.url(url)
-                .onSuccess { image in
-                    finishedLoading = true
-                }
-                .onFailure { _ in
-                    finishedLoading = true
-                }
-                .resizable()
-                .transaction { $0.animation = nil }
-                .scaledToFill()
-                .transition(.opacity)
-                .opacity(finishedLoading ? 1.0 : 0.0)
-                .background(Color(white: 0.05))
-                .frame(
-                    width: proxy.size.width,
-                    height: proxy.size.height,
-                    alignment: .center
-                )
-                .contentShape(Rectangle())
-                .clipped()
-                .animation(.easeInOut(duration: 0.5), value: finishedLoading)
-        }
-    }
-}
-
-struct DropdownOption: Hashable {
-    let key: String
-    let value: String
-    
-    public static func == (lhs: DropdownOption, rhs: DropdownOption) -> Bool {
-        return lhs.key == rhs.key
-    }
-}
-
-struct DropdownSelector: View {
-    @State private var shouldShowDropdown = false
-    @State private var selectedOption: DropdownOption? = nil
-    var placeholder: String
-    var options: [DropdownOption]
-    var onOptionSelected: ((_ option: DropdownOption) -> Void)?
-    private let buttonHeight: CGFloat = 58
-    
-    var body: some View {
-        Button(action: {
-            self.shouldShowDropdown.toggle()
-        }) {
-            ZStack {
-                HStack {
-                    Image(systemName: "folder.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(Color(hex: "#8b8789"))
-                        .frame(width: 26)
-                        .padding(.leading, 10)
-                        .padding(.trailing, 12)
-                    
-                    Text(selectedOption == nil ? placeholder : selectedOption!.value)
-                        .font(.system(size: 18, weight: .heavy))
-                        .foregroundColor(Color(hex: "#cbc4d1"))
-                    
-                    Spacer()
-                    
-                    Image(systemName: "chevron.down")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(Color(hex: "#8b8789"))
-                        .frame(width: 16)
-                        .padding(.trailing, 10)
-                }
-                .frame(height: 58)
-                .frame(maxWidth: .infinity, maxHeight: 58)
-                
-                
-            }
-        }
-        .padding(.horizontal)
-        .cornerRadius(5)
-        .frame(width: .infinity, height: self.buttonHeight)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.white.opacity(0.7), lineWidth: 1)
-        )
-        .overlay {
-            ZStack {
-                Color(.black)
-                
-                Text("Source")
-                    .font(.system(size: 14, weight: .heavy))
-                    .foregroundColor(Color(hex: "#8b8789"))
-                    .padding(.horizontal, 6)
-            }
-            .fixedSize()
-            .padding(.trailing, 260)
-            .padding(.bottom, 58)
-        }
-        .overlay(
-            VStack {
-                if self.shouldShowDropdown {
-                    Spacer(minLength: buttonHeight + 10)
-                    Dropdown(options: self.options, onOptionSelected: { option in
-                        shouldShowDropdown = false
-                        selectedOption = option
-                        self.onOptionSelected?(option)
-                    })
-                }
-            }
-            , alignment: .topLeading
-        )
-    }
-}
-
-struct Dropdown: View {
-    var options: [DropdownOption]
-    var onOptionSelected: ((_ option: DropdownOption) -> Void)?
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                ForEach(self.options, id: \.self) { option in
-                    DropdownRow(option: option, onOptionSelected: self.onOptionSelected)
-                }
-            }
-        }
-        .frame(height: CGFloat(options.count) * 50 + 10)
-        .frame(minHeight: CGFloat(options.count) * 50 + 10, maxHeight: 500)
-        .padding(.vertical, 5)
-        .background(Color(hex: "#1c1b1f"))
-        .cornerRadius(5)
-    }
-}
-
-struct DropdownRow: View {
-    var option: DropdownOption
-    var onOptionSelected: ((_ option: DropdownOption) -> Void)?
-    
-    var body: some View {
-        Button(action: {
-            if let onOptionSelected = self.onOptionSelected {
-                onOptionSelected(self.option)
-            }
-        }) {
-            HStack {
-                Text(self.option.value)
-                    .font(.system(size: 18, weight: .heavy))
-                    .foregroundColor(Color(hex: "#cbc4d1"))
-                Spacer()
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 16)
-    }
-}
-
 struct Info: View {
     var id: String
+    
+    @StateObject private var viewModel = InfoViewModel()
+    
     @State private var isOn = false
-    @StateObject var anilist: Anilist = Anilist()
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var startEpisodeList = 0
     @State var endEpisodeList = 50
     @State var paginationIndex = 0
-    @State private var lineLimitArray: [Int] = []
+    @State var lineLimitArray: [Int] = []
     @State var episodeDisplayGrid = false
     @State private var selectedItem = 1
     @State var selectedProvider = "gogoanime"
@@ -494,6 +182,7 @@ struct Info: View {
             DropdownOption(key: uniqueKey, value: "Gogo"),
             DropdownOption(key: uniqueKey, value: "Zoro"),
             DropdownOption(key: uniqueKey, value: "Animepahe"),
+            DropdownOption(key: uniqueKey, value: "Animefox"),
         ]
     }
     
@@ -502,11 +191,11 @@ struct Info: View {
             ZStack(alignment: .top) {
                 Color(.black)
                 
-                if(anilist.infodata != nil) {
+                if(viewModel.infodata != nil) {
                     ScrollView {
                         VStack {
                             VStack {
-                                TopView(anilist: anilist, proxy: proxy)
+                                TopView(cover: viewModel.infodata!.cover, image: viewModel.infodata!.image, romajiTitle: viewModel.infodata!.title.romaji, status: viewModel.infodata!.status, width: proxy.size.width)
                                 
                                 Button(action: {
                                     print("Hello button tapped!")
@@ -528,7 +217,7 @@ struct Info: View {
                                     Text("Total of ")
                                         .foregroundColor(Color.white.opacity(0.7))
                                     
-                                    Text(String(anilist.infodata!.totalEpisodes ?? 0))
+                                    Text(String(viewModel.infodata!.totalEpisodes ?? 0))
                                         .padding(.leading, -8)
                                         .font(.system(size: 16, weight: .heavy))
                                 }
@@ -562,7 +251,7 @@ struct Info: View {
                                         .padding(.horizontal, 20)
                                         .padding(.top, 12)
                                         
-                                        Text("Selected : \(anilist.infodata!.title.romaji)")
+                                        Text("Selected : \(viewModel.infodata!.title.romaji)")
                                             .font(.system(size: 16, weight: .heavy))
                                             .lineLimit(1)
                                             .padding(.horizontal, 20)
@@ -582,18 +271,18 @@ struct Info: View {
                                                             selectedProvider = "zoro"
                                                         case "Animepahe":
                                                             selectedProvider = "animepahe"
+                                                        case "Animefox":
+                                                            selectedProvider = "animefox"
                                                         default:
                                                             selectedProvider = "gogoanime"
                                                         }
-                                                        await anilist.getEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
-                                                        self.lineLimitArray = Array(repeating: 3, count: anilist.episodes!.count)
-                                                        anilist.infodata!.episodes = anilist.episodes
+                                                        await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
+                                                        self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                        viewModel.infodata!.episodes = viewModel.episodedata
                                                     }
                                                 })
                                             .padding(.horizontal)
                                             .zIndex(100)
-                                            
-                                            
                                             
                                             HStack {
                                                 Toggle(isOn: $isOn, label: {
@@ -604,9 +293,9 @@ struct Info: View {
                                                 .toggleStyle(MaterialToggleStyle())
                                                 .onChange(of: isOn) { value in
                                                     Task {
-                                                        await anilist.getEpisodes(id: id, provider: selectedProvider, dubbed: value)
-                                                        self.lineLimitArray = Array(repeating: 3, count: anilist.episodes!.count)
-                                                        anilist.infodata!.episodes = anilist.episodes
+                                                        await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
+                                                        self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                        viewModel.infodata!.episodes = viewModel.episodedata
                                                     }
                                                 }
                                             }
@@ -646,64 +335,14 @@ struct Info: View {
                                             .padding(.top, 12)
                                             
                                             
-                                            if(anilist.episodes != nil) {
-                                                ZStack {
-                                                    KFImage(URL(string: anilist.episodes![0].image))
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(maxWidth: proxy.size.width - 40,maxHeight: 100)
-                                                        .contentShape(Rectangle().path(in: CGRect(x: 0, y: 0, width: 0, height: 0)))
-                                                    
-                                                    Rectangle()
-                                                        .foregroundColor(.black.opacity(0.6))
-                                                    
-                                                    HStack {
-                                                        Text("Continue : Episode 1\n\(anilist.episodes![0].title ?? "Title")")
-                                                            .lineLimit(2)
-                                                            .lineSpacing(8.0)
-                                                            .multilineTextAlignment(.center)
-                                                            .font(.system(size: 16, weight: .heavy))
-                                                        
-                                                        Spacer()
-                                                            .frame(maxWidth: 20)
-                                                        
-                                                        Image(systemName: "play.fill")
-                                                            .resizable()
-                                                            .aspectRatio(contentMode: .fit)
-                                                            .frame(maxWidth: 24)
-                                                    }
-                                                    .padding(.horizontal, 20)
-                                                }
-                                                .frame(maxHeight: 100)
-                                                .cornerRadius(20)
-                                                .padding(.horizontal, 20)
-                                                .padding(.bottom, 20)
-                                                .zIndex(0)
+                                            if(viewModel.episodedata != nil) {
+                                                ContinueWatchingCard(image: viewModel.episodedata![0].image, title: viewModel.episodedata![0].title ?? "Title", width: proxy.size.width)
                                                 
-                                                if(anilist.episodes!.count > 50) {
+                                                if(viewModel.episodedata!.count > 50) {
                                                     ScrollView(.horizontal) {
                                                         HStack(spacing: 20) {
-                                                            ForEach(0..<Int(ceil(Float(anilist.episodes!.count)/50))) { index in
-                                                                ZStack {
-                                                                    Color(hex: index == paginationIndex ? "#8ca7ff" : "#1c1b1f")
-                                                                    
-                                                                    
-                                                                    Text("\((50 * index) + 1) - " + String(50 + (50 * index) > anilist.episodes!.count ? anilist.episodes!.count : 50 + (50 * index)))
-                                                                        .font(.system(size: 16, weight: .heavy))
-                                                                        .padding(.vertical, 6)
-                                                                        .padding(.horizontal, 12)
-                                                                }
-                                                                .fixedSize()
-                                                                .cornerRadius(6)
-                                                                .overlay(
-                                                                    RoundedRectangle(cornerRadius: 6)
-                                                                        .stroke(Color.white.opacity(0.7), lineWidth: index == paginationIndex ? 0 : 1)
-                                                                )
-                                                                .onTapGesture {
-                                                                    startEpisodeList = 50 * index
-                                                                    endEpisodeList = 50 + (50 * index) > anilist.episodes!.count ? anilist.episodes!.count : 50 + (50 * index)
-                                                                    paginationIndex = index
-                                                                }
+                                                            ForEach(0..<Int(ceil(Float(viewModel.episodedata!.count)/50))) { index in
+                                                                EpisodePaginationChip(paginationIndex: paginationIndex, startEpisodeList: startEpisodeList, endEpisodeList: endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
                                                             }
                                                         }
                                                     }
@@ -715,102 +354,22 @@ struct Info: View {
                                                 if(!episodeDisplayGrid) {
                                                     
                                                     VStack {
-                                                        ForEach(startEpisodeList..<min(endEpisodeList, anilist.episodes!.count), id: \.self) { index in
-                                                            ZStack(alignment: .topLeading) {
-                                                                Color(hex: "#282828")
-                                                                
-                                                                VStack {
-                                                                    NavigationLink(destination: WatchPage(aniData: anilist.infodata!, episodeIndex: index, anilistId: id, provider: selectedProvider)) {
-                                                                        HStack {
-                                                                            KFImage(URL(string: anilist.episodes![index].image))
-                                                                                .resizable()
-                                                                                .aspectRatio(contentMode: .fit)
-                                                                                .frame(maxWidth: 170)
-                                                                                .cornerRadius(12)
-                                                                            
-                                                                            Text(anilist.episodes![index].title ?? "Episode \(index + 1)")
-                                                                                .font(.system(size: 14, weight: .heavy))
-                                                                                .frame(maxWidth: .infinity)
-                                                                                .padding(.trailing, 20)
-                                                                                .lineLimit(4)
-                                                                                .foregroundColor(.white)
-                                                                        }
-                                                                    }
-                                                                    
-                                                                    Text(anilist.episodes![index].description ?? "Description")
-                                                                        .lineLimit(self.lineLimitArray.count > 0 ? self.lineLimitArray[index] : 3)
-                                                                        .foregroundColor(.white.opacity(0.7))
-                                                                        .font(.system(size: 14, weight: .semibold))
-                                                                        .multilineTextAlignment(.leading)
-                                                                        .animation(.spring(response: 0.3))
-                                                                        .padding(.horizontal, 20)
-                                                                        .padding(.vertical, 10)
-                                                                        .padding(.bottom, 8)
-                                                                        .onTapGesture {
-                                                                            self.lineLimitArray[index] = self.lineLimitArray[index] == 3 ? 100 : 3
-                                                                        }
-                                                                }
-                                                                
-                                                                ZStack {
-                                                                    Color(.white)
-                                                                    
-                                                                    Text(String(anilist.episodes![index].number ?? 0))
-                                                                        .foregroundColor(.black)
-                                                                        .font(.system(size: 24, weight: .heavy))
-                                                                        .padding(6)
-                                                                }
-                                                                .fixedSize()
-                                                                .cornerRadius(30, corners: [.bottomRight])
-                                                            }
-                                                            .cornerRadius(12)
-                                                            .padding(.bottom, 8)
+                                                        ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
+                                                            EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST)
                                                         }
                                                         .padding(.horizontal, 20)
                                                     }
                                                 } else {
                                                     LazyVGrid(columns: columns, spacing: 20) {
-                                                        ForEach(startEpisodeList..<min(endEpisodeList, anilist.episodes!.count), id: \.self) { index in
-                                                            NavigationLink(destination: WatchPage(aniData: anilist.infodata!, episodeIndex: index, anilistId: id, provider: selectedProvider)) {
-                                                                ZStack {
-                                                                    KFImage(URL(string: anilist.episodes![index].image))
-                                                                        .resizable()
-                                                                        .aspectRatio(contentMode: .fill)
-                                                                        .frame(maxWidth: 170, maxHeight: 120)
-                                                                        .cornerRadius(20)
-                                                                    
-                                                                    Rectangle()
-                                                                        .frame(maxWidth: 170, maxHeight: 120)
-                                                                        .cornerRadius(20)
-                                                                        .foregroundColor(.black.opacity(0.6))
-                                                                    
-                                                                    ZStack(alignment: .topLeading) {
-                                                                        Text(anilist.episodes![index].title ?? "Title")
-                                                                            .font(.system(size: 16, weight: .heavy))
-                                                                            .lineLimit(3)
-                                                                            .multilineTextAlignment(.leading)
-                                                                            .padding(.horizontal, 20)
-                                                                            .padding(.top, -40)
-                                                                            .frame(width: 170, height: 120)
-                                                                            .frame(maxWidth: 170, maxHeight: 120, alignment: .topLeading)
-                                                                        
-                                                                        Text(String(anilist.episodes![index].number ?? 0))
-                                                                            .font(.system(size: 62, weight: .heavy))
-                                                                            .foregroundColor(.white.opacity(0.4))
-                                                                            .frame(width: 170, height: 120, alignment: .bottomTrailing)
-                                                                            .frame(maxWidth: 170, maxHeight: 120, alignment: .bottomTrailing)
-                                                                            .padding(.bottom, -4)
-                                                                            .padding(.trailing, 12)
-                                                                    }
-                                                                    .frame(maxWidth: 170, maxHeight: 120)
-                                                                }
-                                                                .frame(maxWidth: 170, maxHeight: 120)
-                                                                .cornerRadius(20)
-                                                                .clipped()
-                                                            }
+                                                        ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
+                                                            EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID)
                                                         }
                                                     }
                                                     .padding(.horizontal, 20)
                                                 }
+                                            }
+                                            else {
+                                                ProgressView()
                                             }
                                         }
                                     }
@@ -1190,13 +749,13 @@ struct Info: View {
             }
             .onAppear{
                 Task {
-                    await anilist.getInfo(id: id, provider: "gogoanime")
-                    print("Done with Init.")
+                    viewModel.onAppear(id: id, provider: "gogoanime")
                     finishedLoadingEpisodes = false
-                    await anilist.getEpisodes(id: id, provider: "gogoanime", dubbed: isOn)
-                    self.lineLimitArray = Array(repeating: 3, count: anilist.episodes!.count)
-                    anilist.infodata!.episodes = anilist.episodes
-                    finishedLoadingEpisodes = true
+                    await viewModel.fetchEpisodes(id: id, provider: "gogoanime", dubbed: isOn)
+                    if(viewModel.episodedata != nil) {
+                        self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                        finishedLoadingEpisodes = true
+                    }
                 }
             }
         }
@@ -1211,65 +770,5 @@ struct Info: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Info(id: "98659")
-    }
-}
-
-struct TopView: View {
-    let anilist: Anilist
-    let proxy: GeometryProxy
-    
-    var body: some View {
-        ZStack(alignment: .bottom) {
-            GeometryReader { reader in
-                FillAspectImage(
-                    url: URL(string: anilist.infodata!.cover)
-                )
-                .frame(
-                    width: reader.size.width,
-                    height: reader.size.height + (reader.frame(in: .global).minY > 0 ? reader.frame(in: .global).minY : 0),
-                    alignment: .center
-                )
-                .contentShape(Rectangle())
-                .clipped()
-                .offset(y: reader.frame(in: .global).minY <= 0 ? 0 : -reader.frame(in: .global).minY)
-            }
-            
-            Rectangle()
-                .fill(LinearGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)), location: 0),
-                        .init(color: Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)), location: 1)]),
-                    startPoint: UnitPoint(x: 0.5, y: -3.0616171314629196e-17),
-                    endPoint: UnitPoint(x: 0.5, y: 0.9999999999999999)))
-                .frame(width: proxy.size.width, height: 420)
-                .frame(maxWidth: proxy.size.width,maxHeight: 420)
-            
-            HStack(alignment: .bottom) {
-                KFImage(URL(string: anilist.infodata!.image))
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: 120, maxHeight: 180)
-                    .cornerRadius(18)
-                
-                Spacer()
-                    .frame(maxWidth: 20)
-                
-                VStack(alignment: .leading) {
-                    Text(anilist.infodata!.title.romaji)
-                        .font(.system(size: 18, weight: .heavy))
-                        .lineSpacing(8.0)
-                    
-                    Spacer()
-                        .frame(maxHeight: 20)
-                    
-                    Text(anilist.infodata!.status)
-                        .font(.system(size: 16, weight: .heavy))
-                        .foregroundColor(Color(hex: "#c23d81"))
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(.horizontal, 20)
-        }
-        .frame(height: 420)
     }
 }

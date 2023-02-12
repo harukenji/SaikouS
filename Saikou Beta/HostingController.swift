@@ -21,7 +21,6 @@ class HostingController: UIHostingController<AnyView> {
     private var _supportedInterfaceOrientations = UIInterfaceOrientationMask.all {
         didSet {
             if #available(iOS 16, *) {
-                // TODO: Uncomment for iOS 16 and higher
                 setNeedsUpdateOfSupportedInterfaceOrientations()
             } else {
                 UIView.performWithoutAnimation {

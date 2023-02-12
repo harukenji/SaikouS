@@ -160,13 +160,92 @@ struct userData {
     let episodesWatched: Int
 }
 
+struct RectCorner: OptionSet {
+    
+    let rawValue: Int
+        
+    static let topLeft = RectCorner(rawValue: 1 << 0)
+    static let topRight = RectCorner(rawValue: 1 << 1)
+    static let bottomRight = RectCorner(rawValue: 1 << 2)
+    static let bottomLeft = RectCorner(rawValue: 1 << 3)
+    
+    static let allCorners: RectCorner = [.topLeft, topRight, .bottomLeft, .bottomRight]
+}
+
+
+// draws shape with specified rounded corners applying corner radius
+struct RoundedCornersShape: Shape {
+    
+    var radius: CGFloat = .zero
+    var corners: RectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+
+        let p1 = CGPoint(x: rect.minX, y: corners.contains(.topLeft) ? rect.minY + radius  : rect.minY )
+        let p2 = CGPoint(x: corners.contains(.topLeft) ? rect.minX + radius : rect.minX, y: rect.minY )
+
+        let p3 = CGPoint(x: corners.contains(.topRight) ? rect.maxX - radius : rect.maxX, y: rect.minY )
+        let p4 = CGPoint(x: rect.maxX, y: corners.contains(.topRight) ? rect.minY + radius  : rect.minY )
+
+        let p5 = CGPoint(x: rect.maxX, y: corners.contains(.bottomRight) ? rect.maxY - radius : rect.maxY )
+        let p6 = CGPoint(x: corners.contains(.bottomRight) ? rect.maxX - radius : rect.maxX, y: rect.maxY )
+
+        let p7 = CGPoint(x: corners.contains(.bottomLeft) ? rect.minX + radius : rect.minX, y: rect.maxY )
+        let p8 = CGPoint(x: rect.minX, y: corners.contains(.bottomLeft) ? rect.maxY - radius : rect.maxY )
+
+        
+        path.move(to: p1)
+        path.addArc(tangent1End: CGPoint(x: rect.minX, y: rect.minY),
+                    tangent2End: p2,
+                    radius: radius)
+        path.addLine(to: p3)
+        path.addArc(tangent1End: CGPoint(x: rect.maxX, y: rect.minY),
+                    tangent2End: p4,
+                    radius: radius)
+        path.addLine(to: p5)
+        path.addArc(tangent1End: CGPoint(x: rect.maxX, y: rect.maxY),
+                    tangent2End: p6,
+                    radius: radius)
+        path.addLine(to: p7)
+        path.addArc(tangent1End: CGPoint(x: rect.minX, y: rect.maxY),
+                    tangent2End: p8,
+                    radius: radius)
+        path.closeSubpath()
+
+        return path
+    }
+}
+
+extension View {
+    func roundedCorners(radius: CGFloat, corners: RectCorner) -> some View {
+        clipShape( RoundedCornersShape(radius: radius, corners: corners) )
+    }
+}
+
+struct RoundCorner: Shape {
+    
+    // MARK: - PROPERTIES
+    
+    var cornerRadius: CGFloat
+    var maskedCorners: UIRectCorner
+    
+    
+    // MARK: - PATH
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: maskedCorners, cornerRadii: CGSize(width: cornerRadius, height: cornerRadius))
+        return Path(path.cgPath)
+    }
+}
+
 struct Search: View {
     @State var query = ""
     @StateObject var anilist: Anilist = Anilist()
     @State var focused = false
     
     @State var resultDisplayGrid = true
-    @State private var selectedItem = 0
+    @State private var selectedItem = 1
     @State private var showingPopover = false
     
     let supportedGenres = [
@@ -552,6 +631,271 @@ struct Search: View {
                             .padding(.top, 10)
                         }
                         .tag(0)
+                        .adaptiveSheet(isPresented: $showingPopover, detents: [.medium()], smallestUndimmedDetentIdentifier: .large){
+                            Rectangle()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                .foregroundColor(
+                                    Color(hex: "#1c1b1f"))
+                                .overlay {
+                                    VStack(alignment: .leading) {
+                                        HStack {
+                                            Image("filter-solid")
+                                                .resizable()
+                                                .frame(maxWidth: 24, maxHeight: 24)
+                                                .foregroundColor(Color(hex: "#cbc4d1"))
+                                            
+                                            Text("Filter")
+                                                .foregroundColor(Color(hex: "#eeeeee"))
+                                                .font(.system(size: 18, weight: .heavy))
+                                            
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .padding(.vertical, 22)
+                                        .padding(.horizontal, 20)
+                                        
+                                        VStack {
+                                            HStack {
+                                                Menu {
+                                                    ForEach(0..<supportedSorting.count) {index in
+                                                        Button {
+                                                            // do something
+                                                            selectedSorting = supportedSorting[index]
+                                                            print(selectedSorting)
+                                                        } label: {
+                                                            Text(supportedSorting[index])
+                                                        }
+                                                    }
+                                                } label: {
+                                                    HStack {
+                                                        Text("Sort By")
+                                                            .foregroundColor(Color(hex: "#969295"))
+                                                            .font(.system(size: 16, weight: .heavy))
+                                                        
+                                                        Spacer()
+                                                        
+                                                        Image(systemName: "arrowtriangle.down.fill")
+                                                            .resizable()
+                                                            .frame(maxWidth: 12, maxHeight: 6)
+                                                            .foregroundColor(Color(hex: "#969295"))
+                                                    }
+                                                    .padding(.horizontal, 16)
+                                                    .frame(maxWidth: .infinity)
+                                                    .padding(.vertical, 16)
+                                                    .overlay {
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                                                    }
+                                                }
+                                                
+                                                Spacer()
+                                                    .frame(maxWidth: 20)
+                                                
+                                                
+                                                Menu {
+                                                    ForEach(0..<supportedFormats.count) {index in
+                                                        Button {
+                                                            // do something
+                                                            selectedFormat = supportedFormats[index]
+                                                            print(selectedFormat)
+                                                        } label: {
+                                                            Text(supportedFormats[index])
+                                                        }
+                                                    }
+                                                } label: {
+                                                    HStack {
+                                                        Text("Format")
+                                                            .foregroundColor(Color(hex: "#969295"))
+                                                            .font(.system(size: 16, weight: .heavy))
+                                                        
+                                                        Spacer()
+                                                        
+                                                        Image(systemName: "arrowtriangle.down.fill")
+                                                            .resizable()
+                                                            .frame(maxWidth: 12, maxHeight: 6)
+                                                            .foregroundColor(Color(hex: "#969295"))
+                                                    }
+                                                    .padding(.horizontal, 16)
+                                                    .frame(maxWidth: .infinity)
+                                                    .padding(.vertical, 16)
+                                                    .overlay {
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                                                    }
+                                                }
+                                            }
+                                            .padding(.bottom, 20)
+                                            
+                                            HStack {
+                                                Menu {
+                                                    Button {
+                                                        // do something
+                                                        selectedSeason = "SPRING"
+                                                    } label: {
+                                                        Text("SPRING")
+                                                    }
+                                                    Button {
+                                                        // do something
+                                                        selectedSeason = "SUMMER"
+                                                    } label: {
+                                                        Text("SUMMER")
+                                                    }
+                                                    Button {
+                                                        // do something
+                                                        selectedSeason = "FALL"
+                                                    } label: {
+                                                        Text("FALL")
+                                                    }
+                                                    Button {
+                                                        // do something
+                                                        selectedSeason = "WINTER"
+                                                    } label: {
+                                                        Text("WINTER")
+                                                    }
+                                                } label: {
+                                                    HStack {
+                                                        Text("Season")
+                                                            .foregroundColor(Color(hex: "#969295"))
+                                                            .font(.system(size: 16, weight: .heavy))
+                                                        
+                                                        Spacer()
+                                                        
+                                                        Image(systemName: "arrowtriangle.down.fill")
+                                                            .resizable()
+                                                            .frame(maxWidth: 12, maxHeight: 6)
+                                                            .foregroundColor(Color(hex: "#969295"))
+                                                    }
+                                                    .padding(.horizontal, 16)
+                                                    .frame(maxWidth: .infinity)
+                                                    .padding(.vertical, 16)
+                                                    .overlay {
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                                                    }
+                                                }
+                                                
+                                                Spacer()
+                                                    .frame(maxWidth: 20)
+                                                
+                                                Menu {
+                                                    ForEach((minYear...maxYear).reversed(), id: \.self) {index in
+                                                        Button {
+                                                            // do something
+                                                            selectedYear = String(index)
+                                                            print(selectedYear)
+                                                        } label: {
+                                                            Text(String(index))
+                                                        }
+                                                    }
+                                                } label: {
+                                                    HStack {
+                                                        Text(selectedYear.count > 0 ? selectedYear : "Year")
+                                                            .foregroundColor(Color(hex: "#969295"))
+                                                            .font(.system(size: 16, weight: .heavy))
+                                                        
+                                                        Spacer()
+                                                        
+                                                        Image(systemName: "arrowtriangle.down.fill")
+                                                            .resizable()
+                                                            .frame(maxWidth: 12, maxHeight: 6)
+                                                            .foregroundColor(Color(hex: "#969295"))
+                                                    }
+                                                    .padding(.horizontal, 16)
+                                                    .frame(maxWidth: .infinity)
+                                                    .padding(.vertical, 16)
+                                                    .overlay {
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .padding(.horizontal, 20)
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text("Genres")
+                                                .font(.system(size: 18, weight: .heavy))
+                                                .padding(.leading, 12)
+                                                .padding(.bottom, 6)
+                                                .padding(.horizontal, 20)
+                                            
+                                            ScrollView(.horizontal) {
+                                                HStack(spacing: 12) {
+                                                    ForEach(0..<supportedGenres.count) {index in
+                                                        ZStack {
+                                                            Color.white.opacity(selectedGenres.contains(supportedGenres[index]) ? 1.0 : 0.0)
+                                                            
+                                                            Text(supportedGenres[index])
+                                                                .font(.system(size: 16, weight: .heavy))
+                                                                .foregroundColor(Color(hex: selectedGenres.contains(supportedGenres[index]) ? "#000000" : "#e7e1e5"))
+                                                                .padding(.vertical, 8)
+                                                                .padding(.horizontal, 12)
+                                                        }
+                                                        .frame(maxHeight: 30)
+                                                        .overlay {
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .stroke(Color.white.opacity(0.7), lineWidth: 1.5)
+                                                        }
+                                                        .onTapGesture {
+                                                            if(selectedGenres.contains(supportedGenres[index])) {
+                                                                selectedGenres.remove(at: selectedGenres.index(of: supportedGenres[index]) ?? 0)
+                                                            } else {
+                                                                selectedGenres.append(supportedGenres[index])
+                                                            }
+                                                            print(selectedGenres)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            .padding(.leading, 20)
+                                        }
+                                        .padding(.top, 12)
+                                        
+                                        
+                                        Spacer()
+                                        
+                                        HStack {
+                                            Button(action: {}) {
+                                                Text("Cancel")
+                                                    .foregroundColor(Color(hex: "#ff4cb0"))
+                                                    .font(.system(size: 20, weight: .heavy))
+                                                    .frame(maxWidth: .infinity)
+                                                    .padding(.vertical, 16)
+                                                    .overlay {
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                                                    }.onTapGesture {
+                                                        selectedYear = ""
+                                                        selectedGenres = []
+                                                        selectedFormat = ""
+                                                        selectedSeason = ""
+                                                        selectedSorting = ""
+                                                        showingPopover.toggle()
+                                                    }
+                                            }
+                                            
+                                            Spacer()
+                                                .frame(maxWidth: 20)
+                                            
+                                            
+                                            Button(action: {}) {
+                                                Text("Apply")
+                                                    .foregroundColor(Color(hex: "#ff4cb0"))
+                                                    .font(.system(size: 20, weight: .heavy))
+                                                    .frame(maxWidth: .infinity)
+                                                    .padding(.vertical, 16)
+                                                    .overlay {
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                                                    }.onTapGesture {
+                                                        showingPopover.toggle()
+                                                    }
+                                            }
+                                        }
+                                        .padding(.horizontal, 20)
+                                    }
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                                }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
                         
                         ScrollView {
                             if(user == nil) {
@@ -739,270 +1083,36 @@ struct Search: View {
             .preferredColorScheme(.dark)
         }
         .navigationViewStyle(.stack)
-        .navigationBarBackButtonHidden(true).adaptiveSheet(isPresented: $showingPopover, detents: [.medium()], smallestUndimmedDetentIdentifier: .large){
-            Rectangle()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                .foregroundColor(
-                    Color(hex: "#1c1b1f"))
-                .overlay {
+        .navigationBarBackButtonHidden(true)
+        .overlay {
+            VStack {
+                ZStack {
+                    Color(hex: "1C1C1C")
+                    
                     VStack(alignment: .leading) {
-                        HStack {
-                            Image("filter-solid")
-                                .resizable()
-                                .frame(maxWidth: 24, maxHeight: 24)
-                                .foregroundColor(Color(hex: "#cbc4d1"))
-                            
-                            Text("Filter")
-                                .foregroundColor(Color(hex: "#eeeeee"))
-                                .font(.system(size: 18, weight: .heavy))
-                            
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.vertical, 22)
-                        .padding(.horizontal, 20)
+                        Text("An Error Occured")
+                            .font(.system(size: 22, weight: .heavy))
+                            .padding(.bottom, 12)
                         
-                        VStack {
-                            HStack {
-                                Menu {
-                                    ForEach(0..<supportedSorting.count) {index in
-                                        Button {
-                                            // do something
-                                            selectedSorting = supportedSorting[index]
-                                            print(selectedSorting)
-                                        } label: {
-                                            Text(supportedSorting[index])
-                                        }
-                                    }
-                                } label: {
-                                    HStack {
-                                        Text("Sort By")
-                                            .foregroundColor(Color(hex: "#969295"))
-                                            .font(.system(size: 16, weight: .heavy))
-                                        
-                                        Spacer()
-                                        
-                                        Image(systemName: "arrowtriangle.down.fill")
-                                            .resizable()
-                                            .frame(maxWidth: 12, maxHeight: 6)
-                                            .foregroundColor(Color(hex: "#969295"))
-                                    }
-                                    .padding(.horizontal, 16)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 16)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                                    }
-                                }
-                                
-                                Spacer()
-                                    .frame(maxWidth: 20)
-                                
-                                
-                                Menu {
-                                    ForEach(0..<supportedFormats.count) {index in
-                                        Button {
-                                            // do something
-                                            selectedFormat = supportedFormats[index]
-                                            print(selectedFormat)
-                                        } label: {
-                                            Text(supportedFormats[index])
-                                        }
-                                    }
-                                } label: {
-                                    HStack {
-                                        Text("Format")
-                                            .foregroundColor(Color(hex: "#969295"))
-                                            .font(.system(size: 16, weight: .heavy))
-                                        
-                                        Spacer()
-                                        
-                                        Image(systemName: "arrowtriangle.down.fill")
-                                            .resizable()
-                                            .frame(maxWidth: 12, maxHeight: 6)
-                                            .foregroundColor(Color(hex: "#969295"))
-                                    }
-                                    .padding(.horizontal, 16)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 16)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                                    }
-                                }
-                            }
-                            .padding(.bottom, 20)
-                            
-                            HStack {
-                                Menu {
-                                    Button {
-                                        // do something
-                                        selectedSeason = "SPRING"
-                                    } label: {
-                                        Text("SPRING")
-                                    }
-                                    Button {
-                                        // do something
-                                        selectedSeason = "SUMMER"
-                                    } label: {
-                                        Text("SUMMER")
-                                    }
-                                    Button {
-                                        // do something
-                                        selectedSeason = "FALL"
-                                    } label: {
-                                        Text("FALL")
-                                    }
-                                    Button {
-                                        // do something
-                                        selectedSeason = "WINTER"
-                                    } label: {
-                                        Text("WINTER")
-                                    }
-                                } label: {
-                                    HStack {
-                                        Text("Season")
-                                            .foregroundColor(Color(hex: "#969295"))
-                                            .font(.system(size: 16, weight: .heavy))
-                                        
-                                        Spacer()
-                                        
-                                        Image(systemName: "arrowtriangle.down.fill")
-                                            .resizable()
-                                            .frame(maxWidth: 12, maxHeight: 6)
-                                            .foregroundColor(Color(hex: "#969295"))
-                                    }
-                                    .padding(.horizontal, 16)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 16)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                                    }
-                                }
-                                
-                                Spacer()
-                                    .frame(maxWidth: 20)
-                                
-                                Menu {
-                                    ForEach((minYear...maxYear).reversed(), id: \.self) {index in
-                                        Button {
-                                            // do something
-                                            selectedYear = String(index)
-                                            print(selectedYear)
-                                        } label: {
-                                            Text(String(index))
-                                        }
-                                    }
-                                } label: {
-                                    HStack {
-                                        Text(selectedYear.count > 0 ? selectedYear : "Year")
-                                            .foregroundColor(Color(hex: "#969295"))
-                                            .font(.system(size: 16, weight: .heavy))
-                                        
-                                        Spacer()
-                                        
-                                        Image(systemName: "arrowtriangle.down.fill")
-                                            .resizable()
-                                            .frame(maxWidth: 12, maxHeight: 6)
-                                            .foregroundColor(Color(hex: "#969295"))
-                                    }
-                                    .padding(.horizontal, 16)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 16)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                                    }
-                                }
-                            }
-                        }
-                        .padding(.horizontal, 20)
-                        
-                        VStack(alignment: .leading) {
-                            Text("Genres")
-                                .font(.system(size: 18, weight: .heavy))
-                                .padding(.leading, 12)
-                                .padding(.bottom, 6)
-                                .padding(.horizontal, 20)
-                            
-                            ScrollView(.horizontal) {
-                                HStack(spacing: 12) {
-                                    ForEach(0..<supportedGenres.count) {index in
-                                        ZStack {
-                                            Color.white.opacity(selectedGenres.contains(supportedGenres[index]) ? 1.0 : 0.0)
-                                            
-                                            Text(supportedGenres[index])
-                                                .font(.system(size: 16, weight: .heavy))
-                                                .foregroundColor(Color(hex: selectedGenres.contains(supportedGenres[index]) ? "#000000" : "#e7e1e5"))
-                                                .padding(.vertical, 8)
-                                                .padding(.horizontal, 12)
-                                        }
-                                        .frame(maxHeight: 30)
-                                        .overlay {
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .stroke(Color.white.opacity(0.7), lineWidth: 1.5)
-                                        }
-                                        .onTapGesture {
-                                            if(selectedGenres.contains(supportedGenres[index])) {
-                                                selectedGenres.remove(at: selectedGenres.index(of: supportedGenres[index]) ?? 0)
-                                            } else {
-                                                selectedGenres.append(supportedGenres[index])
-                                            }
-                                            print(selectedGenres)
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(.leading, 20)
-                        }
-                        .padding(.top, 12)
-                        
-                        
-                        Spacer()
-                        
-                        HStack {
-                            Button(action: {}) {
-                                Text("Cancel")
-                                    .foregroundColor(Color(hex: "#ff4cb0"))
-                                    .font(.system(size: 20, weight: .heavy))
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 16)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                                    }.onTapGesture {
-                                        selectedYear = ""
-                                        selectedGenres = []
-                                        selectedFormat = ""
-                                        selectedSeason = ""
-                                        selectedSorting = ""
-                                        showingPopover.toggle()
-                                    }
-                            }
-                            
-                            Spacer()
-                                .frame(maxWidth: 20)
-                            
-                            
-                            Button(action: {}) {
-                                Text("Apply")
-                                    .foregroundColor(Color(hex: "#ff4cb0"))
-                                    .font(.system(size: 20, weight: .heavy))
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 16)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                                    }.onTapGesture {
-                                        showingPopover.toggle()
-                                    }
-                            }
-                        }
-                        .padding(.horizontal, 20)
+                        Text(anilist.error?.localizedDescription ?? "")
+                            .foregroundColor(.white.opacity(0.7))
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.vertical, 20)
+                    .padding(.bottom, 20)
+                }
+                .fixedSize(horizontal: false, vertical: true)
+                .clipShape(
+                    RoundCorner(
+                        cornerRadius: 20,
+                        maskedCorners: [.topLeft, .topRight]
+                    )//OUR CUSTOM SHAPE
+                )
+                .frame(maxHeight: 220, alignment: .bottom)
+            }
+            .frame(maxHeight: .infinity, alignment: .bottom)
+            .ignoresSafeArea()
+            .opacity(anilist.error != nil ? 1.0 : 0.0)
+            .animation(.spring(response: 0.3))
         }
     }
 }
