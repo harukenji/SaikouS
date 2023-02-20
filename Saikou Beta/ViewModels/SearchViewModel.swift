@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+import CoreData
 
 final class SearchViewModel: ObservableObject {
     @Published var searchresults: SearchResults? = nil

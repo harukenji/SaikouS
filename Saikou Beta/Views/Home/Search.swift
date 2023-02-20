@@ -10,6 +10,7 @@ import Kingfisher
 import WebKit
 import AuthenticationServices
 import Combine
+import CoreData
 
 @available(iOS 15.0, *)
 struct AdaptiveSheet<T: View>: ViewModifier {
@@ -155,8 +156,10 @@ class CustomSheetViewController<Content: View>: UIViewController {
 }
 
 struct userData {
+    let id: Int
     let name: String
     let avatar: String
+    let banner: String
     let episodesWatched: Int
 }
 
@@ -242,6 +245,8 @@ struct RoundCorner: Shape {
 struct Search: View {
     @State var query = ""
     @StateObject var anilist: Anilist = Anilist()
+    @Environment(\.managedObjectContext) var moc
+    @ObservedObject var viewModel: SearchViewModel = SearchViewModel()
     @State var focused = false
     
     @State var resultDisplayGrid = true
@@ -313,8 +318,8 @@ struct Search: View {
     @State var selectedGenres: [String] = []
     
     @State var showWebView = false
-    @State var access_token = ""
     @State var user: userData? = nil
+    @State var watchList: [AnimeEntry]? = nil
     
     let pub = NotificationCenter.default
         .publisher(for: .authCodeUrl)
@@ -323,42 +328,7 @@ struct Search: View {
         GridItem(.adaptive(minimum: 100), alignment: .top)
     ]
     
-    func login(code: String) {
-        let body: [String: Any] = ["grant_type": "authorization_code", "client_id": "11248", "client_secret": "WjdqqTH1oOxbKl6gcjaPkRBdqv4X8xwBrv1iuOL7", "redirect_uri": "com.saikouSwift://redirect", "code": code]
-        
-        let jsonData = try? JSONSerialization.data(withJSONObject: body)
-        
-        let url = URL(string: "https://anilist.co/api/v2/oauth/token")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = jsonData
-        
-        print("getting token")
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            print("-----> data: \(data)")
-            print("-----> error: \(error)")
-            
-            guard let data = data, error == nil else {
-                print(error?.localizedDescription ?? "No data")
-                return
-            }
-            
-            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-            print("-----1> responseJSON: \(responseJSON)")
-            if let responseJSON = responseJSON as? [String: Any] {
-                print("-----2> responseJSON: \(responseJSON)")
-                access_token = responseJSON["access_token"] as! String
-                getUserData()
-            }
-        }
-        
-        task.resume()
-    }
-    
-    func getUserData() {
+    func getUserData() async {
         let query = """
             query CurrentUser {
                 Viewer {
@@ -367,6 +337,7 @@ struct Search: View {
                   avatar {
                     large
                   }
+                  bannerImage
                   statistics {
                     anime {
                       episodesWatched
@@ -380,31 +351,136 @@ struct Search: View {
         let url = URL(string: "https://graphql.anilist.co")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("Bearer \(access_token)", forHTTPHeaderField: "Authorization")
         request.httpBody = jsonData
         
         print("getting token")
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            print("-----> data: \(data)")
-            print("-----> error: \(error)")
-            
-            guard let data = data, error == nil else {
-                print(error?.localizedDescription ?? "No data")
-                return
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            do {
+                let data = try JSONDecoder().decode(userInfoData.self, from: data)
+                user = userData(id: data.data.Viewer.id, name: data.data.Viewer.name, avatar: data.data.Viewer.avatar.large, banner: data.data.Viewer.bannerImage, episodesWatched: data.data.Viewer.statistics.anime.episodesWatched)
+                await getUserLists()
+            } catch let error {
+                print(error.localizedDescription)
             }
+        } catch let error {
+            print(error.localizedDescription)
+        }
+        
+       //task.resume()
+    }
+    
+    func getUserLists() async {
+        print("test")
+        if(user != nil) {
+            let query = """
+        {
+          MediaListCollection(userId: \(user!.id), type: ANIME) {
+            lists {
+              name
+              isCustomList
+              isCompletedList: isSplitCompletedList
+              entries {
+                ...mediaListEntry
+              }
+            }
+            user {
+              id
+              name
+              avatar {
+                large
+              }
+              mediaListOptions {
+                scoreFormat
+                rowOrder
+                animeList {
+                  sectionOrder
+                  customLists
+                  splitCompletedSectionByFormat
+                  theme
+                }
+                mangaList {
+                  sectionOrder
+                  customLists
+                  splitCompletedSectionByFormat
+                  theme
+                }
+              }
+            }
+          }
+        }
+        
+        fragment mediaListEntry on MediaList {
+          progress
+          media {
+            id
+            title {
+              romaji
+              english
+            }
+            coverImage {
+              extraLarge
+              large
+            }
+            episodes
+            averageScore
+          }
+        }
+        """
             
-            let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-            print("-----1> responseJSON: \(responseJSON)")
-            if let responseJSON = responseJSON as? [String: Any] {
-                print("-----2> responseJSON: \(responseJSON)")
-                user = userData(name: ((responseJSON["data"] as! [String: Any])["Viewer"] as! [String: Any])["name"] as! String, avatar: (((responseJSON["data"] as! [String: Any])["Viewer"] as! [String: Any])["avatar"] as! [String: Any])["large"] as! String, episodesWatched: ((((responseJSON["data"] as! [String: Any])["Viewer"] as! [String: Any])["statistics"] as! [String: Any])["anime"] as! [String: Any])["episodesWatched"] as! Int)
+            let jsonData = try? JSONSerialization.data(withJSONObject: ["query": query])
+            
+            let url = URL(string: "https://graphql.anilist.co")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("Bearer \(access_token)", forHTTPHeaderField: "Authorization")
+            request.httpBody = jsonData
+            
+            print("getting user lists")
+            
+            do {
+                let (data, _) = try await URLSession.shared.data(for: request)
+                do {
+                    let data = try JSONDecoder().decode(userList.self, from: data)
+                    let temp =  data.data.MediaListCollection.lists?.filter {
+                        $0.name == "Watching"
+                    }
+                    watchList = temp?[0].entries
+                } catch let error {
+                    print(error.localizedDescription)
+                    print(error)
+                }
+            } catch let error {
+                print(error.localizedDescription)
             }
         }
         
-        task.resume()
+    }
+    
+    
+    @State var access_token: String = ""
+    @FetchRequest(sortDescriptors: []) var userStorageData: FetchedResults<UserStorageInfo>
+    
+    func setAccessToken(token: String) {
+        access_token = token
+        let userDataInfo = UserStorageInfo(context: moc)
+        userDataInfo.access_token = token
+        userDataInfo.id = UUID()
+        
+        do {
+            print("Trying to save data")
+            try moc.save()
+            print(userStorageData)
+        } catch let error {
+            print(error.localizedDescription)
+        }
+        
     }
     
     var body: some View {
@@ -509,49 +585,7 @@ struct Search: View {
                                         LazyVGrid(columns: columns, spacing: 20) {
                                             ForEach(0..<anilist.searchresults!.results.count) { index in
                                                 NavigationLink(destination: Info(id: anilist.searchresults!.results[index].id)) {
-                                                    VStack {
-                                                        ZStack(alignment: .bottomTrailing) {
-                                                            KFImage(URL(string: anilist.searchresults!.results[index].image))
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                .frame(width: 110, height: 160)
-                                                                .frame(maxWidth: 110, maxHeight: 160)
-                                                                .cornerRadius(16)
-                                                            
-                                                            ZStack {
-                                                                Rectangle()
-                                                                    .foregroundColor(Color(hex: "#C0ff5dae"))
-                                                                
-                                                                Text(anilist.searchresults!.results[index].rating != nil ? String(format: "%.1f", Float(anilist.searchresults!.results[index].rating!) / 10) : "0.0")
-                                                                    .font(.system(size: 12, weight: .heavy))
-                                                                    .padding(.vertical, 4)
-                                                                    .padding(.horizontal, 10)
-                                                            }
-                                                            .fixedSize()
-                                                            .cornerRadius(18, corners: [.topLeft])
-                                                        }
-                                                        .frame(maxWidth: 110, maxHeight: 160)
-                                                        .cornerRadius(16)
-                                                        .clipped()
-                                                        
-                                                        Text("\(anilist.searchresults!.results[index].title.english ?? anilist.searchresults!.results[index].title.romaji)")
-                                                            .frame(maxWidth: 110, alignment: .leading)
-                                                            .lineLimit(3)
-                                                            .font(.system(size: 14))
-                                                            .multilineTextAlignment(.leading)
-                                                        HStack {
-                                                            Text(anilist.searchresults!.results[index].currentEpisodeCount != nil ? String(anilist.searchresults!.results[index].currentEpisodeCount!) : "~")
-                                                                .font(.system(size: 16))
-                                                                .foregroundColor(Color(hex: "#8da2f8"))
-                                                            
-                                                            Text(anilist.searchresults!.results[index].totalEpisodes != nil ? "| " + String(anilist.searchresults!.results[index].totalEpisodes!) : "| ~")
-                                                                .font(.system(size: 16))
-                                                                .foregroundColor(.white).opacity(0.7)
-                                                                .padding(.leading, -3)
-                                                        }
-                                                        .frame(maxWidth: 110, alignment: .leading)
-                                                    }
-                                                    .foregroundColor(.white)
+                                                    AnimeCard(image: anilist.searchresults!.results[index].image, rating: anilist.searchresults!.results[index].rating, title: anilist.searchresults!.results[index].title.english ?? anilist.searchresults!.results[index].title.romaji, currentEpisodeCount: anilist.searchresults!.results[index].currentEpisodeCount, totalEpisodes: anilist.searchresults!.results[index].totalEpisodes)
                                                 }
                                             }
                                         }
@@ -912,7 +946,7 @@ struct Search: View {
                                     Button(action: {
                                         print("LOGIN")
                                         //showWebView.toggle()
-                                        if let url = URL(string: "https://anilist.co/api/v2/oauth/authorize?client_id=11248&redirect_uri=com.saikouSwift://redirect&response_type=code") {
+                                        if let url = URL(string: "https://anilist.co/api/v2/oauth/authorize?client_id=11248&response_type=token") {
                                             UIApplication.shared.open(url)
                                         }
                                     }) {
@@ -939,63 +973,34 @@ struct Search: View {
                                         .cornerRadius(16)
                                         .padding(.vertical, 28)
                                         .onReceive(pub) { (output) in
-                                            let code = output.userInfo!["myText"]!
-                                            
-                                            login(code: code as! String)
+                                            Task {
+                                                setAccessToken(token: output.userInfo!["myText"]! as! String)
+                                                await getUserData()
+                                            }
                                         }
                                         
                                     }
                                 }
-                                .frame(maxWidth: proxy.size.width, alignment: .center)
-                                .padding(.top, 120)
+                                .frame(maxWidth: proxy.size.width)
+                                .padding(.top, 250)
                             } else {
                                 VStack {
-                                    ZStack(alignment: .top) {
-                                        KFImage(URL(string: user!.avatar))
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(maxWidth: proxy.size.width, maxHeight: 90)
-                                            .clipped()
-                                        
-                                        Rectangle()
-                                            .fill(LinearGradient(
-                                                    gradient: Gradient(stops: [
-                                                .init(color: Color(hex: "#00000000"), location: 0),
-                                                .init(color: Color(hex: "#ff000000"), location: 1)]),
-                                                    startPoint: UnitPoint(x: 0, y: 0),
-                                                    endPoint: UnitPoint(x: 0, y: 1)))
-                                            .frame(maxWidth: proxy.size.width, maxHeight: 90)
-                                        
-                                        HStack(alignment: .center) {
-                                            VStack(alignment: .leading) {
-                                                Text(user!.name)
-                                                    .fontWeight(.heavy)
-                                                
-                                                HStack {
-                                                    Text("Episodes watched")
-                                                        .foregroundColor(.white.opacity(0.7))
-                                                        .font(.system(size: 12))
-                                                    Text("\(user!.episodesWatched)")
-                                                        .foregroundColor(Color(hex: "#91a6ff"))
-                                                        .font(.system(size: 12, weight: .heavy))
-                                                        .padding(.leading, -4)
+                                    AnilistInfoTopBanner(user: user!, width: proxy.size.width)
+                                    
+                                    if(watchList != nil) {
+                                        ScrollView(.horizontal) {
+                                            HStack(spacing: 20) {
+                                                ForEach(0..<watchList!.count) {index in
+                                                    NavigationLink(destination: Info(id: String(watchList![index].media.id))) {
+                                                        AnimeCard(image: watchList![index].media.coverImage.extraLarge, rating: watchList![index].media.averageScore, title: watchList![index].media.title.english ?? watchList![index].media.title.romaji, currentEpisodeCount: watchList![index].progress, totalEpisodes: watchList![index].media.episodes)
+                                                    }
                                                 }
                                             }
-                                            .frame(maxHeight: 90, alignment: .center)
-                                            
-                                            Spacer()
-                                            
-                                            KFImage(URL(string: user!.avatar))
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .frame(maxWidth: 40, maxHeight: 40)
-                                                .cornerRadius(40)
                                         }
-                                        .padding(.horizontal, 20)
+                                        .padding(.top, 30)
+                                        .padding(.leading, 20)
                                     }
-                                    .frame(maxWidth: proxy.size.width, maxHeight: 90)
                                 }
-                                .frame(maxWidth: proxy.size.width, alignment: .top)
                             }
                         }
                         .navigationBarHidden(true)
@@ -1005,6 +1010,7 @@ struct Search: View {
                             .tag(2)
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
+                    .ignoresSafeArea()
                     .animation(.easeInOut)
                     .transition(.slide)
                     
@@ -1078,6 +1084,17 @@ struct Search: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     .padding(.bottom, 70)
                 }
+                .onAppear {
+                    Task {
+                        print("A WILD APP APPEARED!")
+                        if(userStorageData.count > 0) {
+                            access_token = userStorageData[0].access_token ?? ""
+                        }
+                        if(access_token.count > 0) {
+                            await getUserData()
+                        }
+                    }
+                }
             }
             .ignoresSafeArea()
             .preferredColorScheme(.dark)
@@ -1114,11 +1131,5 @@ struct Search: View {
             .opacity(anilist.error != nil ? 1.0 : 0.0)
             .animation(.spring(response: 0.3))
         }
-    }
-}
-
-struct Search_Previews: PreviewProvider {
-    static var previews: some View {
-        Search()
     }
 }

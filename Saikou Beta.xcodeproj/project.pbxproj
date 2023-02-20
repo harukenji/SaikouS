@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E9136E6A299D60E500B46D72 /* AnimeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9136E69299D60E500B46D72 /* AnimeCard.swift */; };
 		E95E84E8298EA10F0051D834 /* Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E7298EA10F0051D834 /* Info.swift */; };
 		E95E84EA298EA1100051D834 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84E9298EA1100051D834 /* Assets.xcassets */; };
 		E95E84EE298EA1100051D834 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84ED298EA1100051D834 /* Preview Assets.xcassets */; };
@@ -53,6 +54,10 @@
 		E98FE207299952C400909E8D /* EpisodeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE206299952C400909E8D /* EpisodeCard.swift */; };
 		E98FE209299966C500909E8D /* TopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE208299966C500909E8D /* TopView.swift */; };
 		E98FE20B2999683700909E8D /* FillAspectImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE20A2999683700909E8D /* FillAspectImage.swift */; };
+		E98FE20D29997C1000909E8D /* AnilistInfoTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE20C29997C1000909E8D /* AnilistInfoTopBanner.swift */; };
+		E98FE20F299986D100909E8D /* UserDataStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE20E299986D100909E8D /* UserDataStorageService.swift */; };
+		E98FE213299986E900909E8D /* UserData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E98FE211299986E800909E8D /* UserData.xcdatamodeld */; };
+		E98FE2162999A94E00909E8D /* UserListAnime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE2152999A94D00909E8D /* UserListAnime.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +78,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E9136E69299D60E500B46D72 /* AnimeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeCard.swift; sourceTree = "<group>"; };
 		E95E84E2298EA10F0051D834 /* Saikou Beta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Saikou Beta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95E84E7298EA10F0051D834 /* Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Info.swift; sourceTree = "<group>"; };
 		E95E84E9298EA1100051D834 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -119,6 +125,10 @@
 		E98FE206299952C400909E8D /* EpisodeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCard.swift; sourceTree = "<group>"; };
 		E98FE208299966C500909E8D /* TopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopView.swift; sourceTree = "<group>"; };
 		E98FE20A2999683700909E8D /* FillAspectImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FillAspectImage.swift; sourceTree = "<group>"; };
+		E98FE20C29997C1000909E8D /* AnilistInfoTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnilistInfoTopBanner.swift; sourceTree = "<group>"; };
+		E98FE20E299986D100909E8D /* UserDataStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataStorageService.swift; sourceTree = "<group>"; };
+		E98FE212299986E900909E8D /* UserData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UserData.xcdatamodel; sourceTree = "<group>"; };
+		E98FE2152999A94D00909E8D /* UserListAnime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListAnime.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +184,7 @@
 		E95E84E4298EA10F0051D834 /* Saikou Beta */ = {
 			isa = PBXGroup;
 			children = (
+				E98FE211299986E800909E8D /* UserData.xcdatamodeld */,
 				E98FE1FF299948A000909E8D /* Components */,
 				E98FE1F22999406A00909E8D /* Errors */,
 				E98FE1CB2999379600909E8D /* Services */,
@@ -242,6 +253,7 @@
 		E98FE1C92999375C00909E8D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E98FE2142999A93900909E8D /* UserListData */,
 				E98FE1ED29993B9100909E8D /* Search */,
 				E98FE1E629993B5400909E8D /* VoiceActor */,
 				E98FE1D529993AAE00909E8D /* InfoData.swift */,
@@ -269,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				E98FE1CC2999380D00909E8D /* AnilistApiService.swift */,
+				E98FE20E299986D100909E8D /* UserDataStorageService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -277,6 +290,7 @@
 			isa = PBXGroup;
 			children = (
 				E95E852B298EF0C50051D834 /* Search.swift */,
+				E98FE20C29997C1000909E8D /* AnilistInfoTopBanner.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -335,8 +349,17 @@
 				E98FE204299950FA00909E8D /* EpisodePaginationChip.swift */,
 				E98FE206299952C400909E8D /* EpisodeCard.swift */,
 				E98FE20A2999683700909E8D /* FillAspectImage.swift */,
+				E9136E69299D60E500B46D72 /* AnimeCard.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		E98FE2142999A93900909E8D /* UserListData */ = {
+			isa = PBXGroup;
+			children = (
+				E98FE2152999A94D00909E8D /* UserListAnime.swift */,
+			);
+			path = UserListData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -483,6 +506,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E98FE213299986E900909E8D /* UserData.xcdatamodeld in Sources */,
+				E98FE20D29997C1000909E8D /* AnilistInfoTopBanner.swift in Sources */,
 				E98FE1EF29993B9E00909E8D /* SearchResults.swift in Sources */,
 				E98FE1F62999419A00909E8D /* InfoFetchResult.swift in Sources */,
 				E98FE1FE299947D800909E8D /* WatchViewModel.swift in Sources */,
@@ -490,8 +515,11 @@
 				E98FE1EC29993B8500909E8D /* Recommended.swift in Sources */,
 				E98FE1C629959A8F00909E8D /* Notifications.swift in Sources */,
 				E95E8528298EECFB0051D834 /* DataController.swift in Sources */,
+				E9136E6A299D60E500B46D72 /* AnimeCard.swift in Sources */,
 				E98FE207299952C400909E8D /* EpisodeCard.swift in Sources */,
 				E95E8525298EECDB0051D834 /* HostingController.swift in Sources */,
+				E98FE2162999A94E00909E8D /* UserListAnime.swift in Sources */,
+				E98FE20F299986D100909E8D /* UserDataStorageService.swift in Sources */,
 				E98FE201299948BB00909E8D /* Dropdown.swift in Sources */,
 				E98FE20329994FFD00909E8D /* ContinueWatchingCard.swift in Sources */,
 				E98FE1D629993AAE00909E8D /* InfoData.swift in Sources */,
@@ -947,6 +975,19 @@
 			productName = ActivityIndicatorView;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		E98FE211299986E800909E8D /* UserData.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				E98FE212299986E900909E8D /* UserData.xcdatamodel */,
+			);
+			currentVersion = E98FE212299986E900909E8D /* UserData.xcdatamodel */;
+			path = UserData.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = E95E84DA298EA10F0051D834 /* Project object */;
 }

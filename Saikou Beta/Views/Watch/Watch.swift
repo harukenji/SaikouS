@@ -294,6 +294,7 @@ struct CustomControlsView: View {
     @State var episodeData: StreamData?
     let animeData: InfoData
     var provider: String?
+    var episodedata: [Episode]
     @State var qualityIndex: Int = 0
     @State var selectedSubtitleIndex: Int = 0
     @Binding var showUI: Bool
@@ -372,9 +373,30 @@ struct CustomControlsView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.bottom, 40)
             
-            ZStack(alignment: .trailing) {
+            ZStack(alignment: .bottomTrailing) {
                 Color.black.opacity(0.7)
                 
+                Button(action: {
+                    playerVM.isEditingCurrentTime = true
+                    playerVM.currentTime += 80
+                    playerVM.isEditingCurrentTime = false
+                }) {
+                    Text("Skip Opening")
+                        .font(.system(size: 16, weight: .heavy))
+                        .foregroundColor(Color(hex: "#8ca7ff"))
+                        .padding(.vertical, 16)
+                        .padding(.horizontal, 24)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                        )
+                }
+                .padding(.bottom, 110)
+                .padding(.trailing, 4)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            ZStack(alignment: .trailing) {
                 HStack {
                     Color.clear
                         .frame(width: .infinity, height: 300)
@@ -426,9 +448,9 @@ struct CustomControlsView: View {
                         Spacer()
                             .frame(maxWidth: 12)
                         
-                        if(animeData.episodes != nil) {
+                        if(episodedata != nil) {
                             VStack {
-                                Text("\(String(animeData.episodes![episodeIndex].number ?? 0)): \(animeData.episodes![episodeIndex].title ?? "")")
+                                Text("\(String(episodedata[episodeIndex].number ?? 0)): \(episodedata[episodeIndex].title ?? "")")
                                     .foregroundColor(.white)
                                     .font(.system(size: 16))
                                     .bold()
@@ -574,271 +596,6 @@ struct CustomControlsView: View {
                                         
                                     }, fontsize: 20)
                                     .foregroundColor(.white)
-                                }.popup(isPresented: $showingPopup) { // 3
-                                    ZStack { // 4
-                                        Color(hex: "#ff16151A")
-                                        VStack(alignment: .leading) {
-                                            HStack {
-                                                if(selectedSetting != SettingsNames.home) {
-                                                    FontIcon.button(.awesome5Solid(code: .chevron_left), action: {
-                                                        Task {
-                                                            selectedSetting = SettingsNames.home
-                                                        }
-                                                        
-                                                    }, fontsize: 14)
-                                                    .foregroundColor(.white)
-                                                }
-                                                
-                                                Text("\(getSettingName())")
-                                                    .bold()
-                                                    .foregroundColor(.white)
-                                            }
-                                            
-                                            if(selectedSetting == SettingsNames.home) {
-                                                SettingsOption(setting_name: "Subtitles", selected_option: episodeData?.subtitles?[playerVM.selectedSubtitleIndex].lang ?? "NaN")
-                                                    .onTapGesture {
-                                                        selectedSetting = SettingsNames.subtitle
-                                                    }
-                                                
-                                                SettingsOption(setting_name: "Sub Style", selected_option: subtitleStyle.rawValue)
-                                                    .onTapGesture {
-                                                        selectedSetting = SettingsNames.sub_style
-                                                    }
-                                                
-                                                SettingsOption(setting_name: "Quality", selected_option: episodeData?.sources?[qualityIndex].quality ?? "NaN")
-                                                    .onTapGesture {
-                                                        selectedSetting = SettingsNames.quality
-                                                    }
-                                                
-                                                SettingsOption(setting_name: "Provider", selected_option: provider ?? "gogoanime")
-                                                    .onTapGesture {
-                                                        selectedSetting = SettingsNames.provider
-                                                    }
-                                                
-                                                
-                                            } else if(selectedSetting == SettingsNames.subtitle)
-                                            {
-                                                ScrollView {
-                                                    VStack {
-                                                        if(episodeData != nil && episodeData!.subtitles != nil) {
-                                                            ForEach(0..<(episodeData!.subtitles!.count - 1)) {index in
-                                                                ZStack {
-                                                                    if(playerVM.selectedSubtitleIndex == index) {
-                                                                        Color(hex: "#ff464E6C")
-                                                                    }
-                                                                    
-                                                                    Text("\(episodeData!.subtitles![index].lang)")
-                                                                        .fontWeight(.medium)
-                                                                        .font(.caption)
-                                                                        .foregroundColor(.white)
-                                                                        .frame(width: 170, height: 32, alignment: .leading)
-                                                                        .padding(.leading, 14)
-                                                                }
-                                                                .frame(width: 170, height: 32)
-                                                                .frame(maxWidth: 170, maxHeight: 32)
-                                                                .cornerRadius(8)
-                                                                .onTapGesture(perform: {
-                                                                    Task {
-                                                                        var content: String
-                                                                        if let url = URL(string: episodeData!.subtitles![index].url) {
-                                                                            do {
-                                                                                content = try String(contentsOf: url)
-                                                                                //print(content)
-                                                                            } catch {
-                                                                                // contents could not be loaded
-                                                                                content = ""
-                                                                            }
-                                                                        } else {
-                                                                            // the URL was bad!
-                                                                            content = ""
-                                                                        }
-                                                                        
-                                                                         let parser = WebVTTParser(string: content.replacingOccurrences(of: "<i>", with: "_").replacingOccurrences(of: "</i>", with: "_").replacingOccurrences(of: "<b>", with: "*").replacingOccurrences(of: "</b>", with: "*"))
-                                                                        let webVTT = try? parser.parse()
-                                                                        
-                                                                        playerVM.webVTT = webVTT
-                                                                        playerVM.selectedSubtitleIndex = index
-                                                                    }
-                                                                })
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                .frame(maxHeight: 200)
-                                                .transition(.backslide)
-                                                
-                                            } else if(selectedSetting == SettingsNames.sub_style) {
-                                                VStack {
-                                                    if(episodeData != nil && episodeData!.sources != nil) {
-                                                        ForEach(0..<2) { index in
-                                                            ZStack {
-                                                                if(subtitleStyle == SubtitleStyle.allCases[index]) {
-                                                                    Color(hex: "#ff464E6C")
-                                                                    
-                                                                }
-                                                                
-                                                                Text("\(SubtitleStyle.allCases[index].rawValue)")
-                                                                    .fontWeight(.medium)
-                                                                    .font(.caption)
-                                                                    .foregroundColor(.white)
-                                                                    .frame(width: 170, height: 32, alignment: .leading)
-                                                                    .padding(.leading, 14)
-                                                            }
-                                                            .frame(width: 170, height: 32)
-                                                            .frame(maxWidth: 170, maxHeight: 32)
-                                                            .cornerRadius(8)
-                                                            .onTapGesture(perform: {
-                                                                Task {
-                                                                    subtitleStyle = SubtitleStyle.allCases[index]
-                                                                }
-                                                                
-                                                            })
-                                                        }
-                                                    }
-                                                }
-                                                .transition(.backslide)
-                                            }
-                                            else if(selectedSetting == SettingsNames.quality) {
-                                                VStack {
-                                                    if(episodeData != nil && episodeData!.sources != nil) {
-                                                        ForEach(0..<(episodeData!.sources!.count - 1)) { index in
-                                                            ZStack {
-                                                                if(index == qualityIndex) {
-                                                                    Color(hex: "#ff464E6C")
-                                                                    
-                                                                }
-                                                                
-                                                                Text("\(episodeData!.sources![index].quality!)")
-                                                                    .fontWeight(.medium)
-                                                                    .font(.caption)
-                                                                    .foregroundColor(.white)
-                                                                    .frame(width: 170, height: 32, alignment: .leading)
-                                                                    .padding(.leading, 14)
-                                                            }
-                                                            .frame(width: 170, height: 32)
-                                                            .frame(maxWidth: 170, maxHeight: 32)
-                                                            .cornerRadius(8)
-                                                            .onTapGesture(perform: {
-                                                                Task {
-                                                                    let curTime = playerVM.currentTime
-                                                                    self.qualityIndex = index
-                                                                    await self.streamApi.loadStream(id: self.animeData.episodes![episodeIndex].id, provider: provider ?? "gogoanime")
-                                                                    playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources![self.qualityIndex].url ?? "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8")!))
-                                                                    await playerVM.player.seek(to: CMTime(seconds: curTime, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
-                                                                    playerVM.player.play()
-                                                                }
-                                                                
-                                                            })
-                                                        }
-                                                    }
-                                                }
-                                                .transition(.backslide)
-                                            }
-                                            else if(selectedSetting == SettingsNames.provider) {
-                                                VStack {
-                                                    ZStack {
-                                                        if(provider == "zoro") {
-                                                            Color(hex: "#ff464E6C")
-                                                        }
-                                                        
-                                                        Text("zoro")
-                                                            .fontWeight(.medium)
-                                                            .font(.caption)
-                                                            .foregroundColor(.white)
-                                                            .frame(width: 170, height: 32, alignment: .leading)
-                                                            .padding(.leading, 14)
-                                                    }
-                                                    .frame(width: 170, height: 32)
-                                                    .frame(maxWidth: 170, maxHeight: 32)
-                                                    .cornerRadius(8)
-                                                    .onTapGesture(perform: {
-                                                        Task {
-                                                            let infoApi = Anilist()
-                                                            
-                                                            await infoApi.getInfo(id: playerVM.id, provider: provider ?? "gogoanime")
-                                                            
-                                                            let ep_id = infoApi.infodata!.episodes![playerVM.episodeNumber].id
-                                                            
-                                                            await streamApi.loadStream(id: ep_id, provider: provider ?? "gogoanime")
-                                                            
-                                                            let tempTime = playerVM.currentTime
-                                                            
-                                                            episodeData = streamApi.streamdata!
-                                                            
-                                                            if(episodeData?.subtitles != nil) {
-                                                                var content: String
-                                                                var index = 0
-                                                                
-                                                                for sub in 0..<episodeData!.subtitles!.count {
-                                                                    if(episodeData!.subtitles![sub].lang == "English") {
-                                                                        index = sub
-                                                                    }
-                                                                }
-                                                                
-                                                                playerVM.selectedSubtitleIndex = index
-                                                                
-                                                                if let url = URL(string: episodeData!.subtitles![index].url) {
-                                                                    do {
-                                                                        content = try String(contentsOf: url)
-                                                                        //print(content)
-                                                                    } catch {
-                                                                        // contents could not be loaded
-                                                                        content = ""
-                                                                    }
-                                                                } else {
-                                                                    // the URL was bad!
-                                                                    content = ""
-                                                                }
-                                                                
-                                                                let parser = WebVTTParser(string: content.replacingOccurrences(of: "<i>", with: "_").replacingOccurrences(of: "</i>", with: "_").replacingOccurrences(of: "<b>", with: "*").replacingOccurrences(of: "</b>", with: "*"))
-                                                                let webVTT = try? parser.parse()
-                                                                
-                                                                playerVM.webVTT = webVTT
-                                                            }
-                                                            
-                                                            playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources?[0].url ?? "/")!))
-                                                            await playerVM.player.seek(to: CMTime(seconds: tempTime, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
-                                                        }
-                                                    })
-                                                    
-                                                    ZStack {
-                                                        if(provider == "gogoanime") {
-                                                            Color(hex: "#ff464E6C")
-                                                        }
-                                                        
-                                                        Text("gogoanime")
-                                                            .fontWeight(.medium)
-                                                            .font(.caption)
-                                                            .foregroundColor(.white)
-                                                            .frame(width: 170, height: 32, alignment: .leading)
-                                                            .padding(.leading, 14)
-                                                    }
-                                                    .frame(width: 170, height: 32)
-                                                    .frame(maxWidth: 170, maxHeight: 32)
-                                                    .cornerRadius(8)
-                                                    .onTapGesture(perform: {
-                                                        Task {
-                                                            await streamApi.loadStream(id: playerVM.id, provider: provider ?? "gogoanime")
-                                                            
-                                                            let tempTime = playerVM.currentTime
-                                                            
-                                                            playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources?[0].url ?? "/")!))
-                                                            playerVM.player.play()
-                                                            await playerVM.player.seek(to: CMTime(seconds: tempTime, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
-                                                        }
-                                                    })
-                                                }
-                                                .transition(.backslide)
-                                            }
-                                        }
-                                        .fixedSize()
-                                        .padding(12)
-                                        .animation(.spring(response: 0.3), value: selectedSetting)
-                                    }
-                                    .fixedSize()
-                                    .frame(maxHeight: 300)
-                                    .cornerRadius(12)
-                                    
                                 }
                                 
                                 Spacer()
@@ -847,7 +604,7 @@ struct CustomControlsView: View {
                                 FontIcon.button(.awesome5Solid(code: .step_forward), action: {
                                     Task {
                                         self.episodeIndex = self.episodeIndex + 1
-                                        await self.streamApi.loadStream(id: self.animeData.episodes![episodeIndex].id, provider: provider ?? "gogoanime")
+                                        await self.streamApi.loadStream(id: self.episodedata[episodeIndex].id, provider: provider ?? "gogoanime")
                                         playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources![0].url ?? "/")!))
                                         playerVM.player.play()
                                     }
@@ -872,10 +629,285 @@ struct CustomControlsView: View {
                     }
                     .padding()
                     .padding(.bottom, 24)
+                    .popup(isPresented: $showingPopup) { // 3
+                        ZStack { // 4
+                            Color(hex: "#ff16151A")
+                            VStack(alignment: .center) {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .frame(maxWidth: 110, maxHeight: 4)
+                                    .foregroundColor(.white)
+                                
+                                if(selectedSetting != SettingsNames.home) {
+                                    HStack {
+                                        if(selectedSetting != SettingsNames.home) {
+                                            FontIcon.button(.awesome5Solid(code: .chevron_left), action: {
+                                                Task {
+                                                    selectedSetting = SettingsNames.home
+                                                }
+                                                
+                                            }, fontsize: 14)
+                                            .foregroundColor(.white)
+                                        }
+                                        
+                                        Text("\(getSettingName())")
+                                            .bold()
+                                            .foregroundColor(.white)
+                                    }
+                                }
+                                
+                                if(selectedSetting == SettingsNames.home) {
+                                    SettingsOption(setting_name: "Video", selected_option: episodeData?.subtitles?[playerVM.selectedSubtitleIndex].lang ?? "NaN")
+                                        .frame(maxWidth: 500)
+                                        .onTapGesture {
+                                            selectedSetting = SettingsNames.subtitle
+                                        }
+                                    
+                                    SettingsOption(setting_name: "Subtitles", selected_option: subtitleStyle.rawValue)
+                                        .onTapGesture {
+                                            selectedSetting = SettingsNames.sub_style
+                                        }
+                                    
+                                    SettingsOption(setting_name: "Audio", selected_option: episodeData?.sources?[qualityIndex].quality ?? "NaN")
+                                        .onTapGesture {
+                                            selectedSetting = SettingsNames.quality
+                                        }
+                                    
+                                    SettingsOption(setting_name: "General", selected_option: provider ?? "gogoanime")
+                                        .onTapGesture {
+                                            selectedSetting = SettingsNames.provider
+                                        }
+                                    
+                                    
+                                } else if(selectedSetting == SettingsNames.subtitle) {
+                                ScrollView {
+                                    VStack {
+                                        if(episodeData != nil && episodeData!.subtitles != nil) {
+                                            ForEach(0..<(episodeData!.subtitles!.count - 1)) {index in
+                                                ZStack {
+                                                    if(playerVM.selectedSubtitleIndex == index) {
+                                                        Color(hex: "#ff464E6C")
+                                                    }
+                                                    
+                                                    Text("\(episodeData!.subtitles![index].lang)")
+                                                        .fontWeight(.medium)
+                                                        .font(.caption)
+                                                        .foregroundColor(.white)
+                                                        .frame(width: 170, height: 32, alignment: .leading)
+                                                        .padding(.leading, 14)
+                                                }
+                                                .frame(width: 170, height: 32)
+                                                .frame(maxWidth: 170, maxHeight: 32)
+                                                .cornerRadius(8)
+                                                .onTapGesture(perform: {
+                                                    Task {
+                                                        var content: String
+                                                        if let url = URL(string: episodeData!.subtitles![index].url) {
+                                                            do {
+                                                                content = try String(contentsOf: url)
+                                                                //print(content)
+                                                            } catch {
+                                                                // contents could not be loaded
+                                                                content = ""
+                                                            }
+                                                        } else {
+                                                            // the URL was bad!
+                                                            content = ""
+                                                        }
+                                                        
+                                                            let parser = WebVTTParser(string: content.replacingOccurrences(of: "<i>", with: "_").replacingOccurrences(of: "</i>", with: "_").replacingOccurrences(of: "<b>", with: "*").replacingOccurrences(of: "</b>", with: "*"))
+                                                        let webVTT = try? parser.parse()
+                                                        
+                                                        playerVM.webVTT = webVTT
+                                                        playerVM.selectedSubtitleIndex = index
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    }
+                                }
+                                .frame(maxHeight: 200)
+                                .transition(.backslide)
+                                
+                            }
+                                else if(selectedSetting == SettingsNames.sub_style) {
+                                VStack {
+                                    if(episodeData != nil && episodeData!.sources != nil) {
+                                        ForEach(0..<2) { index in
+                                            ZStack {
+                                                if(subtitleStyle == SubtitleStyle.allCases[index]) {
+                                                    Color(hex: "#ff464E6C")
+                                                    
+                                                }
+                                                
+                                                Text("\(SubtitleStyle.allCases[index].rawValue)")
+                                                    .fontWeight(.medium)
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+                                                    .frame(width: 170, height: 32, alignment: .leading)
+                                                    .padding(.leading, 14)
+                                            }
+                                            .frame(width: 170, height: 32)
+                                            .frame(maxWidth: 170, maxHeight: 32)
+                                            .cornerRadius(8)
+                                            .onTapGesture(perform: {
+                                                Task {
+                                                    subtitleStyle = SubtitleStyle.allCases[index]
+                                                }
+                                                
+                                            })
+                                        }
+                                    }
+                                }
+                                .transition(.backslide)
+                            }
+                                else if(selectedSetting == SettingsNames.quality) {
+                                    VStack {
+                                        if(episodeData != nil && episodeData!.sources != nil) {
+                                            ForEach(0..<(episodeData!.sources!.count - 1)) { index in
+                                                ZStack {
+                                                    if(index == qualityIndex) {
+                                                        Color(hex: "#ff464E6C")
+                                                        
+                                                    }
+                                                    
+                                                    Text("\(episodeData!.sources![index].quality!)")
+                                                        .fontWeight(.medium)
+                                                        .font(.caption)
+                                                        .foregroundColor(.white)
+                                                        .frame(width: 170, height: 32, alignment: .leading)
+                                                        .padding(.leading, 14)
+                                                }
+                                                .frame(width: 170, height: 32)
+                                                .frame(maxWidth: 170, maxHeight: 32)
+                                                .cornerRadius(8)
+                                                .onTapGesture(perform: {
+                                                    Task {
+                                                        let curTime = playerVM.currentTime
+                                                        self.qualityIndex = index
+                                                        await self.streamApi.loadStream(id: self.episodedata[episodeIndex].id, provider: provider ?? "gogoanime")
+                                                        playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources![self.qualityIndex].url ?? "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8")!))
+                                                        await playerVM.player.seek(to: CMTime(seconds: curTime, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
+                                                        playerVM.player.play()
+                                                    }
+                                                    
+                                                })
+                                            }
+                                        }
+                                    }
+                                    .transition(.backslide)
+                                }
+                                else if(selectedSetting == SettingsNames.provider) {
+                                    VStack {
+                                        ZStack {
+                                            if(provider == "zoro") {
+                                                Color(hex: "#ff464E6C")
+                                            }
+                                            
+                                            Text("zoro")
+                                                .fontWeight(.medium)
+                                                .font(.caption)
+                                                .foregroundColor(.white)
+                                                .frame(width: 170, height: 32, alignment: .leading)
+                                                .padding(.leading, 14)
+                                        }
+                                        .frame(width: 170, height: 32)
+                                        .frame(maxWidth: 170, maxHeight: 32)
+                                        .cornerRadius(8)
+                                        .onTapGesture(perform: {
+                                            Task {
+                                                let infoApi = Anilist()
+                                                
+                                                await infoApi.getInfo(id: playerVM.id, provider: provider ?? "gogoanime")
+                                                
+                                                let ep_id = infoApi.infodata!.episodes![playerVM.episodeNumber].id
+                                                
+                                                await streamApi.loadStream(id: ep_id, provider: provider ?? "gogoanime")
+                                                
+                                                let tempTime = playerVM.currentTime
+                                                
+                                                episodeData = streamApi.streamdata!
+                                                
+                                                if(episodeData?.subtitles != nil) {
+                                                    var content: String
+                                                    var index = 0
+                                                    
+                                                    for sub in 0..<episodeData!.subtitles!.count {
+                                                        if(episodeData!.subtitles![sub].lang == "English") {
+                                                            index = sub
+                                                        }
+                                                    }
+                                                    
+                                                    playerVM.selectedSubtitleIndex = index
+                                                    
+                                                    if let url = URL(string: episodeData!.subtitles![index].url) {
+                                                        do {
+                                                            content = try String(contentsOf: url)
+                                                            //print(content)
+                                                        } catch {
+                                                            // contents could not be loaded
+                                                            content = ""
+                                                        }
+                                                    } else {
+                                                        // the URL was bad!
+                                                        content = ""
+                                                    }
+                                                    
+                                                    let parser = WebVTTParser(string: content.replacingOccurrences(of: "<i>", with: "_").replacingOccurrences(of: "</i>", with: "_").replacingOccurrences(of: "<b>", with: "*").replacingOccurrences(of: "</b>", with: "*"))
+                                                    let webVTT = try? parser.parse()
+                                                    
+                                                    playerVM.webVTT = webVTT
+                                                }
+                                                
+                                                playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources?[0].url ?? "/")!))
+                                                await playerVM.player.seek(to: CMTime(seconds: tempTime, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
+                                            }
+                                        })
+                                        
+                                        ZStack {
+                                            if(provider == "gogoanime") {
+                                                Color(hex: "#ff464E6C")
+                                            }
+                                            
+                                            Text("gogoanime")
+                                                .fontWeight(.medium)
+                                                .font(.caption)
+                                                .foregroundColor(.white)
+                                                .frame(width: 170, height: 32, alignment: .leading)
+                                                .padding(.leading, 14)
+                                        }
+                                        .frame(width: 170, height: 32)
+                                        .frame(maxWidth: 170, maxHeight: 32)
+                                        .cornerRadius(8)
+                                        .onTapGesture(perform: {
+                                            Task {
+                                                await streamApi.loadStream(id: playerVM.id, provider: provider ?? "gogoanime")
+                                                
+                                                let tempTime = playerVM.currentTime
+                                                
+                                                playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources?[0].url ?? "/")!))
+                                                playerVM.player.play()
+                                                await playerVM.player.seek(to: CMTime(seconds: tempTime, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
+                                            }
+                                        })
+                                    }
+                                    .transition(.backslide)
+                                }
+                            }
+                            .padding(12)
+                            .animation(.spring(response: 0.3), value: selectedSetting)
+                        }
+                        .frame(maxWidth: 520,maxHeight: 360, alignment: .top)
+                        .ignoresSafeArea()
+                        .clipShape(
+                            RoundCorner(
+                                cornerRadius: 20,
+                                maskedCorners: [.topLeft, .topRight]
+                            )//OUR CUSTOM SHAPE
+                        )
+                        .padding(.bottom, -120)
+                        .zIndex(100)
+                    }
                 }
-                
-                
-                
                 
                 ZStack(alignment: .trailing) {
                     Color(.black.withAlphaComponent(0.6))
@@ -897,9 +929,9 @@ struct CustomControlsView: View {
                                 
                                 ScrollView(.horizontal) {
                                     HStack(spacing: 20) {
-                                        ForEach((episodeIndex+1)..<animeData.episodes!.count) { index in
+                                        ForEach((episodeIndex+1)..<episodedata.count) { index in
                                             ZStack {
-                                                AsyncImage(url: URL(string: animeData.episodes![index].image)) { image in
+                                                AsyncImage(url: URL(string: episodedata[index].image)) { image in
                                                     image.resizable()
                                                         .aspectRatio(contentMode: .fill)
                                                         .frame(width: 160, height: 90)
@@ -908,7 +940,7 @@ struct CustomControlsView: View {
                                                 }
                                                 
                                                 VStack(alignment: .trailing) {
-                                                    Text("\(animeData.episodes![index].number ?? 0)")
+                                                    Text("\(episodedata[index].number ?? 0)")
                                                         .bold()
                                                         .font(.headline)
                                                         .bold()
@@ -920,7 +952,7 @@ struct CustomControlsView: View {
                                                     ZStack(alignment: .center) {
                                                         Color(.black)
                                                         
-                                                        Text("\(animeData.episodes![index].title ?? "Episode \(animeData.episodes![index].number)")")
+                                                        Text("\(episodedata[index].title ?? "Episode \(episodedata[index].number)")")
                                                             .font(.caption2)
                                                             .bold()
                                                             .lineLimit(2)
@@ -940,7 +972,7 @@ struct CustomControlsView: View {
                                                     playerVM.id = self.animeData.id
                                                     playerVM.episodeNumber = episodeIndex
                                                     
-                                                    await self.streamApi.loadStream(id: self.animeData.episodes![episodeIndex].id, provider: provider ?? "gogoanime")
+                                                    await self.streamApi.loadStream(id: self.episodedata[episodeIndex].id, provider: provider ?? "gogoanime")
                                                     playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources![0].url ?? "/")!))
                                                     playerVM.player.play()
                                                 }
@@ -966,29 +998,6 @@ struct CustomControlsView: View {
             }
             .opacity(showUI ? 1.0 : 0.0)
             .animation(.spring(response: 0.3), value: showUI)
-            
-            ZStack(alignment: .bottomTrailing) {
-                Color.white.opacity(0.0)
-                
-                Button(action: {
-                    playerVM.isEditingCurrentTime = true
-                    playerVM.currentTime += 80
-                    playerVM.isEditingCurrentTime = false
-                }) {
-                    Text("Skip Opening")
-                        .font(.system(size: 16, weight: .heavy))
-                        .foregroundColor(Color(hex: "#8ca7ff"))
-                        .padding(.vertical, 16)
-                        .padding(.horizontal, 24)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                        )
-                }
-                .padding(.bottom, 110)
-                .padding(.trailing, 4)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
@@ -999,32 +1008,35 @@ struct SettingsOption: View {
     
     var body: some View {
         ZStack {
-            Color(hex: "#ff1E222C")
             HStack {
+                Image(systemName: "gearshape.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 20, maxHeight: 20)
+                    .padding(.trailing, 12)
+                
                 Text("\(setting_name)")
-                    .fontWeight(.medium)
-                    .font(.subheadline)
+                    .font(.system(size: 20, weight: .bold))
                     .foregroundColor(.white)
                 
                 Spacer()
                 
                 Text("\(selected_option)")
                     .font(.caption)
-                    .foregroundColor(.white.opacity(0.66))
+                    .foregroundColor(.white.opacity(0.7))
+                
                 FontIcon.button(.awesome5Solid(code: .chevron_right), action: {
                     Task {
                         
                     }
                     
                 }, fontsize: 14)
-                .foregroundColor(.white)
+                .foregroundColor(.white.opacity(0.7))
             }
-            .padding(.horizontal, 12)
-            
         }
-        .frame(width: 170, height: 40)
-        .frame(maxWidth: 170, maxHeight: 40)
-        .cornerRadius(12)
+        .frame(width: .infinity, height: 40)
+        .frame(maxWidth: .infinity, maxHeight: 40)
+        .padding(.horizontal, 20)
     }
 }
 
@@ -1197,6 +1209,7 @@ struct CustomPlayerWithControls: View {
     var animeData: InfoData?
     var episodeIndex: Int
     var provider: String?
+    var episodedata: [Episode]
     @StateObject var streamApi = StreamApi()
     @State var doneLoading = false
     @State var showUI: Bool = true
@@ -1207,10 +1220,11 @@ struct CustomPlayerWithControls: View {
     
     @StateObject private var playerVM = PlayerViewModel()
     
-    init(animeData: InfoData?, episodeIndex: Int, provider: String?) {
+    init(animeData: InfoData?, episodeIndex: Int, provider: String?, episodedata: [Episode]) {
         self.animeData = animeData
         self.episodeIndex = episodeIndex
         self.provider = provider
+        self.episodedata = episodedata
         
         // we need this to use Picture in Picture
         let audioSession = AVAudioSession.sharedInstance()
@@ -1277,7 +1291,7 @@ struct CustomPlayerWithControls: View {
                                             
                                         }
                                     )
-                                    .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, qualityIndex: resIndex, showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
+                                    .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, episodedata: episodedata, qualityIndex: resIndex, showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
                                                 , alignment: .bottom)
                             }
                                 .padding(.horizontal, 60)
@@ -1290,7 +1304,7 @@ struct CustomPlayerWithControls: View {
                     .task {
                         playerVM.episodeNumber = episodeIndex
                         
-                        await self.streamApi.loadStream(id: self.animeData!.episodes![episodeIndex].id, provider: provider ?? "gogoanime")
+                        await self.streamApi.loadStream(id: self.episodedata[episodeIndex].id, provider: provider ?? "gogoanime")
                         
                         episodeData = streamApi.streamdata!
                         playerVM.id = self.animeData!.id
@@ -1407,7 +1421,7 @@ struct CustomPlayerWithControls: View {
                                             
                                         }
                                     )
-                                    .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, qualityIndex: resIndex, showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
+                                    .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, episodedata: episodedata, qualityIndex: resIndex, showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
                                              , alignment: .bottom)
                             }
                             .padding(.horizontal, 60)
@@ -1419,7 +1433,7 @@ struct CustomPlayerWithControls: View {
                     .task {
                         playerVM.episodeNumber = episodeIndex
                         
-                        await self.streamApi.loadStream(id: self.animeData!.episodes![episodeIndex].id, provider: provider ?? "gogoanime")
+                        await self.streamApi.loadStream(id: self.episodedata[episodeIndex].id, provider: provider ?? "gogoanime")
                         
                         episodeData = streamApi.streamdata!
                         playerVM.id = self.animeData!.id
@@ -1508,22 +1522,24 @@ struct WatchPage: View {
     let episodeIndex: Int
     let anilistId: String?
     var provider: String?
+    var episodedata: [Episode]
     @Environment(\.presentationMode) var presentation
     @StateObject var infoApi = Anilist()
     @State private var isPresented = false
     
-    init(aniData: InfoData?, episodeIndex: Int, anilistId: String?, provider: String?) {
+    init(aniData: InfoData?, episodeIndex: Int, anilistId: String?, provider: String?, episodedata: [Episode]) {
         animeData = aniData
         self.episodeIndex = episodeIndex
         self.anilistId = anilistId
         self.provider = provider
+        self.episodedata = episodedata
     }
     
     var body: some View {
         if #available(iOS 16, *) {
             
             return ZStack {
-                CustomPlayerWithControls(animeData: animeData, episodeIndex: episodeIndex, provider: provider)
+                CustomPlayerWithControls(animeData: animeData, episodeIndex: episodeIndex, provider: provider, episodedata: episodedata)
                     .navigationBarBackButtonHidden(true)
                     .contentShape(Rectangle())
                     .ignoresSafeArea(.all)
@@ -1536,7 +1552,7 @@ struct WatchPage: View {
             .supportedOrientation(.landscape)
             .prefersHomeIndicatorAutoHidden(true)
         } else {
-            return CustomPlayerWithControls(animeData: animeData!, episodeIndex: episodeIndex, provider: provider)
+            return CustomPlayerWithControls(animeData: animeData!, episodeIndex: episodeIndex, provider: provider, episodedata: episodedata)
                 .navigationBarBackButtonHidden(true)
                 .contentShape(Rectangle())
                 .ignoresSafeArea(.all)
@@ -1611,7 +1627,7 @@ struct WatchPage_Previews: PreviewProvider {
                                                 image: "https://artworks.thetvdb.com/banners/episodes/329822/6125438.jpg", isFiller: false
                                                )
                                     ]
-                                   ), episodeIndex: 0, anilistId: "98659", provider: "gogoanime")
+                                   ), episodeIndex: 0, anilistId: "98659", provider: "gogoanime", episodedata: [])
     }
 }
 

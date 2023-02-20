@@ -17,6 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.rootViewController = HostingController(
                 wrappedView:
                     Search()
+                        .environment(\.managedObjectContext, dataController.container.viewContext)
             )
             self.window = window
             window.makeKeyAndVisible()
@@ -27,7 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let firstUrl = URLContexts.first?.url else {
             return
         }
-        let dic = ["myText": firstUrl.absoluteString.replacingOccurrences(of: "com.saikouswift://redirect?code=", with: "")]
+        let dic = ["myText": String(firstUrl.absoluteString.replacingOccurrences(of: "com.saikouswift://redirect#access_token=", with: "").split(separator: "&")[0])]
         NotificationCenter.default.post(name: .authCodeUrl, object: nil, userInfo: dic)
         return
     }

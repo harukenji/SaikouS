@@ -153,9 +153,9 @@ struct Info: View {
     var id: String
     
     @StateObject private var viewModel = InfoViewModel()
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @State private var isOn = false
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State var startEpisodeList = 0
     @State var endEpisodeList = 50
     @State var paginationIndex = 0

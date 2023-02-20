@@ -17,11 +17,11 @@ extension AnilistFetchError: CustomStringConvertible {
     public var description: String {
         switch self {
         case .dataLoadFailed:
-            return "The provided password is not valid."
+            return "Data parsing failed."
         case .invalidUrlProvided:
-            return "The provided password is not valid."
-        case .dataParsingFailed(reason: _):
-            return "An unexpected error occurred."
+            return "The URL you provided is not valid."
+        case .dataParsingFailed(reason: let reason):
+            return "An unexpected error occurred. \(reason.localizedDescription)"
         }
     }
 }

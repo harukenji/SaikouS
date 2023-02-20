@@ -46,7 +46,7 @@ struct EpisodeCard: View {
                 Color(hex: "#282828")
                 
                 VStack {
-                    NavigationLink(destination: WatchPage(aniData: viewModel.infodata!, episodeIndex: episodeIndex, anilistId: id, provider: selectedProvider)) {
+                    NavigationLink(destination: WatchPage(aniData: viewModel.infodata!, episodeIndex: episodeIndex, anilistId: id, provider: selectedProvider, episodedata: viewModel.episodedata ?? [])) {
                         HStack {
                             KFImage(URL(string: image))
                                 .resizable()
@@ -91,7 +91,7 @@ struct EpisodeCard: View {
             .cornerRadius(12)
             .padding(.bottom, 8)
         } else if(type == .GRID) {
-            NavigationLink(destination: WatchPage(aniData: viewModel.infodata!, episodeIndex: episodeIndex, anilistId: id, provider: selectedProvider)) {
+            NavigationLink(destination: WatchPage(aniData: viewModel.infodata!, episodeIndex: episodeIndex, anilistId: id, provider: selectedProvider, episodedata: viewModel.episodedata ?? [])) {
                 ZStack {
                     KFImage(URL(string: image))
                         .resizable()
