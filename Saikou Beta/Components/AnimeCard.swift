@@ -53,17 +53,13 @@ struct AnimeCard: View {
                 .lineLimit(3)
                 .font(.system(size: 14))
                 .multilineTextAlignment(.leading)
-            HStack {
-                Text(currentEpisodeCount != nil ? String(currentEpisodeCount!) : "~")
+            
+            Text(currentEpisodeCount != nil ? String(currentEpisodeCount!) : "~")
                     .font(.system(size: 16))
                     .foregroundColor(Color(hex: "#8da2f8"))
-                
-                Text(totalEpisodes != nil ? "| " + String(totalEpisodes!) : "| ~")
+            + Text(totalEpisodes != nil ? " | " + String(totalEpisodes!) : "| ~")
                     .font(.system(size: 16))
-                    .foregroundColor(.white).opacity(0.7)
-                    .padding(.leading, -3)
-            }
-            .frame(maxWidth: 110, alignment: .leading)
+                    .foregroundColor(.white.opacity(0.7))
         }
         .foregroundColor(.white)
     }

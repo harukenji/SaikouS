@@ -14,6 +14,7 @@ struct TopView: View {
     let romajiTitle: String
     let status: String
     let width: CGFloat
+    let height: CGFloat
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -38,8 +39,8 @@ struct TopView: View {
                         .init(color: Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)), location: 1)]),
                     startPoint: UnitPoint(x: 0.5, y: -3.0616171314629196e-17),
                     endPoint: UnitPoint(x: 0.5, y: 0.9999999999999999)))
-                .frame(width: width, height: 420)
-                .frame(maxWidth: width,maxHeight: 420)
+                .frame(width: width, height: height)
+                .frame(maxWidth: width,maxHeight: height)
             
             HStack(alignment: .bottom) {
                 KFImage(URL(string: image))
@@ -67,12 +68,12 @@ struct TopView: View {
             }
             .padding(.horizontal, 20)
         }
-        .frame(height: 420)
+        .frame(height: height)
     }
 }
 
 struct TopView_Previews: PreviewProvider {
     static var previews: some View {
-        TopView(cover: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/98659-u46B5RCNl9il.jpg", image: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b98659-sH5z5RfMuyMr.png", romajiTitle: "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e", status: "Completed", width: 400)
+        TopView(cover: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/98659-u46B5RCNl9il.jpg", image: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b98659-sH5z5RfMuyMr.png", romajiTitle: "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e", status: "Completed", width: 400, height: 420)
     }
 }

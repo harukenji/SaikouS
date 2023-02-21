@@ -10,23 +10,6 @@ import Kingfisher
 import Shimmer
 import ActivityIndicatorView
 
-extension View {
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-        clipShape( RoundedCorner(radius: radius, corners: corners) )
-    }
-}
-
-struct RoundedCorner: Shape {
-    
-    var radius: CGFloat = .infinity
-    var corners: UIRectCorner = .allCorners
-    
-    func path(in rect: CGRect) -> Path {
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
-        return Path(path.cgPath)
-    }
-}
-
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
@@ -192,190 +175,499 @@ struct Info: View {
                 Color(.black)
                 
                 if(viewModel.infodata != nil) {
-                    ScrollView {
-                        VStack {
-                            VStack {
-                                TopView(cover: viewModel.infodata!.cover, image: viewModel.infodata!.image, romajiTitle: viewModel.infodata!.title.romaji, status: viewModel.infodata!.status, width: proxy.size.width)
-                                
-                                Button(action: {
-                                    print("Hello button tapped!")
-                                }) {
-                                    Text("ADD TO LIST")
-                                        .font(.system(size: 16, weight: .heavy))
-                                        .foregroundColor(Color(hex: "#8ca7ff"))
-                                        .padding(.vertical, 16)
-                                        .frame(maxWidth: .infinity)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 20)
-                                                .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                                        )
-                                }
-                                .padding(.horizontal, 20)
-                                .padding(.top, 12)
-                                
-                                HStack {
-                                    Text("Total of ")
-                                        .foregroundColor(Color.white.opacity(0.7))
-                                    
-                                    Text(String(viewModel.infodata!.totalEpisodes ?? 0))
-                                        .padding(.leading, -8)
-                                        .font(.system(size: 16, weight: .heavy))
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, 20)
-                                .padding(.top, 12)
-                                
+                    if(proxy.size.width > 900) {
+                        HStack {
+                            ScrollView {
                                 VStack {
-                                    VStack {
-                                        Button(action: {
-                                            print("Hello button tapped!")
-                                        }) {
-                                            ZStack {
-                                                Color(hex: "#fa1852")
-                                                
+                                    TopView(cover: viewModel.infodata!.cover, image: viewModel.infodata!.image, romajiTitle: viewModel.infodata!.title.romaji, status: viewModel.infodata!.status, width: proxy.size.width * 0.68, height: 300)
+                                    
+                                    HStack(alignment: .top) {
+                                        VStack(alignment: .leading) {
+                                            Button(action: {
+                                                print("Hello button tapped!")
+                                            }) {
+                                                Text("ADD TO LIST")
+                                                    .font(.system(size: 16, weight: .heavy))
+                                                    .foregroundColor(Color(hex: "#8ca7ff"))
+                                                    .padding(.vertical, 16)
+                                                    .frame(maxWidth: .infinity)
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 12)
+                                                            .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                                                    )
+                                            }
+                                            
+                                            VStack(spacing: 8) {
                                                 HStack {
-                                                    Image(systemName: "play.circle.fill")
-                                                        .foregroundColor(.white)
-                                                        .padding(.leading, 30)
+                                                    Text("Mean Score")
+                                                        .font(.system(size: 14, weight: .bold))
+                                                        .foregroundColor(.white.opacity(0.7))
                                                     
-                                                    Text("Play on Youtube")
-                                                        .font(.system(size: 16, weight: .semibold))
-                                                        .foregroundColor(Color.white)
-                                                        .padding(.vertical, 16)
-                                                        .frame(maxWidth: .infinity)
-                                                        .padding(.trailing, 52)
+                                                    Spacer ()
+                                                    
+                                                    Text(viewModel.infodata!.rating != nil ? String(format: "%.1f", Float(viewModel.infodata!.rating!) / 10) : "0.0")
+                                                        .font(.system(size: 14, weight: .heavy))
+                                                        .foregroundColor(Color(hex: "#FF5DAE"))
+                                                    + Text(" / 10")
+                                                        .font(.system(size: 14, weight: .heavy))
+                                                        .foregroundColor(.white)
+                                                }
+                                                HStack {
+                                                    Text("Status")
+                                                        .font(.system(size: 14, weight: .bold))
+                                                        .foregroundColor(.white.opacity(0.7))
+                                                    
+                                                    Spacer ()
+                                                    
+                                                    Text(viewModel.infodata!.status.uppercased())
+                                                        .font(.system(size: 14, weight: .heavy))
+                                                        .foregroundColor(.white)
+                                                }
+                                                HStack {
+                                                    Text("Total Episodes")
+                                                        .font(.system(size: 14, weight: .bold))
+                                                        .foregroundColor(.white.opacity(0.7))
+                                                    
+                                                    Spacer ()
+                                                    
+                                                    Text(String(viewModel.infodata!.totalEpisodes ?? 0))
+                                                        .font(.system(size: 14, weight: .heavy))
+                                                        .foregroundColor(.white)
+                                                }
+                                                HStack {
+                                                    Text("Average Duration")
+                                                        .font(.system(size: 14, weight: .bold))
+                                                        .foregroundColor(.white.opacity(0.7))
+                                                    
+                                                    Spacer ()
+                                                    
+                                                    Text(String(viewModel.infodata!.duration ?? 0) + " min")
+                                                        .font(.system(size: 14, weight: .heavy))
+                                                        .foregroundColor(.white)
+                                                }
+                                                HStack {
+                                                    Text("Format")
+                                                        .font(.system(size: 14, weight: .bold))
+                                                        .foregroundColor(.white.opacity(0.7))
+                                                    
+                                                    Spacer ()
+                                                    
+                                                    Text(viewModel.infodata!.type != nil ? viewModel.infodata!.type!.uppercased() : "Unknown")
+                                                        .font(.system(size: 14, weight: .heavy))
+                                                        .foregroundColor(.white)
+                                                }
+                                                VStack(spacing: 8) {
+                                                    if(viewModel.infodata!.studios.count > 0) {
+                                                        HStack {
+                                                            Text("Studio")
+                                                                .font(.system(size: 14, weight: .bold))
+                                                                .foregroundColor(.white.opacity(0.7))
+                                                            
+                                                            Spacer ()
+                                                            
+                                                            Text(viewModel.infodata!.studios[0])
+                                                                .font(.system(size: 14, weight: .heavy))
+                                                                .foregroundColor(Color(hex: "#FF5DAE"))
+                                                        }
+                                                    }
+                                                    HStack {
+                                                        Text("Season")
+                                                            .font(.system(size: 14, weight: .bold))
+                                                            .foregroundColor(.white.opacity(0.7))
+                                                        
+                                                        Spacer ()
+                                                        
+                                                        Text((viewModel.infodata!.season ?? "UNKNOWN") +  " \(viewModel.infodata!.releaseDate)")
+                                                            .font(.system(size: 14, weight: .heavy))
+                                                            .foregroundColor(.white)
+                                                    }
+                                                    HStack {
+                                                        Text("Start Date")
+                                                            .font(.system(size: 14, weight: .bold))
+                                                            .foregroundColor(.white.opacity(0.7))
+                                                        
+                                                        Spacer ()
+                                                        
+                                                        Text(String(viewModel.infodata!.startDate.day ?? 0) + " " + (viewModel.infodata!.startDate.month != nil ? DateFormatter().monthSymbols[viewModel.infodata!.startDate.month! - 1] : "Unknown") + ", " + (viewModel.infodata!.startDate.year != nil ? String(viewModel.infodata!.startDate.year!) : "NaN"))
+                                                            .font(.system(size: 14, weight: .heavy))
+                                                            .foregroundColor(.white)
+                                                    }
+                                                    
                                                 }
                                             }
-                                            .cornerRadius(12)
+                                            .padding(.top, 12)
+                                            
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                if(viewModel.infodata!.title.native != nil) {
+                                                    VStack(alignment: .leading, spacing: 4) {
+                                                        Text("Name Native")
+                                                            .font(.system(size: 14, weight: .bold))
+                                                            .foregroundColor(.white.opacity(0.7))
+                                                        Text("    " + viewModel.infodata!.title.native!)
+                                                            .font(.system(size: 14, weight: .heavy))
+                                                            .foregroundColor(.white)
+                                                    }
+                                                }
+                                                if(viewModel.infodata!.title.english != nil) {
+                                                    VStack(alignment: .leading, spacing: 4) {
+                                                        Text("Name English")
+                                                            .font(.system(size: 14, weight: .bold))
+                                                            .foregroundColor(.white.opacity(0.7))
+                                                        Text("    " + viewModel.infodata!.title.english!)
+                                                            .font(.system(size: 14, weight: .heavy))
+                                                            .foregroundColor(.white)
+                                                    }
+                                                }
+                                            }
+                                            .padding(.top, 20)
                                         }
                                         .padding(.horizontal, 20)
-                                        .padding(.top, 12)
+                                        .frame(width: proxy.size.width * 0.34)
+                                        .frame(maxWidth: proxy.size.width * 0.34, alignment: .top)
                                         
-                                        Text("Selected : \(viewModel.infodata!.title.romaji)")
-                                            .font(.system(size: 16, weight: .heavy))
-                                            .lineLimit(1)
-                                            .padding(.horizontal, 20)
-                                            .padding(.top, 20)
-                                        
-                                        VStack {
-                                            DropdownSelector(
-                                                placeholder: "Gogo",
-                                                options: options,
-                                                onOptionSelected: { option in
-                                                    print(option.value)
-                                                    Task {
-                                                        switch option.value {
-                                                        case "Gogo":
-                                                            selectedProvider = "gogoanime"
-                                                        case "Zoro":
-                                                            selectedProvider = "zoro"
-                                                        case "Animepahe":
-                                                            selectedProvider = "animepahe"
-                                                        case "Animefox":
-                                                            selectedProvider = "animefox"
-                                                        default:
-                                                            selectedProvider = "gogoanime"
-                                                        }
-                                                        await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
-                                                        self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
-                                                        viewModel.infodata!.episodes = viewModel.episodedata
-                                                    }
-                                                })
-                                            .padding(.horizontal)
-                                            .zIndex(100)
+                                        VStack(alignment: .leading) {
+                                            Text("Trailer")
+                                                .foregroundColor(.white)
+                                                .font(.system(size: 18, weight: .heavy))
                                             
-                                            HStack {
-                                                Toggle(isOn: $isOn, label: {
-                                                    Text(isOn ? "Dubbed" : "Subbed")
-                                                        .font(.system(size: 18, weight: .heavy))
-                                                        .foregroundColor(.white)
-                                                })
-                                                .toggleStyle(MaterialToggleStyle())
-                                                .onChange(of: isOn) { value in
-                                                    Task {
-                                                        await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
-                                                        self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
-                                                        viewModel.infodata!.episodes = viewModel.episodedata
+                                            KFImage(URL(string: viewModel.infodata!.trailer != nil ? viewModel.infodata!.trailer!.thumbnail : ""))
+                                                .resizable()
+                                                .aspectRatio(16/9,contentMode: .fit)
+                                                .frame(maxWidth: proxy.size.width * 0.34)
+                                        }
+                                        .padding(.horizontal, 20)
+                                        .frame(width: proxy.size.width * 0.34)
+                                        .frame(maxWidth: proxy.size.width * 0.34, alignment: .top)
+                                    }
+                                    .frame(maxWidth: proxy.size.width * 0.68, alignment: .top)
+                                    .padding(.top, 18)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Description")
+                                            .font(.system(size: 14, weight: .heavy))
+                                            .foregroundColor(.white)
+                                        Text("    " + (try! AttributedString(markdown: viewModel.infodata!.description.replacingOccurrences(of: "_", with: "*").replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "<br>", with: "\n"), options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace))))
+                                            .font(.system(size: 14, weight: .bold))
+                                            .foregroundColor(.white.opacity(0.7))
+                                    }
+                                    .padding(.horizontal, 20)
+                                    .frame(maxWidth: proxy.size.width * 0.68)
+                                    .padding(.top, 20)
+                                }
+                            }
+                            .frame(width: proxy.size.width * 0.68)
+                            .frame(maxWidth: proxy.size.width * 0.68)
+                            .clipShape(
+                                RoundCorner(
+                                    cornerRadius: 20,
+                                    maskedCorners: [.topRight]
+                                )
+                            )
+                            ScrollView {
+                                VStack {
+                                    DropdownSelector(
+                                        placeholder: "Gogo",
+                                        options: options,
+                                        onOptionSelected: { option in
+                                            print(option.value)
+                                            Task {
+                                                switch option.value {
+                                                case "Gogo":
+                                                    selectedProvider = "gogoanime"
+                                                case "Zoro":
+                                                    selectedProvider = "zoro"
+                                                case "Animepahe":
+                                                    selectedProvider = "animepahe"
+                                                case "Animefox":
+                                                    selectedProvider = "animefox"
+                                                default:
+                                                    selectedProvider = "gogoanime"
+                                                }
+                                                await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
+                                                self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                viewModel.infodata!.episodes = viewModel.episodedata
+                                            }
+                                        })
+                                    .padding(.horizontal)
+                                    .zIndex(100)
+                                    .padding(.top, 30)
+                                    
+                                    HStack {
+                                        Toggle(isOn: $isOn, label: {
+                                            Text(isOn ? "Dubbed" : "Subbed")
+                                                .font(.system(size: 18, weight: .heavy))
+                                                .foregroundColor(.white)
+                                        })
+                                        .toggleStyle(MaterialToggleStyle())
+                                        .onChange(of: isOn) { value in
+                                            Task {
+                                                await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
+                                                self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                viewModel.infodata!.episodes = viewModel.episodedata
+                                            }
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, 20)
+                                    
+                                    
+                                    HStack {
+                                        Text("Episodes")
+                                            .font(.system(size: 20, weight: .heavy))
+                                        
+                                        HStack {
+                                            Button(action: {
+                                                episodeDisplayGrid = false
+                                                print(episodeDisplayGrid)
+                                            }) {
+                                                Image("list")
+                                                    .resizable()
+                                                    .frame(maxWidth: 16, maxHeight: 16)
+                                                    .foregroundColor(.white.opacity(!episodeDisplayGrid ? 1.0 : 0.5))
+                                                    .padding(.trailing, 12)
+                                            }
+                                            
+                                            Button(action: {
+                                                episodeDisplayGrid = true
+                                                print(episodeDisplayGrid)
+                                            }) {
+                                                Image("grid")
+                                                    .resizable()
+                                                    .frame(maxWidth: 16, maxHeight: 16)
+                                                    .foregroundColor(.white.opacity(episodeDisplayGrid ? 1.0 : 0.5))
+                                            }
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                                    }
+                                    .padding(.horizontal, 20)
+                                    .padding(.top, 12)
+                                    
+                                    
+                                    if(viewModel.episodedata != nil) {
+                                        ContinueWatchingCard(image: viewModel.episodedata![0].image, title: viewModel.episodedata![0].title ?? "Title", width: proxy.size.width)
+                                        
+                                        if(viewModel.episodedata!.count > 50) {
+                                            ScrollView(.horizontal) {
+                                                HStack(spacing: 20) {
+                                                    ForEach(0..<Int(ceil(Float(viewModel.episodedata!.count)/50))) { index in
+                                                        EpisodePaginationChip(paginationIndex: paginationIndex, startEpisodeList: startEpisodeList, endEpisodeList: endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
                                                     }
                                                 }
                                             }
-                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .frame(maxWidth: proxy.size.width - 20, alignment: .leading)
+                                            .padding(.leading, 20)
+                                            .padding(.bottom, 20)
+                                        }
+                                        
+                                        if(!episodeDisplayGrid) {
+                                            
+                                            VStack {
+                                                ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
+                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST)
+                                                }
+                                                .padding(.horizontal, 20)
+                                            }
+                                        } else {
+                                            LazyVGrid(columns: columns, spacing: 20) {
+                                                ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
+                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID)
+                                                }
+                                            }
                                             .padding(.horizontal, 20)
-                                            
-                                            
-                                            HStack {
-                                                Text("Episodes")
-                                                    .font(.system(size: 20, weight: .heavy))
-                                                
-                                                HStack {
-                                                    Button(action: {
-                                                        episodeDisplayGrid = false
-                                                        print(episodeDisplayGrid)
-                                                    }) {
-                                                        Image("list")
-                                                            .resizable()
-                                                            .frame(maxWidth: 16, maxHeight: 16)
-                                                            .foregroundColor(.white.opacity(!episodeDisplayGrid ? 1.0 : 0.5))
-                                                            .padding(.trailing, 12)
-                                                    }
+                                        }
+                                    }
+                                    else {
+                                        ProgressView()
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        ScrollView {
+                            VStack {
+                                VStack {
+                                    TopView(cover: viewModel.infodata!.cover, image: viewModel.infodata!.image, romajiTitle: viewModel.infodata!.title.romaji, status: viewModel.infodata!.status, width: proxy.size.width, height: 420)
+                                    
+                                    Button(action: {
+                                        print("Hello button tapped!")
+                                    }) {
+                                        Text("ADD TO LIST")
+                                            .font(.system(size: 16, weight: .heavy))
+                                            .foregroundColor(Color(hex: "#8ca7ff"))
+                                            .padding(.vertical, 16)
+                                            .frame(maxWidth: .infinity)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 20)
+                                                    .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                                            )
+                                    }
+                                    .padding(.horizontal, 20)
+                                    .padding(.top, 12)
+                                    
+                                    HStack {
+                                        Text("Total of ")
+                                            .foregroundColor(Color.white.opacity(0.7))
+                                        
+                                        Text(String(viewModel.infodata!.totalEpisodes ?? 0))
+                                            .padding(.leading, -8)
+                                            .font(.system(size: 16, weight: .heavy))
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, 20)
+                                    .padding(.top, 12)
+                                    
+                                    VStack {
+                                        VStack {
+                                            Button(action: {
+                                                print("Hello button tapped!")
+                                            }) {
+                                                ZStack {
+                                                    Color(hex: "#fa1852")
                                                     
-                                                    Button(action: {
-                                                        episodeDisplayGrid = true
-                                                        print(episodeDisplayGrid)
-                                                    }) {
-                                                        Image("grid")
-                                                            .resizable()
-                                                            .frame(maxWidth: 16, maxHeight: 16)
-                                                            .foregroundColor(.white.opacity(episodeDisplayGrid ? 1.0 : 0.5))
+                                                    HStack {
+                                                        Image(systemName: "play.circle.fill")
+                                                            .foregroundColor(.white)
+                                                            .padding(.leading, 30)
+                                                        
+                                                        Text("Play on Youtube")
+                                                            .font(.system(size: 16, weight: .semibold))
+                                                            .foregroundColor(Color.white)
+                                                            .padding(.vertical, 16)
+                                                            .frame(maxWidth: .infinity)
+                                                            .padding(.trailing, 52)
                                                     }
                                                 }
-                                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                                .cornerRadius(12)
                                             }
                                             .padding(.horizontal, 20)
                                             .padding(.top, 12)
                                             
+                                            Text("Selected : \(viewModel.infodata!.title.romaji)")
+                                                .font(.system(size: 16, weight: .heavy))
+                                                .lineLimit(1)
+                                                .padding(.horizontal, 20)
+                                                .padding(.top, 20)
                                             
-                                            if(viewModel.episodedata != nil) {
-                                                ContinueWatchingCard(image: viewModel.episodedata![0].image, title: viewModel.episodedata![0].title ?? "Title", width: proxy.size.width)
-                                                
-                                                if(viewModel.episodedata!.count > 50) {
-                                                    ScrollView(.horizontal) {
-                                                        HStack(spacing: 20) {
-                                                            ForEach(0..<Int(ceil(Float(viewModel.episodedata!.count)/50))) { index in
-                                                                EpisodePaginationChip(paginationIndex: paginationIndex, startEpisodeList: startEpisodeList, endEpisodeList: endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
+                                            VStack {
+                                                DropdownSelector(
+                                                    placeholder: "Gogo",
+                                                    options: options,
+                                                    onOptionSelected: { option in
+                                                        print(option.value)
+                                                        Task {
+                                                            switch option.value {
+                                                            case "Gogo":
+                                                                selectedProvider = "gogoanime"
+                                                            case "Zoro":
+                                                                selectedProvider = "zoro"
+                                                            case "Animepahe":
+                                                                selectedProvider = "animepahe"
+                                                            case "Animefox":
+                                                                selectedProvider = "animefox"
+                                                            default:
+                                                                selectedProvider = "gogoanime"
                                                             }
+                                                            await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
+                                                            self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                            viewModel.infodata!.episodes = viewModel.episodedata
+                                                        }
+                                                    })
+                                                .padding(.horizontal)
+                                                .zIndex(100)
+                                                
+                                                HStack {
+                                                    Toggle(isOn: $isOn, label: {
+                                                        Text(isOn ? "Dubbed" : "Subbed")
+                                                            .font(.system(size: 18, weight: .heavy))
+                                                            .foregroundColor(.white)
+                                                    })
+                                                    .toggleStyle(MaterialToggleStyle())
+                                                    .onChange(of: isOn) { value in
+                                                        Task {
+                                                            await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
+                                                            self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                            viewModel.infodata!.episodes = viewModel.episodedata
                                                         }
                                                     }
-                                                    .frame(maxWidth: proxy.size.width - 20, alignment: .leading)
-                                                    .padding(.leading, 20)
-                                                    .padding(.bottom, 20)
                                                 }
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .padding(.horizontal, 20)
                                                 
-                                                if(!episodeDisplayGrid) {
+                                                
+                                                HStack {
+                                                    Text("Episodes")
+                                                        .font(.system(size: 20, weight: .heavy))
                                                     
-                                                    VStack {
-                                                        ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                            EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST)
+                                                    HStack {
+                                                        Button(action: {
+                                                            episodeDisplayGrid = false
+                                                            print(episodeDisplayGrid)
+                                                        }) {
+                                                            Image("list")
+                                                                .resizable()
+                                                                .frame(maxWidth: 16, maxHeight: 16)
+                                                                .foregroundColor(.white.opacity(!episodeDisplayGrid ? 1.0 : 0.5))
+                                                                .padding(.trailing, 12)
+                                                        }
+                                                        
+                                                        Button(action: {
+                                                            episodeDisplayGrid = true
+                                                            print(episodeDisplayGrid)
+                                                        }) {
+                                                            Image("grid")
+                                                                .resizable()
+                                                                .frame(maxWidth: 16, maxHeight: 16)
+                                                                .foregroundColor(.white.opacity(episodeDisplayGrid ? 1.0 : 0.5))
+                                                        }
+                                                    }
+                                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                                                }
+                                                .padding(.horizontal, 20)
+                                                .padding(.top, 12)
+                                                
+                                                
+                                                if(viewModel.episodedata != nil) {
+                                                    ContinueWatchingCard(image: viewModel.episodedata![0].image, title: viewModel.episodedata![0].title ?? "Title", width: proxy.size.width)
+                                                    
+                                                    if(viewModel.episodedata!.count > 50) {
+                                                        ScrollView(.horizontal) {
+                                                            HStack(spacing: 20) {
+                                                                ForEach(0..<Int(ceil(Float(viewModel.episodedata!.count)/50))) { index in
+                                                                    EpisodePaginationChip(paginationIndex: paginationIndex, startEpisodeList: startEpisodeList, endEpisodeList: endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
+                                                                }
+                                                            }
+                                                        }
+                                                        .frame(maxWidth: proxy.size.width - 20, alignment: .leading)
+                                                        .padding(.leading, 20)
+                                                        .padding(.bottom, 20)
+                                                    }
+                                                    
+                                                    if(!episodeDisplayGrid) {
+                                                        
+                                                        VStack {
+                                                            ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
+                                                                EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST)
+                                                            }
+                                                            .padding(.horizontal, 20)
+                                                        }
+                                                    } else {
+                                                        LazyVGrid(columns: columns, spacing: 20) {
+                                                            ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
+                                                                EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID)
+                                                            }
                                                         }
                                                         .padding(.horizontal, 20)
                                                     }
-                                                } else {
-                                                    LazyVGrid(columns: columns, spacing: 20) {
-                                                        ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                            EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID)
-                                                        }
-                                                    }
-                                                    .padding(.horizontal, 20)
                                                 }
-                                            }
-                                            else {
-                                                ProgressView()
+                                                else {
+                                                    ProgressView()
+                                                }
                                             }
                                         }
                                     }
+                                    .tag(1)
+                                    .padding(.bottom, 80)
                                 }
-                                .tag(1)
-                                .padding(.bottom, 80)
                             }
                         }
                     }
@@ -653,7 +945,12 @@ struct Info: View {
                                                 .padding(6)
                                         }
                                         .fixedSize()
-                                        .cornerRadius(30, corners: [.bottomRight])
+                                        .clipShape(
+                                            RoundCorner(
+                                                cornerRadius: 30,
+                                                maskedCorners: [.bottomRight]
+                                            )//OUR CUSTOM SHAPE
+                                        )
                                     }
                                     .cornerRadius(12)
                                     .padding(.bottom, 8)
@@ -688,62 +985,64 @@ struct Info: View {
                     
                     Spacer()
                     
-                    ZStack {
-                        Color(hex: "#1c1c1c")
-                        HStack(alignment: .top) {
-                            Spacer()
-                            VStack {
-                                ZStack {
-                                    Color(hex: selectedItem == 0 ? "#ff8ca7ff" :  "#008ca7ff")
-                                        .animation(.spring())
+                    if(proxy.size.width < 900) {
+                        ZStack {
+                            Color(hex: "#1c1c1c")
+                            HStack(alignment: .top) {
+                                Spacer()
+                                VStack {
+                                    ZStack {
+                                        Color(hex: selectedItem == 0 ? "#ff8ca7ff" :  "#008ca7ff")
+                                            .animation(.spring())
+                                        
+                                        Image(systemName: "info.circle.fill")
+                                            .foregroundColor(selectedItem == 0 ? .black : .white.opacity(0.5))
+                                            .font(.system(size: 22))
+                                            .padding(.horizontal, 22)
+                                            .padding(.vertical, 6)
+                                    }
+                                    .fixedSize()
+                                    .cornerRadius(30)
                                     
-                                    Image(systemName: "info.circle.fill")
-                                        .foregroundColor(selectedItem == 0 ? .black : .white.opacity(0.5))
-                                        .font(.system(size: 22))
-                                        .padding(.horizontal, 22)
-                                        .padding(.vertical, 6)
+                                    Text("INFO")
+                                        .fontWeight(.heavy)
+                                        .foregroundColor(selectedItem == 0 ? .white : .white.opacity(0.5))
                                 }
-                                .fixedSize()
-                                .cornerRadius(30)
-                                
-                                Text("INFO")
-                                    .fontWeight(.heavy)
-                                    .foregroundColor(selectedItem == 0 ? .white : .white.opacity(0.5))
-                            }
-                            .padding(.bottom, 4)
-                            .onTapGesture {
-                                selectedItem = 0
-                            }
-                            Spacer()
-                            VStack {
-                                ZStack {
-                                    Color(hex: selectedItem == 1 ? "#ff8ca7ff" :  "#008ca7ff")
-                                        .animation(.spring())
+                                .padding(.bottom, 4)
+                                .onTapGesture {
+                                    selectedItem = 0
+                                }
+                                Spacer()
+                                VStack {
+                                    ZStack {
+                                        Color(hex: selectedItem == 1 ? "#ff8ca7ff" :  "#008ca7ff")
+                                            .animation(.spring())
+                                        
+                                        Image("clapperboard-play")
+                                            .resizable()
+                                            .foregroundColor(selectedItem == 1 ? .black : .white.opacity(0.5))
+                                            .frame(width: 22, height: 22)
+                                            .frame(maxWidth: 22, maxHeight: 22)
+                                            .padding(.horizontal, 22)
+                                            .padding(.vertical, 8)
+                                    }
+                                    .fixedSize()
+                                    .cornerRadius(30)
                                     
-                                    Image("clapperboard-play")
-                                        .resizable()
-                                        .foregroundColor(selectedItem == 1 ? .black : .white.opacity(0.5))
-                                        .frame(width: 22, height: 22)
-                                        .frame(maxWidth: 22, maxHeight: 22)
-                                        .padding(.horizontal, 22)
-                                        .padding(.vertical, 8)
+                                    Text("WATCH")
+                                        .fontWeight(.heavy)
+                                        .foregroundColor(selectedItem == 1 ? .white : .white.opacity(0.5))
                                 }
-                                .fixedSize()
-                                .cornerRadius(30)
-                                
-                                Text("WATCH")
-                                    .fontWeight(.heavy)
-                                    .foregroundColor(selectedItem == 1 ? .white : .white.opacity(0.5))
+                                .onTapGesture {
+                                    selectedItem = 1
+                                }
+                                Spacer()
                             }
-                            .onTapGesture {
-                                selectedItem = 1
-                            }
-                            Spacer()
+                            .padding(.bottom, 16)
+                            
                         }
-                        .padding(.bottom, 16)
-                        
+                        .frame(maxHeight: 110)
                     }
-                    .frame(maxHeight: 110)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
             }

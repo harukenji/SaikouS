@@ -20,7 +20,7 @@ struct UserViewerData: Codable {
     let id: Int
     let name: String
     let avatar: Avatar
-    let bannerImage: String
+    let bannerImage: String?
     let statistics: Statistics
 }
 

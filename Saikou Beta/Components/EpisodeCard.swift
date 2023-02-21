@@ -86,7 +86,12 @@ struct EpisodeCard: View {
                         .padding(6)
                 }
                 .fixedSize()
-                .cornerRadius(30, corners: [.bottomRight])
+                .clipShape(
+                                RoundCorner(
+                                    cornerRadius: 30,
+                                    maskedCorners: [.bottomRight]
+                                )//OUR CUSTOM SHAPE
+                            )
             }
             .cornerRadius(12)
             .padding(.bottom, 8)
@@ -107,6 +112,7 @@ struct EpisodeCard: View {
                     ZStack(alignment: .topLeading) {
                         Text(title)
                             .font(.system(size: 16, weight: .heavy))
+                            .foregroundColor(.white)
                             .lineLimit(3)
                             .multilineTextAlignment(.leading)
                             .padding(.horizontal, 20)

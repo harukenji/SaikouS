@@ -8,6 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		E9136E6A299D60E500B46D72 /* AnimeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9136E69299D60E500B46D72 /* AnimeCard.swift */; };
+		E937CB6129A4009500714848 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6029A4009500714848 /* PlayerViewModel.swift */; };
+		E937CB6329A400F200714848 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6229A400F200714848 /* Player.swift */; };
+		E937CB6529A4012A00714848 /* CustomVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6429A4012A00714848 /* CustomVideoPlayer.swift */; };
+		E937CB6729A4017E00714848 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6629A4017E00714848 /* Media.swift */; };
+		E937CB6929A401B300714848 /* UISliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6829A401B300714848 /* UISliderView.swift */; };
+		E937CB6C29A4023700714848 /* Subtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6B29A4023700714848 /* Subtitle.swift */; };
+		E937CB6E29A4024E00714848 /* SettingsNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6D29A4024E00714848 /* SettingsNames.swift */; };
+		E937CB7029A4028000714848 /* SubtitleStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6F29A4028000714848 /* SubtitleStyles.swift */; };
+		E937CB7229A4029C00714848 /* CustomControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB7129A4029C00714848 /* CustomControlsView.swift */; };
+		E937CB7429A402B100714848 /* SettingsOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB7329A402B100714848 /* SettingsOption.swift */; };
+		E937CB7729A402DF00714848 /* PopUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB7629A402DF00714848 /* PopUp.swift */; };
+		E937CB7929A4030500714848 /* StreamData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB7829A4030500714848 /* StreamData.swift */; };
+		E937CB7B29A4031800714848 /* header.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB7A29A4031800714848 /* header.swift */; };
+		E937CB7D29A4032500714848 /* source.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB7C29A4032500714848 /* source.swift */; };
+		E937CB7F29A4034000714848 /* subtitleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB7E29A4034000714848 /* subtitleData.swift */; };
+		E937CB8129A4037200714848 /* CustomPlayerWithControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB8029A4037200714848 /* CustomPlayerWithControls.swift */; };
+		E937CB8329A4039B00714848 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB8229A4039B00714848 /* Loading.swift */; };
+		E937CB8529A4040B00714848 /* MacOSApplicationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB8429A4040B00714848 /* MacOSApplicationEntry.swift */; };
 		E95E84E8298EA10F0051D834 /* Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E7298EA10F0051D834 /* Info.swift */; };
 		E95E84EA298EA1100051D834 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84E9298EA1100051D834 /* Assets.xcassets */; };
 		E95E84EE298EA1100051D834 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84ED298EA1100051D834 /* Preview Assets.xcassets */; };
@@ -79,6 +97,26 @@
 
 /* Begin PBXFileReference section */
 		E9136E69299D60E500B46D72 /* AnimeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeCard.swift; sourceTree = "<group>"; };
+		E937CB4529A3FF6100714848 /* SaikouSwiftiOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaikouSwiftiOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E937CB4F29A3FF6100714848 /* SaikouSwiftiOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaikouSwiftiOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E937CB6029A4009500714848 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
+		E937CB6229A400F200714848 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		E937CB6429A4012A00714848 /* CustomVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVideoPlayer.swift; sourceTree = "<group>"; };
+		E937CB6629A4017E00714848 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
+		E937CB6829A401B300714848 /* UISliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISliderView.swift; sourceTree = "<group>"; };
+		E937CB6B29A4023700714848 /* Subtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitle.swift; sourceTree = "<group>"; };
+		E937CB6D29A4024E00714848 /* SettingsNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsNames.swift; sourceTree = "<group>"; };
+		E937CB6F29A4028000714848 /* SubtitleStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleStyles.swift; sourceTree = "<group>"; };
+		E937CB7129A4029C00714848 /* CustomControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomControlsView.swift; sourceTree = "<group>"; };
+		E937CB7329A402B100714848 /* SettingsOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsOption.swift; sourceTree = "<group>"; };
+		E937CB7629A402DF00714848 /* PopUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUp.swift; sourceTree = "<group>"; };
+		E937CB7829A4030500714848 /* StreamData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamData.swift; sourceTree = "<group>"; };
+		E937CB7A29A4031800714848 /* header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = header.swift; sourceTree = "<group>"; };
+		E937CB7C29A4032500714848 /* source.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = source.swift; sourceTree = "<group>"; };
+		E937CB7E29A4034000714848 /* subtitleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = subtitleData.swift; sourceTree = "<group>"; };
+		E937CB8029A4037200714848 /* CustomPlayerWithControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPlayerWithControls.swift; sourceTree = "<group>"; };
+		E937CB8229A4039B00714848 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
+		E937CB8429A4040B00714848 /* MacOSApplicationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacOSApplicationEntry.swift; sourceTree = "<group>"; };
 		E95E84E2298EA10F0051D834 /* Saikou Beta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Saikou Beta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95E84E7298EA10F0051D834 /* Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Info.swift; sourceTree = "<group>"; };
 		E95E84E9298EA1100051D834 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -132,6 +170,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		E937CB4229A3FF6100714848 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E937CB4C29A3FF6100714848 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E95E84DF298EA10F0051D834 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -161,6 +213,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E937CB6A29A4022300714848 /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				E937CB6629A4017E00714848 /* Media.swift */,
+				E937CB6B29A4023700714848 /* Subtitle.swift */,
+				E937CB6D29A4024E00714848 /* SettingsNames.swift */,
+				E937CB6F29A4028000714848 /* SubtitleStyles.swift */,
+				E937CB7829A4030500714848 /* StreamData.swift */,
+				E937CB7A29A4031800714848 /* header.swift */,
+				E937CB7C29A4032500714848 /* source.swift */,
+				E937CB7E29A4034000714848 /* subtitleData.swift */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
+		E937CB7529A402D000714848 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E937CB7629A402DF00714848 /* PopUp.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		E95E84D9298EA10F0051D834 = {
 			isa = PBXGroup;
 			children = (
@@ -177,6 +252,8 @@
 				E95E84E2298EA10F0051D834 /* Saikou Beta.app */,
 				E95E84F3298EA1100051D834 /* Saikou BetaTests.xctest */,
 				E95E84FD298EA1100051D834 /* Saikou BetaUITests.xctest */,
+				E937CB4529A3FF6100714848 /* SaikouSwiftiOSTests.xctest */,
+				E937CB4F29A3FF6100714848 /* SaikouSwiftiOSUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -184,6 +261,7 @@
 		E95E84E4298EA10F0051D834 /* Saikou Beta */ = {
 			isa = PBXGroup;
 			children = (
+				E937CB7529A402D000714848 /* Extensions */,
 				E98FE211299986E800909E8D /* UserData.xcdatamodeld */,
 				E98FE1FF299948A000909E8D /* Components */,
 				E98FE1F22999406A00909E8D /* Errors */,
@@ -201,6 +279,7 @@
 				E95E84EB298EA1100051D834 /* Saikou_Beta.entitlements */,
 				E95E84EC298EA1100051D834 /* Preview Content */,
 				E98FE1C529959A8F00909E8D /* Notifications.swift */,
+				E937CB8429A4040B00714848 /* MacOSApplicationEntry.swift */,
 			);
 			path = "Saikou Beta";
 			sourceTree = "<group>";
@@ -246,6 +325,7 @@
 				E98FE1D02999398800909E8D /* InfoViewModel.swift */,
 				E98FE1FB299946CC00909E8D /* SearchViewModel.swift */,
 				E98FE1FD299947D800909E8D /* WatchViewModel.swift */,
+				E937CB6029A4009500714848 /* PlayerViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -253,6 +333,7 @@
 		E98FE1C92999375C00909E8D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E937CB6A29A4022300714848 /* Watch */,
 				E98FE2142999A93900909E8D /* UserListData */,
 				E98FE1ED29993B9100909E8D /* Search */,
 				E98FE1E629993B5400909E8D /* VoiceActor */,
@@ -308,6 +389,10 @@
 			isa = PBXGroup;
 			children = (
 				E95E8516298EEB5F0051D834 /* Watch.swift */,
+				E937CB6229A400F200714848 /* Player.swift */,
+				E937CB7129A4029C00714848 /* CustomControlsView.swift */,
+				E937CB8029A4037200714848 /* CustomPlayerWithControls.swift */,
+				E937CB8229A4039B00714848 /* Loading.swift */,
 			);
 			path = Watch;
 			sourceTree = "<group>";
@@ -350,6 +435,9 @@
 				E98FE206299952C400909E8D /* EpisodeCard.swift */,
 				E98FE20A2999683700909E8D /* FillAspectImage.swift */,
 				E9136E69299D60E500B46D72 /* AnimeCard.swift */,
+				E937CB6429A4012A00714848 /* CustomVideoPlayer.swift */,
+				E937CB6829A401B300714848 /* UISliderView.swift */,
+				E937CB7329A402B100714848 /* SettingsOption.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -365,6 +453,40 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		E937CB4429A3FF6100714848 /* SaikouSwiftiOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E937CB5E29A3FF6100714848 /* Build configuration list for PBXNativeTarget "SaikouSwiftiOSTests" */;
+			buildPhases = (
+				E937CB4129A3FF6100714848 /* Sources */,
+				E937CB4229A3FF6100714848 /* Frameworks */,
+				E937CB4329A3FF6100714848 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SaikouSwiftiOSTests;
+			productName = SaikouSwiftiOSTests;
+			productReference = E937CB4529A3FF6100714848 /* SaikouSwiftiOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		E937CB4E29A3FF6100714848 /* SaikouSwiftiOSUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E937CB5F29A3FF6100714848 /* Build configuration list for PBXNativeTarget "SaikouSwiftiOSUITests" */;
+			buildPhases = (
+				E937CB4B29A3FF6100714848 /* Sources */,
+				E937CB4C29A3FF6100714848 /* Frameworks */,
+				E937CB4D29A3FF6100714848 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SaikouSwiftiOSUITests;
+			productName = SaikouSwiftiOSUITests;
+			productReference = E937CB4F29A3FF6100714848 /* SaikouSwiftiOSUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		E95E84E1298EA10F0051D834 /* Saikou Beta */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E95E8507298EA1100051D834 /* Build configuration list for PBXNativeTarget "Saikou Beta" */;
@@ -435,6 +557,14 @@
 				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1400;
 				TargetAttributes = {
+					E937CB4429A3FF6100714848 = {
+						CreatedOnToolsVersion = 14.0;
+						TestTargetID = E937CB3529A3FF5F00714848;
+					};
+					E937CB4E29A3FF6100714848 = {
+						CreatedOnToolsVersion = 14.0;
+						TestTargetID = E937CB3529A3FF5F00714848;
+					};
 					E95E84E1298EA10F0051D834 = {
 						CreatedOnToolsVersion = 14.0;
 					};
@@ -471,11 +601,27 @@
 				E95E84E1298EA10F0051D834 /* Saikou Beta */,
 				E95E84F2298EA1100051D834 /* Saikou BetaTests */,
 				E95E84FC298EA1100051D834 /* Saikou BetaUITests */,
+				E937CB4429A3FF6100714848 /* SaikouSwiftiOSTests */,
+				E937CB4E29A3FF6100714848 /* SaikouSwiftiOSUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		E937CB4329A3FF6100714848 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E937CB4D29A3FF6100714848 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E95E84E0298EA10F0051D834 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -502,6 +648,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		E937CB4129A3FF6100714848 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E937CB4B29A3FF6100714848 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E95E84DE298EA10F0051D834 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -513,17 +673,27 @@
 				E98FE1FE299947D800909E8D /* WatchViewModel.swift in Sources */,
 				E98FE1EA29993B7700909E8D /* Related.swift in Sources */,
 				E98FE1EC29993B8500909E8D /* Recommended.swift in Sources */,
+				E937CB8529A4040B00714848 /* MacOSApplicationEntry.swift in Sources */,
 				E98FE1C629959A8F00909E8D /* Notifications.swift in Sources */,
 				E95E8528298EECFB0051D834 /* DataController.swift in Sources */,
 				E9136E6A299D60E500B46D72 /* AnimeCard.swift in Sources */,
 				E98FE207299952C400909E8D /* EpisodeCard.swift in Sources */,
 				E95E8525298EECDB0051D834 /* HostingController.swift in Sources */,
+				E937CB8329A4039B00714848 /* Loading.swift in Sources */,
 				E98FE2162999A94E00909E8D /* UserListAnime.swift in Sources */,
 				E98FE20F299986D100909E8D /* UserDataStorageService.swift in Sources */,
+				E937CB7D29A4032500714848 /* source.swift in Sources */,
+				E937CB8129A4037200714848 /* CustomPlayerWithControls.swift in Sources */,
+				E937CB7429A402B100714848 /* SettingsOption.swift in Sources */,
+				E937CB6729A4017E00714848 /* Media.swift in Sources */,
 				E98FE201299948BB00909E8D /* Dropdown.swift in Sources */,
 				E98FE20329994FFD00909E8D /* ContinueWatchingCard.swift in Sources */,
+				E937CB6929A401B300714848 /* UISliderView.swift in Sources */,
 				E98FE1D629993AAE00909E8D /* InfoData.swift in Sources */,
+				E937CB6E29A4024E00714848 /* SettingsNames.swift in Sources */,
 				E95E8524298EECDB0051D834 /* AppDelegate.swift in Sources */,
+				E937CB7929A4030500714848 /* StreamData.swift in Sources */,
+				E937CB6C29A4023700714848 /* Subtitle.swift in Sources */,
 				E95E84E8298EA10F0051D834 /* Info.swift in Sources */,
 				E98FE20B2999683700909E8D /* FillAspectImage.swift in Sources */,
 				E98FE1E829993B6900909E8D /* VoiceActor.swift in Sources */,
@@ -534,18 +704,26 @@
 				E98FE1E329993B3F00909E8D /* Character.swift in Sources */,
 				E98FE1DA29993AE300909E8D /* Date.swift in Sources */,
 				E98FE209299966C500909E8D /* TopView.swift in Sources */,
+				E937CB7F29A4034000714848 /* subtitleData.swift in Sources */,
 				E95E8517298EEB5F0051D834 /* Watch.swift in Sources */,
 				E98FE1FC299946CC00909E8D /* SearchViewModel.swift in Sources */,
 				E98FE1DF29993B1400909E8D /* Trailer.swift in Sources */,
+				E937CB7029A4028000714848 /* SubtitleStyles.swift in Sources */,
 				E98FE205299950FA00909E8D /* EpisodePaginationChip.swift in Sources */,
 				E98FE1F42999407F00909E8D /* AnilistFetchError.swift in Sources */,
+				E937CB6129A4009500714848 /* PlayerViewModel.swift in Sources */,
 				E98FE1DC29993AF400909E8D /* AiringDate.swift in Sources */,
 				E98FE1FA2999429800909E8D /* EpisodeFetchResult.swift in Sources */,
 				E98FE1F129993BB700909E8D /* SearchData.swift in Sources */,
+				E937CB6529A4012A00714848 /* CustomVideoPlayer.swift in Sources */,
 				E98FE1E129993B2C00909E8D /* Episode.swift in Sources */,
 				E95E852C298EF0C50051D834 /* Search.swift in Sources */,
+				E937CB7229A4029C00714848 /* CustomControlsView.swift in Sources */,
 				E98FE1CF299938B000909E8D /* AnilistRepository.swift in Sources */,
 				E98FE1F8299941E300909E8D /* SearchFetchResult.swift in Sources */,
+				E937CB7B29A4031800714848 /* header.swift in Sources */,
+				E937CB6329A400F200714848 /* Player.swift in Sources */,
+				E937CB7729A402DF00714848 /* PopUp.swift in Sources */,
 				E95E8526298EECDB0051D834 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -583,6 +761,90 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		E937CB5929A3FF6100714848 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.inumaki.SaikouSwiftiOSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaikouSwiftiOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SaikouSwiftiOS";
+			};
+			name = Debug;
+		};
+		E937CB5A29A3FF6100714848 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.inumaki.SaikouSwiftiOSTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaikouSwiftiOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SaikouSwiftiOS";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E937CB5B29A3FF6100714848 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.inumaki.SaikouSwiftiOSUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SaikouSwiftiOS;
+			};
+			name = Debug;
+		};
+		E937CB5C29A3FF6100714848 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A9QQBWPHB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.inumaki.SaikouSwiftiOSUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SaikouSwiftiOS;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		E95E8505298EA1100051D834 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -726,7 +988,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.inumaki.Saikou-Beta";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -767,7 +1031,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.inumaki.Saikou-Beta";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -867,6 +1133,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E937CB5E29A3FF6100714848 /* Build configuration list for PBXNativeTarget "SaikouSwiftiOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E937CB5929A3FF6100714848 /* Debug */,
+				E937CB5A29A3FF6100714848 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E937CB5F29A3FF6100714848 /* Build configuration list for PBXNativeTarget "SaikouSwiftiOSUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E937CB5B29A3FF6100714848 /* Debug */,
+				E937CB5C29A3FF6100714848 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E95E84DD298EA10F0051D834 /* Build configuration list for PBXProject "Saikou Beta" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

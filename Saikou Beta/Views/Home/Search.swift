@@ -220,12 +220,12 @@ struct RoundedCornersShape: Shape {
     }
 }
 
+
 extension View {
     func roundedCorners(radius: CGFloat, corners: RectCorner) -> some View {
         clipShape( RoundedCornersShape(radius: radius, corners: corners) )
     }
 }
-
 struct RoundCorner: Shape {
     
     // MARK: - PROPERTIES
@@ -362,13 +362,19 @@ struct Search: View {
             let (data, _) = try await URLSession.shared.data(for: request)
             do {
                 let data = try JSONDecoder().decode(userInfoData.self, from: data)
-                user = userData(id: data.data.Viewer.id, name: data.data.Viewer.name, avatar: data.data.Viewer.avatar.large, banner: data.data.Viewer.bannerImage, episodesWatched: data.data.Viewer.statistics.anime.episodesWatched)
+                user = userData(id: data.data.Viewer.id, name: data.data.Viewer.name, avatar: data.data.Viewer.avatar.large, banner: data.data.Viewer.bannerImage ?? "", episodesWatched: data.data.Viewer.statistics.anime.episodesWatched)
                 await getUserLists()
             } catch let error {
                 print(error.localizedDescription)
+                debugText = error.localizedDescription
+                debugTitle = "User data parsing failed"
+                showDebug = true
             }
         } catch let error {
             print(error.localizedDescription)
+            debugText = error.localizedDescription
+            debugTitle = "User Data fecthing failed"
+            showDebug = true
         }
         
        //task.resume()
@@ -455,9 +461,15 @@ struct Search: View {
                 } catch let error {
                     print(error.localizedDescription)
                     print(error)
+                    debugText = error.localizedDescription
+                    debugTitle = "User list parsing Failed"
+                    showDebug = true
                 }
             } catch let error {
                 print(error.localizedDescription)
+                debugText = error.localizedDescription
+                debugTitle = "User list Fetching Failed"
+                showDebug = true
             }
         }
         
@@ -479,9 +491,16 @@ struct Search: View {
             print(userStorageData)
         } catch let error {
             print(error.localizedDescription)
+            debugText = error.localizedDescription
+            debugTitle = "Storing Failed"
+            showDebug = true
         }
         
     }
+    
+    @State var showDebug = false
+    @State var debugTitle = ""
+    @State var debugText = ""
     
     var body: some View {
         NavigationView {
@@ -631,7 +650,12 @@ struct Search: View {
                                                                     .padding(.horizontal, 8)
                                                             }
                                                             .fixedSize()
-                                                            .cornerRadius(30, corners: [.topLeft])
+                                                            .clipShape(
+                                                                RoundCorner(
+                                                                    cornerRadius: 30,
+                                                                    maskedCorners: [.topLeft]
+                                                                )//OUR CUSTOM SHAPE
+                                                            )
                                                         }
                                                         .frame(maxWidth: 110, maxHeight: 160)
                                                         .cornerRadius(12)
@@ -976,9 +1000,39 @@ struct Search: View {
                                             Task {
                                                 setAccessToken(token: output.userInfo!["myText"]! as! String)
                                                 await getUserData()
+                                                //showDebug = true
                                             }
                                         }
-                                        
+                                    }
+                                    
+                                    Button(action: {
+                                        Task {
+                                            let fetchRequest1: NSFetchRequest<NSFetchRequestResult> = UserStorageInfo.fetchRequest()
+                                            let batchDeleteRequest1 = NSBatchDeleteRequest(fetchRequest: fetchRequest1)
+                                            _ = try? moc.execute(batchDeleteRequest1)
+                                        }
+                                    }) {
+                                        ZStack {
+                                            Color(hex: "#D65050")
+                                            
+                                            HStack {
+                                                Image("anilist")
+                                                    .resizable()
+                                                    .frame(maxWidth: 20, maxHeight: 15)
+                                                    .foregroundColor(Color(hex: "#ffc5e5"))
+                                                    .padding(.leading, 30)
+                                                
+                                                Text("Remove Stored Data")
+                                                    .fontWeight(.heavy)
+                                                    .foregroundColor(Color(hex: "#ffc5e5"))
+                                                    .padding(.vertical, 20)
+                                                    .padding(.trailing, 50)
+                                                    .padding(.leading, 30)
+                                            }
+                                        }
+                                        .fixedSize()
+                                        .cornerRadius(16)
+                                        .padding(.vertical, 28)
                                     }
                                 }
                                 .frame(maxWidth: proxy.size.width)
@@ -1013,6 +1067,12 @@ struct Search: View {
                     .ignoresSafeArea()
                     .animation(.easeInOut)
                     .transition(.slide)
+                    .popover(isPresented: $showDebug) {
+                        VStack {
+                            Text(debugTitle)
+                            Text(debugText)
+                        }
+                    }
                     
                     ZStack {
                         ZStack {
@@ -1099,7 +1159,9 @@ struct Search: View {
             .ignoresSafeArea()
             .preferredColorScheme(.dark)
         }
+        #if os(iOS)
         .navigationViewStyle(.stack)
+        #endif
         .navigationBarBackButtonHidden(true)
         .overlay {
             VStack {
@@ -1130,6 +1192,12 @@ struct Search: View {
             .ignoresSafeArea()
             .opacity(anilist.error != nil ? 1.0 : 0.0)
             .animation(.spring(response: 0.3))
+            .onAppear {
+                Task {
+                    try? await Task.sleep(nanoseconds: 4_000_000_000)
+                    anilist.error = nil
+                }
+            }
         }
     }
 }

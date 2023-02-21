@@ -21,7 +21,10 @@ class HostingController: UIHostingController<AnyView> {
     private var _supportedInterfaceOrientations = UIInterfaceOrientationMask.all {
         didSet {
             if #available(iOS 16, *) {
+                #if targetEnvironment(macCatalyst)
+                #else
                 setNeedsUpdateOfSupportedInterfaceOrientations()
+                #endif
             } else {
                 UIView.performWithoutAnimation {
                     if _supportedInterfaceOrientations.contains(.portrait) {
@@ -97,3 +100,4 @@ extension View {
         preference(key: SupportedOrientationPreferenceKey.self, value: orientation)
     }
 }
+
