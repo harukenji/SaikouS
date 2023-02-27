@@ -16,7 +16,8 @@ struct AnilistInfoTopBanner: View {
         ZStack(alignment: .bottom) {
             GeometryReader { reader in
                 FillAspectImage(
-                    url: URL(string: user.banner)
+                    url: URL(string: user.banner),
+                    doesAnimateHorizontal: false
                 )
                 .frame(
                     width: reader.size.width,

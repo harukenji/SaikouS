@@ -35,6 +35,26 @@ final class AnilistApiService: AnilistApiServiceProtocol {
         }
     }
     
+    func recentEpisodes(completion: (RecentFetchResult) -> Void) async {
+        guard let url = URL(string: "\(baseUrl)/recent-episodes") else {
+            completion(.failure(error: AnilistFetchError.invalidUrlProvided))
+            return
+        }
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            do {
+                let data = try JSONDecoder().decode(RecentResults.self, from: data)
+                completion(.success(data: data))
+            } catch let error {
+                print(error)
+                completion(.failure(error: AnilistFetchError.dataParsingFailed(reason: error)))
+            }
+            
+        } catch {
+            completion(.failure(error: AnilistFetchError.dataLoadFailed))
+        }
+    }
+    
     func fetchInfo(id: String, provider: String, completion: (InfoFetchResult) -> Void) async {
         guard let url = URL(string: "\(baseUrl)/data/\(id)?fetchFiller=true&provider=\(provider)") else {
             completion(.failure(error: AnilistFetchError.invalidUrlProvided))

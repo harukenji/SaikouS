@@ -95,7 +95,7 @@ struct CustomControlsView: View {
             .padding(.bottom, 40)
             
             ZStack(alignment: .bottomTrailing) {
-                Color.black.opacity(0.7)
+                Color.black.opacity(showUI ? 0.7 : 0.0)
                 
                 Button(action: {
                     playerVM.isEditingCurrentTime = true
@@ -116,6 +116,7 @@ struct CustomControlsView: View {
                 .padding(.trailing, 4)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .opacity(showUI ? 0.1 : 0.0)
             
             ZStack(alignment: .trailing) {
                 HStack {

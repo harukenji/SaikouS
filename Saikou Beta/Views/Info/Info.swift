@@ -402,7 +402,9 @@ struct Info: View {
                                         .onChange(of: isOn) { value in
                                             Task {
                                                 await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
-                                                self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                if(viewModel.episodedata != nil) {
+                                                    self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                }
                                                 viewModel.infodata!.episodes = viewModel.episodedata
                                             }
                                         }
@@ -626,7 +628,7 @@ struct Info: View {
                                                 .padding(.top, 12)
                                                 
                                                 
-                                                if(viewModel.episodedata != nil) {
+                                                if(viewModel.episodedata != nil && viewModel.episodedata!.count > 0) {
                                                     ContinueWatchingCard(image: viewModel.episodedata![0].image, title: viewModel.episodedata![0].title ?? "Title", width: proxy.size.width)
                                                     
                                                     if(viewModel.episodedata!.count > 50) {

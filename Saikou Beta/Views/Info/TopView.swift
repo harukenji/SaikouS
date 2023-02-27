@@ -20,7 +20,8 @@ struct TopView: View {
         ZStack(alignment: .bottom) {
             GeometryReader { reader in
                 FillAspectImage(
-                    url: URL(string: cover)
+                    url: URL(string: cover),
+                    doesAnimateHorizontal: true
                 )
                 .frame(
                     width: reader.size.width,

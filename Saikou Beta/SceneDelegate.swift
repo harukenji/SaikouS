@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = HostingController(
                 wrappedView:
-                    Search()
+                    FakeHome()
                         .environment(\.managedObjectContext, dataController.container.viewContext)
             )
             self.window = window

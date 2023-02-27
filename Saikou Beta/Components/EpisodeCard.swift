@@ -51,7 +51,7 @@ struct EpisodeCard: View {
                             KFImage(URL(string: image))
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: 170)
+                                .frame(maxWidth: 170, maxHeight: 170 / 16 * 9)
                                 .cornerRadius(12)
                             
                             Text(title)

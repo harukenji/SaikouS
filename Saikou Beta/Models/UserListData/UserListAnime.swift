@@ -64,8 +64,8 @@ struct AnimeMedia: Codable {
     let id: Int
     let title: Title
     let coverImage: CoverImage
-    let episodes: Int
-    let averageScore: Int
+    let episodes: Int?
+    let averageScore: Int?
 }
 
 struct CoverImage: Codable {
