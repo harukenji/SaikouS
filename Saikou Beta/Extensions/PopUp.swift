@@ -12,10 +12,12 @@ extension View {
     
     public func popup<PopupContent: View>(
         isPresented: Binding<Bool>,
+        isHorizontal: Bool,
         view: @escaping () -> PopupContent) -> some View {
             self.modifier(
                 Popup(
                     isPresented: isPresented,
+                    isHorizontal: isHorizontal,
                     view: view)
             )
         }
@@ -23,14 +25,16 @@ extension View {
 
 public struct Popup<PopupContent>: ViewModifier where PopupContent: View {
     
-    init(isPresented: Binding<Bool>,
+    init(isPresented: Binding<Bool>,isHorizontal: Bool,
          view: @escaping () -> PopupContent) {
         self._isPresented = isPresented
+        self.isHorizontal = isHorizontal
         self.view = view
     }
     
     /// Controls if the sheet should be presented or not
     @Binding var isPresented: Bool
+    var isHorizontal: Bool
     
     /// The content to present
     var view: () -> PopupContent
@@ -44,7 +48,11 @@ public struct Popup<PopupContent>: ViewModifier where PopupContent: View {
     
     /// The offset when the popup is displayed
     private var displayedOffset: CGFloat {
-        screenHeight - presenterContentRect.midY - 168
+        if (!isHorizontal) {
+            return screenHeight - presenterContentRect.midY - 168
+        } else {
+            return screenWidth - presenterContentRect.width + 150
+        }
     }
     
     /// The offset when the popup is hidden
@@ -52,7 +60,11 @@ public struct Popup<PopupContent>: ViewModifier where PopupContent: View {
         if presenterContentRect.isEmpty {
             return 1000
         }
-        return screenHeight - presenterContentRect.midY + sheetContentRect.height/2 + 5
+        if(!isHorizontal) {
+            return screenHeight - presenterContentRect.midY + sheetContentRect.height/2 + 5
+        } else {
+            return presenterContentRect.width
+        }
     }
     
     /// The current offset, based on the "presented" property
@@ -74,14 +86,23 @@ public struct Popup<PopupContent>: ViewModifier where PopupContent: View {
                 .frameGetter($presenterContentRect)
         }
         .overlay(sheet())
+        .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                            .onEnded({ value in
+                                if isHorizontal && value.translation.width > 0 {
+                                    dismiss()
+                                }
+                                if !isHorizontal && value.translation.height > 0 {
+                                    dismiss()
+                                }
+                            }))
     }
     
     func sheet() -> some View {
         ZStack {
             self.view()
                 .frameGetter($sheetContentRect)
-                .frame(width: screenWidth)
-                .offset(x: 0, y: currentOffset)
+                .frame(width: isHorizontal ? nil : screenWidth, height: isHorizontal ? screenHeight : nil)
+                .offset(x: isHorizontal ? currentOffset : 0, y: isHorizontal ? -(screenHeight / 2 - 50) : currentOffset)
                 .animation(Animation.spring(response: 0.3), value: currentOffset)
         }
     }

@@ -43,8 +43,8 @@ public struct FillAspectImage: View {
                 }
                 .resizable()
                 .scaledToFill()
-                .offset(x: offset)
-                .animation(doesAnimateHorizontal! ? .easeInOut(duration: 22) : nil, value: animLeft)
+                .offset(x: doesAnimateHorizontal! == true ? offset : 0)
+                .animation(doesAnimateHorizontal! == true ? .easeInOut(duration: 22) : nil, value: animLeft)
                 .transition(.opacity)
                 .opacity(finishedLoading ? 1.0 : 0.0)
                 .background(Color(white: 0.05))

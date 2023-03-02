@@ -14,6 +14,7 @@ struct CustomPlayerWithControls: View {
     var episodeIndex: Int
     var provider: String?
     var episodedata: [Episode]
+    var viewModel: WatchViewModel
     @StateObject var streamApi = StreamApi()
     @State var doneLoading = false
     @State var showUI: Bool = true
@@ -24,11 +25,14 @@ struct CustomPlayerWithControls: View {
     
     @StateObject private var playerVM = PlayerViewModel()
     
-    init(animeData: InfoData?, episodeIndex: Int, provider: String?, episodedata: [Episode]) {
+    init(animeData: InfoData?, episodeIndex: Int, provider: String?, episodedata: [Episode], viewModel: WatchViewModel) {
         self.animeData = animeData
         self.episodeIndex = episodeIndex
         self.provider = provider
         self.episodedata = episodedata
+        self.viewModel = viewModel
+        
+        print(viewModel.skiptimes)
         
         // we need this to use Picture in Picture
         let audioSession = AVAudioSession.sharedInstance()
@@ -97,7 +101,7 @@ struct CustomPlayerWithControls: View {
                                             
                                         }
                                     )
-                                    .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, episodedata: episodedata, qualityIndex: resIndex, showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
+                                    .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, episodedata: episodedata, viewModel: viewModel, qualityIndex: resIndex, showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
                                                 , alignment: .bottom)
                             }
                                 .padding(.horizontal, 60)
@@ -233,7 +237,7 @@ struct CustomPlayerWithControls: View {
                                             
                                         }
                                     )
-                                    .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, episodedata: episodedata, qualityIndex: resIndex, showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
+                                    .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, episodedata: episodedata, viewModel: viewModel, qualityIndex: resIndex,showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
                                              , alignment: .bottom)
                             }
                             .padding(.horizontal, 60)
@@ -254,7 +258,7 @@ struct CustomPlayerWithControls: View {
                         
                         if(streamApi.streamdata != nil && streamApi.streamdata!.sources != nil) {
                             for i in 0..<streamApi.streamdata!.sources!.count {
-                                if (self.streamApi.streamdata!.sources![i].quality! == "1080p" || self.streamApi.streamdata!.sources![i].quality! == "1080") {
+                                if (self.streamApi.streamdata!.sources![i].quality! == "480p" || self.streamApi.streamdata!.sources![i].quality! == "480") {
                                     resIndex = i
                                 }
                             }

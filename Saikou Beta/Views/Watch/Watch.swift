@@ -60,6 +60,7 @@ struct WatchPage: View {
     var provider: String?
     var episodedata: [Episode]
     @Environment(\.presentationMode) var presentation
+    @StateObject private var viewModel = WatchViewModel()
     @StateObject var infoApi = Anilist()
     @State private var isPresented = false
     
@@ -75,7 +76,7 @@ struct WatchPage: View {
         if #available(iOS 16, *) {
             
             return ZStack {
-                CustomPlayerWithControls(animeData: animeData, episodeIndex: episodeIndex, provider: provider, episodedata: episodedata)
+                CustomPlayerWithControls(animeData: animeData, episodeIndex: episodeIndex, provider: provider, episodedata: episodedata, viewModel: viewModel)
                     .navigationBarBackButtonHidden(true)
                     .contentShape(Rectangle())
                     .ignoresSafeArea(.all)
@@ -87,14 +88,20 @@ struct WatchPage: View {
             .edgesIgnoringSafeArea(.all)
             .supportedOrientation(.landscape)
             .prefersHomeIndicatorAutoHidden(true)
+            .onAppear {
+                viewModel.onAppear(id: anilistId!, provider: self.provider!, dubbed: false, malId: animeData!.malId ?? 0, episodeNumber: episodedata[episodeIndex].number ?? 1)
+            }
         } else {
-            return CustomPlayerWithControls(animeData: animeData!, episodeIndex: episodeIndex, provider: provider, episodedata: episodedata)
+            return CustomPlayerWithControls(animeData: animeData!, episodeIndex: episodeIndex, provider: provider, episodedata: episodedata, viewModel: viewModel)
                 .contentShape(Rectangle())
                 .ignoresSafeArea(.all)
                 .edgesIgnoringSafeArea(.all)
                 .navigationBarBackButtonHidden(true)
                 .supportedOrientation(.landscape)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .onAppear {
+                    viewModel.onAppear(id: anilistId!, provider: self.provider!, dubbed: false, malId: animeData!.malId ?? 0, episodeNumber: episodedata[episodeIndex].number ?? 1)
+                }
         }
     }
 }

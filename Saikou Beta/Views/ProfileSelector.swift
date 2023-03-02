@@ -77,142 +77,234 @@ private struct SizePreferenceKey: PreferenceKey {
 }
 
 struct profileData : Codable, Hashable {
+    let id: String
     let image: String
     let profileName: String
+}
+
+struct ScrollingHStackModifier: ViewModifier {
+    
+    @State private var scrollOffset: CGFloat
+    @State private var dragOffset: CGFloat
+    
+    var items: Int
+    var itemWidth: CGFloat
+    var itemSpacing: CGFloat
+    
+    init(items: Int, itemWidth: CGFloat, itemSpacing: CGFloat) {
+        self.items = items
+        self.itemWidth = itemWidth
+        self.itemSpacing = itemSpacing
+        
+        // Calculate Total Content Width
+        let contentWidth: CGFloat = CGFloat(items) * itemWidth + CGFloat(items - 1) * itemSpacing
+        let screenWidth = UIScreen.main.bounds.width
+        
+        // Set Initial Offset to first Item
+        let initialOffset = (contentWidth/2.0) - (screenWidth/2.0) + ((screenWidth - itemWidth) / 2.0)
+        
+        self._scrollOffset = State(initialValue: initialOffset)
+        self._dragOffset = State(initialValue: 0)
+    }
+    
+    func body(content: Content) -> some View {
+        content
+            .offset(x: scrollOffset + dragOffset, y: 0)
+            .gesture(DragGesture()
+                .onChanged({ event in
+                    dragOffset = event.translation.width
+                })
+                    .onEnded({ event in
+                        // Scroll to where user dragged
+                        scrollOffset += event.translation.width
+                        dragOffset = 0
+                        
+                        // Now calculate which item to snap to
+                        let contentWidth: CGFloat = CGFloat(items) * itemWidth + CGFloat(items - 1) * itemSpacing
+                        let screenWidth = UIScreen.main.bounds.width
+                        
+                        // Center position of current offset
+                        let center = scrollOffset + (screenWidth / 2.0) + (contentWidth / 2.0)
+                        
+                        // Calculate which item we are closest to using the defined size
+                        var index = (center - (screenWidth / 2.0)) / (itemWidth + itemSpacing)
+                        
+                        // Should we stay at current index or are we closer to the next item...
+                        if index.remainder(dividingBy: 1) > 0.5 {
+                            index += 1
+                        } else {
+                            index = CGFloat(Int(index))
+                        }
+                        
+                        // Protect from scrolling out of bounds
+                        index = min(index, CGFloat(items) - 1)
+                        index = max(index, 0)
+                        
+                        // Set final offset (snapping to item)
+                        let newOffset = index * itemWidth + (index - 1) * itemSpacing - (contentWidth / 2.0) + (screenWidth / 2.0) - ((screenWidth - itemWidth) / 2.0) + itemSpacing
+                        
+                        // Animate snapping
+                        withAnimation {
+                            scrollOffset = newOffset
+                        }
+                        
+                    })
+            )
+    }
 }
 
 struct ProfileSelector: View {
     
     @Environment(\.managedObjectContext) var moc
     
-    let columns = [
-        GridItem(.adaptive(minimum: 140), alignment: .center)
-    ]
+    @State private var selectedItem = 1
     
     let data = [
-        profileData(image: "anime_pfp_boy_1", profileName: "Profile 1"),
-        profileData(image: "anime_pfp_boy_2", profileName: "Profile 2"),
-        profileData(image: "anime_pfp_girl_1", profileName: "Profile 3"),
+        profileData(id: "1",image: "anime_pfp_boy_1", profileName: "Profile 1"),
+        profileData(id: "2",image: "anime_pfp_boy_2", profileName: "Profile 2"),
+        profileData(id: "3",image: "anime_pfp_girl_1", profileName: "Profile 3"),
     ]
     
     @Namespace var animation
     
     @State var showHome = false
-    @State var selectedProfile: profileData = profileData(image: "anime_pfp_boy_1", profileName: "Profile 1")
+    @State var selectedProfile: profileData?
     
     
     var body: some View {
-        NavigationView {
-            GeometryReader { proxy in
-                ZStack(alignment: .top) {
-                    Color(.black)
+        GeometryReader { proxy in
+            ZStack(alignment: .top) {
+                Color(.black)
+                
+                VStack {
+                    Text("Who is watching?")
+                        .font(.system(size: 18, weight: .heavy))
+                        .padding(.top, 100)
                     
-                    VStack {
-                        Text("Who is watching?")
+                    Spacer()
+                    
+                    FlexibleView(
+                        availableWidth: proxy.size.width, data: data,
+                        spacing: 20,
+                        alignment: .center
+                    ) { profile in
+                        Button {
+                            withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.7, blendDuration: 0.7)){
+                                showHome = true
+                                selectedProfile = profile
+                            }
+                        } label: {
+                            ProfileCard(profile: profile)
+                                .scaleEffect(selectedProfile?.id == profile.id && showHome ? 0.3 : 1)
+                        }
+                        .buttonStyle(ScaledButtonStyle())
+                    }
+                    .padding(.horizontal, 20)
+                    
+                    
+                    Spacer()
+                    
+                    Button(action: {}) {
+                        Text("Add new Profile")
+                            .foregroundColor(Color(hex: "#FF5DAE"))
                             .font(.system(size: 18, weight: .heavy))
-                            .padding(.top, 100)
-                        
-                        Spacer()
-                        
-                        FlexibleView(
-                            availableWidth: proxy.size.width, data: data,
-                            spacing: 20,
-                            alignment: .center
-                        ) { profile in
-                            
-                            VStack {
-                                Button(action: {
-                                    withAnimation(.spring(response: 0.6, dampingFraction: 0.7, blendDuration: 0.7)){
-                                        showHome = true
-                                        selectedProfile = profile
-                                    }
-                                }) {
-                                    Image(profile.image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(maxWidth: 140, maxHeight: 140)
-                                        .cornerRadius(24)
-                                        .matchedGeometryEffect(id: profile.image, in: animation)
-                                }
-                                
-                                Text(verbatim: profile.profileName)
-                                    .foregroundColor(.white)
-                            }
-                            
-                        }
-                        .padding(.horizontal, 20)
-                        
-                        
-                        Spacer()
-                        
-                        Button(action: {}) {
-                            Text("Add new Profile")
-                                .foregroundColor(Color(hex: "#FF5DAE"))
-                                .font(.system(size: 18, weight: .heavy))
-                                .padding(.vertical, 20)
-                                .padding(.horizontal, 20)
-                                .frame(maxWidth: proxy.size.width - 80)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                                )
-                        }
-                        
-                        Button(action: {
-                            Task {
-                                let fetchRequest1: NSFetchRequest<NSFetchRequestResult> = UserStorageInfo.fetchRequest()
-                                let batchDeleteRequest1 = NSBatchDeleteRequest(fetchRequest: fetchRequest1)
-                                _ = try? moc.execute(batchDeleteRequest1)
-                            }
-                        }) {
-                            ZStack {
-                                Color(hex: "#D65050")
-                                
-                                HStack {
-                                    Image("anilist")
-                                        .resizable()
-                                        .frame(maxWidth: 20, maxHeight: 15)
-                                        .foregroundColor(Color(hex: "#ffc5e5"))
-                                        .padding(.leading, 30)
-                                    
-                                    Text("Remove Stored Data")
-                                        .fontWeight(.heavy)
-                                        .foregroundColor(Color(hex: "#ffc5e5"))
-                                        .padding(.vertical, 20)
-                                        .padding(.trailing, 50)
-                                        .padding(.leading, 30)
-                                }
-                            }
-                            .cornerRadius(16)
-                            .padding(.horizontal, 40)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .padding(.vertical, 28)
-                        }
-                        .padding(.bottom, 60)
+                            .padding(.vertical, 20)
+                            .padding(.horizontal, 20)
+                            .frame(maxWidth: proxy.size.width - 80)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                            )
                     }
-                }
-                .overlay {
-                    if(showHome) {
-                        VStack {
-                            Image(selectedProfile.image)
+                    
+                    Button(action: {
+                        Task {
+                            let fetchRequest1: NSFetchRequest<NSFetchRequestResult> = UserStorageInfo.fetchRequest()
+                            let batchDeleteRequest1 = NSBatchDeleteRequest(fetchRequest: fetchRequest1)
+                            _ = try? moc.execute(batchDeleteRequest1)
+                        }
+                    }) {
+                        ZStack {
+                            Color(hex: "#D65050")
+                            
+                            HStack {
+                                Image("anilist")
                                     .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(maxWidth: 140, maxHeight: 140)
-                                    .cornerRadius(24)
-                            
-                            Text(verbatim: selectedProfile.profileName)
-                                .foregroundColor(.white)
+                                    .frame(maxWidth: 20, maxHeight: 15)
+                                    .foregroundColor(Color(hex: "#ffc5e5"))
+                                    .padding(.leading, 30)
+                                
+                                Text("Remove Stored Data")
+                                    .fontWeight(.heavy)
+                                    .foregroundColor(Color(hex: "#ffc5e5"))
+                                    .padding(.vertical, 20)
+                                    .padding(.trailing, 50)
+                                    .padding(.leading, 30)
+                            }
                         }
-                        .transition(.identity)
-                        .onTapGesture {
-                            showHome = false
-                        }
+                        .cornerRadius(16)
+                        .padding(.horizontal, 40)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.vertical, 28)
                     }
+                    .padding(.bottom, 60)
                 }
             }
-            .ignoresSafeArea()
+            .overlay {
+                if let selectedProfile = selectedProfile, showHome {
+                    HomeView(profile: selectedProfile)
+                    
+                }
+            }
         }
-        .navigationViewStyle(.stack)
+        .ignoresSafeArea()
+    }
+    
+    @ViewBuilder
+    func ProfileCard(profile: profileData) -> some View {
+        VStack {
+            Image(profile.image)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: 140, maxHeight: 140)
+                .cornerRadius(24)
+            
+            Text(verbatim: profile.profileName)
+                .foregroundColor(.white)
+        }
+        .matchedGeometryEffect(id: profile.id, in: animation)
+    }
+    
+    func HomeView(profile: profileData) -> some View {
+        GeometryReader {proxy in
+            ZStack {
+                Color(.black)
+                    .opacity(selectedProfile?.id == profile.id && showHome ? 1.0 : 0.0)
+                    .animation(.easeInOut, value: selectedProfile?.id == profile.id && showHome)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack {
+                            HStack {
+                                Text("Inumaki")
+                                    .font(.system(size: 18, weight: .heavy))
+                                    .foregroundColor(.white)
+                                    .padding(.leading, 20)
+                                
+                                Spacer()
+                                
+                                ProfileCard(profile: profile)
+                                    .scaleEffect(selectedProfile?.id == profile.id && showHome ? 0.3 : 1)
+                            }
+                            .padding(.leading, 20)
+                        }
+                        .padding(.top, 20)
+                    }
+                    .frame(width: proxy.size.width)
+                }
+            }
+        }
+        .transition(.identity)
     }
 }
 

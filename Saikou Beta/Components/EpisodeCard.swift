@@ -64,7 +64,7 @@ struct EpisodeCard: View {
                     }
                     
                     Text(description)
-                        .lineLimit(self.lineLimitArray.count > 0 ? self.lineLimitArray[index] : 3)
+                        .lineLimit(self.lineLimitArray.count > 0 && index <= self.lineLimitArray.count  ? self.lineLimitArray[index] : 3)
                         .foregroundColor(.white.opacity(0.7))
                         .font(.system(size: 14, weight: .semibold))
                         .multilineTextAlignment(.leading)

@@ -1,4 +1,13 @@
 //
+//  MangaHome.swift
+//  Saikou Beta
+//
+//  Created by Inumaki on 02.03.23.
+//
+
+import SwiftUI
+
+//
 //  AnimeHome.swift
 //  Saikou Beta
 //
@@ -9,16 +18,16 @@ import SwiftUI
 import Kingfisher
 import ActivityIndicatorView
 
-struct AnimeHome: View {
+struct MangaHome: View {
     let proxy: GeometryProxy
-    @StateObject var viewModel: AnimeHomeViewModel = AnimeHomeViewModel()
+    @StateObject var viewModel: MangaHomeViewModel = MangaHomeViewModel()
     
     var body: some View {
         ScrollView {
                 ZStack(alignment: .top) {
                     Color(.black)
                     
-                    KFImage(URL(string: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/147864-wb2Qj3djHXEa.jpg"))
+                    KFImage(URL(string: "https://s4.anilist.co/file/anilistcdn/media/manga/banner/100994-mEIqjSzFKysR.jpg"))
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(maxWidth: proxy.size.width, maxHeight: 500)
@@ -31,12 +40,12 @@ struct AnimeHome: View {
                         
                         // input, which seems to just be a button
                         HStack {
-                            NavigationLink(destination: Search(proxy: proxy)) {
+                            NavigationLink(destination: MangaSearch(proxy: proxy)) {
                                 ZStack {
                                     Color(.black.withAlphaComponent(0.4))
                                     
                                     HStack {
-                                        Text("ANIME")
+                                        Text("MANGA")
                                             .foregroundColor(.white)
                                             .font(.system(size: 16, weight: .heavy))
                                             .padding(.vertical, 16)
@@ -83,7 +92,7 @@ struct AnimeHome: View {
                         VStack(alignment: .leading, spacing: 20) {
                             HStack(alignment: .bottom, spacing: 20) {
                                 ZStack(alignment: .bottomTrailing) {
-                                    KFImage(URL(string: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx147864-Idb77ylQTTBh.png"))
+                                    KFImage(URL(string: "https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx100994-f6CMjiQQNVeS.png"))
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
                                         .frame(width: 120, height: 190)
@@ -94,7 +103,7 @@ struct AnimeHome: View {
                                         Rectangle()
                                             .foregroundColor(Color(hex: "#C0ff5dae"))
                                         
-                                        Text("7.2")
+                                        Text("8.2")
                                             .font(.system(size: 14, weight: .heavy))
                                             .padding(.top, 8)
                                             .padding(.leading, 22)
@@ -114,25 +123,26 @@ struct AnimeHome: View {
                                 .clipped()
                                 
                                 VStack(alignment: .leading, spacing: 12) {
-                                    Text("Onii-chan wa Oshimai!")
+                                    Text("Jigokuraku")
                                         .font(.system(size: 18, weight: .heavy))
                                     
-                                    Text("Ongoing")
+                                    Text("Completed")
                                         .font(.system(size: 16, weight: .heavy))
                                         .foregroundColor(Color(hex: "#ff4caf"))
                                 }
                             }
                             
                             HStack {
-                                Text("8 / 12")
+                                Text("127 / 127")
                                     .font(.system(size: 16))
-                                + Text(" Episodes")
+                                + Text(" Chapters")
                                     .foregroundColor(.white.opacity(0.7))
                                     .font(.system(size: 16))
                                 Spacer()
-                                Text("Comedy • Slice of Life")
+                                Text("Action • Adventure • Mystery")
                                     .foregroundColor(.white.opacity(0.7))
                                     .font(.system(size: 16))
+                                    .frame(maxWidth: 150)
                             }
                             .padding(.trailing, 30)
                             
@@ -222,17 +232,17 @@ struct AnimeHome: View {
         .onAppear {
             Task {
                 print("Getting recent episodes")
-                await viewModel.fetchRecentEpisodes()
-                
+                await viewModel.fetchRecentChapters()
             }
         }
     }
 }
 
-struct AnimeHome_Previews: PreviewProvider {
+struct MangaHome_Previews: PreviewProvider {
     static var previews: some View {
         GeometryReader {proxy in
-            AnimeHome(proxy: proxy)
+            MangaHome(proxy: proxy)
         }
     }
 }
+

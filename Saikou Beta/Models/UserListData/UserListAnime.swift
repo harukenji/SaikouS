@@ -30,6 +30,11 @@ struct Avatar: Codable {
 
 struct Statistics: Codable {
     let anime: AnimeStatistics
+    let manga: MangaStatistics
+}
+
+struct MangaStatistics: Codable {
+    let chaptersRead: Int
 }
 
 struct AnimeStatistics: Codable {
@@ -69,6 +74,6 @@ struct AnimeMedia: Codable {
 }
 
 struct CoverImage: Codable {
-    let extraLarge: String
+    let extraLarge: String?
     let large: String
 }

@@ -11,11 +11,11 @@ import WebKit
 import AuthenticationServices
 import Combine
 
-struct Search: View {
+struct MangaSearch: View {
     let proxy: GeometryProxy
     @State var query = ""
     @StateObject var anilist: Anilist = Anilist()
-    @ObservedObject var viewModel: SearchViewModel = SearchViewModel()
+    @ObservedObject var viewModel: MangaSearchViewModel = MangaSearchViewModel()
     @State var focused = false
     
     @State var resultDisplayGrid = true
@@ -97,7 +97,7 @@ struct Search: View {
             ScrollView {
                 VStack {
                     ZStack {
-                        TextField("Search for an anime...", text: $query, onEditingChanged: { (editingChanged) in
+                        TextField("Search for a manga...", text: $query, onEditingChanged: { (editingChanged) in
                             focused = editingChanged
                             print(focused)
                         })
@@ -110,23 +110,21 @@ struct Search: View {
                                 .stroke(focused ? Color(hex: "#ff4cb0") : Color.white.opacity(0.7), lineWidth: focused ? 2 : 1)
                         )
                         .onSubmit {
-                            Task {
-                                await anilist.search(query: query.replacingOccurrences(of: " ", with: "%20"), year: selectedYear, season: selectedSeason, genres: selectedGenres, format: selectedFormat, sort_by: selectedSorting)
-                            }
+                            viewModel.onSearch(query: query, year: selectedYear, season: selectedSeason, genres: selectedGenres, format: selectedFormat, sort_by: selectedSorting)
                         }
                         .animation(.spring())
                         
                         ZStack {
                             Color(.black)
                             
-                            Text("ANIME")
+                            Text("MANGA")
                                 .font(.system(size: 14, weight: .heavy))
                                 .foregroundColor(focused ? Color(hex: "#ff4cb0") : Color(hex: "#8b8789"))
                                 .padding(.horizontal, 6)
                                 .animation(.spring())
                         }
                         .fixedSize()
-                        .padding(.trailing, 270)
+                        .padding(.trailing, 250)
                         .padding(.bottom, 46)
                         
                     }
@@ -186,20 +184,20 @@ struct Search: View {
                     }
                     .padding(.bottom, 20)
                     
-                    if(anilist.searchresults != nil) {
+                    if(viewModel.searchresults != nil) {
                         if(resultDisplayGrid) {
                             LazyVGrid(columns: columns, spacing: 20) {
-                                ForEach(0..<anilist.searchresults!.results.count) { index in
-                                    NavigationLink(destination: Info(id: anilist.searchresults!.results[index].id, type: "anime")) {
-                                        AnimeCard(image: anilist.searchresults!.results[index].image, rating: anilist.searchresults!.results[index].rating, title: anilist.searchresults!.results[index].title.english ?? anilist.searchresults!.results[index].title.romaji, currentEpisodeCount: anilist.searchresults!.results[index].currentEpisodeCount, totalEpisodes: anilist.searchresults!.results[index].totalEpisodes)
+                                ForEach(0..<viewModel.searchresults!.results.count) { index in
+                                    NavigationLink(destination: Info(id: viewModel.searchresults!.results[index].id, type: "manga")) {
+                                        AnimeCard(image: viewModel.searchresults!.results[index].image, rating: viewModel.searchresults!.results[index].rating, title: viewModel.searchresults!.results[index].title.english ?? viewModel.searchresults!.results[index].title.romaji, currentEpisodeCount: viewModel.searchresults!.results[index].currentEpisodeCount, totalEpisodes: viewModel.searchresults!.results[index].totalEpisodes)
                                     }
                                 }
                             }
                         } else {
-                            ForEach(0..<anilist.searchresults!.results.count) { index in
-                                NavigationLink(destination: Info(id: anilist.searchresults!.results[index].id, type: "anime")) {
+                            ForEach(0..<viewModel.searchresults!.results.count) { index in
+                                NavigationLink(destination: Info(id: viewModel.searchresults!.results[index].id, type: "manga")) {
                                     ZStack(alignment: .center) {
-                                        KFImage(URL(string: anilist.searchresults!.results[index].cover ?? anilist.searchresults!.results[index].image))
+                                        KFImage(URL(string: viewModel.searchresults!.results[index].cover ?? viewModel.searchresults!.results[index].image))
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
                                             .frame(width: proxy.size.width - 40, height: 200)
@@ -220,7 +218,7 @@ struct Search: View {
                                         
                                         HStack(alignment: .bottom) {
                                             ZStack(alignment: .bottomTrailing) {
-                                                KFImage(URL(string: anilist.searchresults!.results[index].image))
+                                                KFImage(URL(string: viewModel.searchresults!.results[index].image))
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fill)
                                                     .frame(width: 110, height: 160)
@@ -231,7 +229,7 @@ struct Search: View {
                                                     Rectangle()
                                                         .foregroundColor(Color(hex: "#80ff5dae"))
                                                     
-                                                    Text(anilist.searchresults!.results[index].rating != nil ? String(format: "%.1f", Float(anilist.searchresults!.results[index].rating!) / 10) : "0.0")
+                                                    Text(viewModel.searchresults!.results[index].rating != nil ? String(format: "%.1f", Float(viewModel.searchresults!.results[index].rating!) / 10) : "0.0")
                                                         .font(.system(size: 12, weight: .heavy))
                                                         .padding(.vertical, 6)
                                                         .padding(.horizontal, 8)
@@ -249,14 +247,14 @@ struct Search: View {
                                             .clipped()
                                             
                                             VStack {
-                                                Text(anilist.searchresults!.results[index].title.romaji)
+                                                Text(viewModel.searchresults!.results[index].title.romaji)
                                                     .fontWeight(.heavy)
                                                     .lineLimit(2)
                                                     .multilineTextAlignment(.leading)
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                                     .padding(.bottom, 6)
                                                 
-                                                Text(String(anilist.searchresults!.results[index].totalEpisodes ?? 0) + " Episodes")
+                                                Text(String(viewModel.searchresults!.results[index].totalEpisodes ?? 0) + " Episodes")
                                                     .font(.system(size: 16))
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                             }
@@ -547,10 +545,10 @@ struct Search: View {
     }
 }
 
-struct Search_Previews: PreviewProvider {
+struct MangaSearch_Previews: PreviewProvider {
     static var previews: some View {
         GeometryReader {proxy in
-            Search(proxy: proxy)
+            MangaSearch(proxy: proxy)
         }
     }
 }

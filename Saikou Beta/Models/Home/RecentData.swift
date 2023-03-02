@@ -11,12 +11,17 @@ struct RecentData: Codable {
     let id: String
     let malId: Int?
     let title: Title
+    let status: String
     let image: String
+    let cover: String?
+    let popularity: Int?
+    let totalEpisodes: Int?
+    let currentEpisode: Int?
+    let countryOfOrigin: String?
+    let description: String
+    let genres: [String]
     let rating: Int?
     let color: String?
-    let episodeId: String?
-    let episodeTitle: String?
-    let episodeNumber: Int
-    let genres: [String]
     let type: String
+    let releaseDate: Int
 }

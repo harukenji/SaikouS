@@ -10,12 +10,41 @@ import AVKit
 import SwiftUIFontIcon
 import SwiftWebVTT
 import ActivityIndicatorView
+import Kingfisher
+
+struct GradientStop: Equatable {
+    var color: Color
+    var location: Double
+}
+
+extension GradientStop: VectorArithmetic {
+    static var zero: GradientStop {
+        GradientStop(color: .clear, location: 0)
+    }
+    
+    static func + (lhs: GradientStop, rhs: GradientStop) -> GradientStop {
+        GradientStop(color: lhs.color, location: lhs.location + rhs.location)
+    }
+    
+    static func - (lhs: GradientStop, rhs: GradientStop) -> GradientStop {
+        GradientStop(color: lhs.color, location: lhs.location - rhs.location)
+    }
+    
+    mutating func scale(by rhs: Double) {
+        location *= rhs
+    }
+    
+    var magnitudeSquared: Double {
+        location * location
+    }
+}
 
 struct CustomControlsView: View {
     @State var episodeData: StreamData?
     let animeData: InfoData
     var provider: String?
     var episodedata: [Episode]
+    var viewModel: WatchViewModel
     @State var qualityIndex: Int = 0
     @State var selectedSubtitleIndex: Int = 0
     @Binding var showUI: Bool
@@ -31,6 +60,7 @@ struct CustomControlsView: View {
     
     @State var providerOld = "gogoanime" // or gogoanime
     @State var showingPopup = false
+    @State var showingEpisodeSelector = false
     @State var selectedSetting: SettingsNames = SettingsNames.home
     @State var rotation: Double = 0.0
     @State var subtitleStyle: SubtitleStyle = SubtitleStyle.Outlined
@@ -68,9 +98,18 @@ struct CustomControlsView: View {
                 .repeatForever(autoreverses: false)
         }
     
+    @State private var buttonOffset: Double = -156
+    @State private var textWidth: Double = 0
+    @State private var skipPercentage: CGFloat = 0.0
+    @State var selectedEpisode: Int = 0
+    @State var startEpisodeList = 0
+    @State var endEpisodeList = 50
+    @State var paginationIndex = 0
     
     var body: some View {
         ZStack {
+            Color.black.opacity(showUI ? 0.7 : 0.0)
+            
             ZStack(alignment: .bottom) {
                 if(showSubs) {
                     VStack {
@@ -95,30 +134,6 @@ struct CustomControlsView: View {
             .padding(.bottom, 40)
             
             ZStack(alignment: .bottomTrailing) {
-                Color.black.opacity(showUI ? 0.7 : 0.0)
-                
-                Button(action: {
-                    playerVM.isEditingCurrentTime = true
-                    playerVM.currentTime += 80
-                    playerVM.isEditingCurrentTime = false
-                }) {
-                    Text("Skip Opening")
-                        .font(.system(size: 16, weight: .heavy))
-                        .foregroundColor(Color(hex: "#8ca7ff"))
-                        .padding(.vertical, 16)
-                        .padding(.horizontal, 24)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                        )
-                }
-                .padding(.bottom, 110)
-                .padding(.trailing, 4)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .opacity(showUI ? 0.1 : 0.0)
-            
-            ZStack(alignment: .trailing) {
                 HStack {
                     Color.clear
                         .frame(width: .infinity, height: 300)
@@ -151,6 +166,58 @@ struct CustomControlsView: View {
                             )
                         )
                     
+                }
+                
+                if viewModel.skiptimes != nil && viewModel.skiptimes!.results != nil {
+                    Button(action: {
+                        playerVM.isEditingCurrentTime = true
+                        playerVM.currentTime = viewModel.getEndTime(type: "op")
+                        playerVM.isEditingCurrentTime = false
+                    }) {
+                            ZStack {
+                                Rectangle()
+                                    .fill(.black.opacity(0.4))
+                                
+                                Rectangle()
+                                    .fill(.white)
+                                    .offset(x: buttonOffset)
+                                    .onReceive(playerVM.$currentTime) { currentTime in
+                                        viewModel.showSkipButton(currentTime: currentTime)
+                                        let skipPercentage = viewModel.getSkipPercentage(currentTime: currentTime)
+                                        withAnimation(.easeInOut(duration: 0.3)) {
+                                            buttonOffset = -textWidth + (textWidth * skipPercentage)
+                                        }
+                                    }
+                                    
+                                
+                                Text("Skip Opening")
+                                    .font(.system(size: 16, weight: .heavy))
+                                    .foregroundColor(.white)
+                                    .blendMode(BlendMode.difference)
+                                    .padding(.vertical, 16)
+                                    .padding(.horizontal, 24)
+                                    .overlay(
+                                        GeometryReader { geometry in
+                                            Color.clear
+                                                .onAppear {
+                                                    self.textWidth = geometry.size.width
+                                                    buttonOffset = -textWidth
+                                                }
+                                        }
+                                    )
+                                
+                            }
+                            .fixedSize()
+                            .cornerRadius(12)
+                            .clipped()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                            )
+                    }
+                    .padding(.bottom, 110)
+                    .padding(.trailing, 4)
+                    .opacity(viewModel.skipTypeText == "Opening" ? 1.0 : 0.0)
                 }
                 
                 VStack {
@@ -307,6 +374,18 @@ struct CustomControlsView: View {
                             Spacer()
                             
                             HStack {
+                                
+                                Image("episodes")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: 24)
+                                    .foregroundColor(.white)
+                                    .onTapGesture {
+                                        Task {
+                                            showingEpisodeSelector.toggle()
+                                        }
+                                    }
+                                
                                 Spacer()
                                     .frame(maxWidth: 34)
                                 
@@ -351,7 +430,7 @@ struct CustomControlsView: View {
                     }
                     .padding()
                     .padding(.bottom, 24)
-                    .popup(isPresented: $showingPopup) { // 3
+                    .popup(isPresented: $showingPopup, isHorizontal: false) { // 3
                         ZStack { // 4
                             Color(hex: "#ff16151A")
                             VStack(alignment: .center) {
@@ -629,94 +708,121 @@ struct CustomControlsView: View {
                         .padding(.bottom, -120)
                         .zIndex(100)
                     }
-                }
-                
-                ZStack(alignment: .trailing) {
-                    Color(.black.withAlphaComponent(0.6))
-                        .onTapGesture {
-                            showEpisodeSelector = false
-                        }
-                    VStack {
-                        
-                        Spacer()
-                        
-                        ZStack {
-                            Color(hex: "#ff16151A")
-                                .ignoresSafeArea()
-                            VStack(alignment: .leading) {
-                                Text("Select Episode")
-                                    .font(.title2)
-                                    .bold()
-                                    .foregroundColor(.white)
-                                
-                                ScrollView(.horizontal) {
-                                    HStack(spacing: 20) {
-                                        ForEach((episodeIndex+1)..<episodedata.count) { index in
+                    .popup(isPresented: $showingEpisodeSelector, isHorizontal: true) {
+                        ZStack(alignment: .leading) {
+                            Color(hex: "#ff1C1C1C")
+                            HStack(spacing: 0) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .fill(.white)
+                                        .frame(maxWidth: 3, maxHeight: 90)
+                                }
+                                .frame(maxWidth: 20, maxHeight: .infinity)
+                                ScrollView {
+                                    VStack {
+                                        ForEach(startEpisodeList..<min(endEpisodeList, episodedata.count), id: \.self) { index in
                                             ZStack {
-                                                AsyncImage(url: URL(string: episodedata[index].image)) { image in
-                                                    image.resizable()
-                                                        .aspectRatio(contentMode: .fill)
-                                                        .frame(width: 160, height: 90)
-                                                } placeholder: {
-                                                    ProgressView()
-                                                }
-                                                
-                                                VStack(alignment: .trailing) {
-                                                    Text("\(episodedata[index].number ?? 0)")
-                                                        .bold()
-                                                        .font(.headline)
-                                                        .bold()
-                                                        .foregroundColor(.white)
-                                                        .padding()
-                                                    
-                                                    Spacer()
-                                                    
-                                                    ZStack(alignment: .center) {
-                                                        Color(.black)
+                                                Color(hex: "#282828")
+                                                VStack(alignment: .leading) {
+                                                    HStack(spacing: 6) {
+                                                        KFImage(URL(string: episodedata[index].image))
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .cornerRadius(8)
+                                                            .clipped()
+                                                            .frame(width: 130, height: 130 / 16 * 9)
+                                                            .frame(maxWidth: 180, maxHeight: 100)
                                                         
-                                                        Text("\(episodedata[index].title ?? "Episode \(episodedata[index].number)")")
-                                                            .font(.caption2)
-                                                            .bold()
-                                                            .lineLimit(2)
-                                                            .multilineTextAlignment(.center)
-                                                            .foregroundColor(.white)
-                                                            .padding(.horizontal, 4)
+                                                        Text(episodedata[index].title ?? "Episode")
+                                                            .font(.system(size: 12, weight: .heavy))
+                                                            .lineLimit(3)
+                                                            .padding(.trailing, 8)
                                                     }
-                                                    .frame(width: 160, height: 50)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                                    .padding(.leading, -14)
+                                                    
+                                                    if (selectedEpisode == index) {
+                                                        Text(episodedata[index].description ?? "Description")
+                                                            .font(.system(size: 10))
+                                                            .foregroundColor(.white.opacity(0.7))
+                                                            .padding(12)
+                                                            .padding(.top, -12)
+                                                    }
                                                 }
+                                                .animation(.spring(response: 0.3))
                                             }
-                                            .frame(width: 160, height: 90)
-                                            .cornerRadius(12)
+                                            .cornerRadius(14)
+                                            .clipped()
+                                            .padding(.trailing, 12)
                                             .onTapGesture {
-                                                Task {
-                                                    self.episodeIndex = self.episodeIndex  + index - 1
-                                                    
-                                                    playerVM.id = self.animeData.id
-                                                    playerVM.episodeNumber = episodeIndex
-                                                    
-                                                    await self.streamApi.loadStream(id: self.episodedata[episodeIndex].id, provider: provider ?? "gogoanime")
-                                                    playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources![0].url ?? "/")!))
-                                                    playerVM.player.play()
+                                                if(selectedEpisode == index) {
+                                                    if(index != self.episodeIndex){
+                                                        Task {
+                                                            self.episodeIndex = index
+                                                            await self.streamApi.loadStream(id: self.episodedata[episodeIndex].id, provider: provider ?? "gogoanime")
+                                                            playerVM.setCurrentItem(AVPlayerItem(url: URL(string:  self.streamApi.streamdata?.sources![0].url ?? "/")!))
+                                                            playerVM.player.play()
+                                                        }
+                                                    }
+                                                } else {
+                                                    selectedEpisode = index
                                                 }
                                             }
                                         }
-                                        
                                     }
                                 }
+                                .padding(.vertical, 20)
+                                .padding(.bottom, episodedata.count > 50 ? 60 : 0)
                             }
-                            .padding(.horizontal, 20)
+                            VStack {
+                                Spacer()
+                                if(episodedata.count > 50) {
+                                    ZStack {
+                                        Color(.black)
+                                        
+                                        ScrollView(.horizontal) {
+                                            HStack(spacing: 20) {
+                                                ForEach(0..<Int(ceil(Float(episodedata.count)/50))) { index in
+                                                    ZStack {
+                                                        Color(hex: index == paginationIndex ? "#8ca7ff" : "#1c1b1f")
+                                                        
+                                                        
+                                                        Text("\((50 * index) + 1) - " + String(50 + (50 * index) > episodedata.count ? episodedata.count : 50 + (50 * index)))
+                                                            .font(.system(size: 12, weight: .heavy))
+                                                            .padding(.vertical, 6)
+                                                            .padding(.horizontal, 12)
+                                                    }
+                                                    .fixedSize()
+                                                    .cornerRadius(6)
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 6)
+                                                            .stroke(Color.white.opacity(0.7), lineWidth: index == paginationIndex ? 0 : 1)
+                                                    )
+                                                    .onTapGesture {
+                                                        self.startEpisodeList = 50 * index
+                                                        self.endEpisodeList = 50 + (50 * index) > episodedata.count ? episodedata.count : 50 + (50 * index)
+                                                        self.paginationIndex = index
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .frame(maxWidth: 320, alignment: .leading)
+                                        .padding(.leading, 20)
+                                        .padding(.bottom, 20)
+                                    }
+                                    .frame(maxWidth: 320, maxHeight: 80)
+                                }
+                            }
                         }
-                        .frame(width: 440, height: 160)
-                        .cornerRadius(20)
-                        .padding(.bottom, 60)
+                        .frame(maxWidth: 320, maxHeight: .infinity)
+                        .clipShape(
+                            RoundCorner(
+                                cornerRadius: 20,
+                                maskedCorners: [.topLeft, .bottomLeft]
+                            )//OUR CUSTOM SHAPE
+                        )
                     }
-                    .frame(maxHeight: .infinity)
                 }
-                .opacity(showEpisodeSelector ? 1.0 : 0.0)
-                .animation(.spring(response: 0.3), value: showEpisodeSelector)
-                
-                
-                
             }
             .opacity(showUI ? 1.0 : 0.0)
             .animation(.spring(response: 0.3), value: showUI)

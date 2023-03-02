@@ -161,6 +161,7 @@ struct userData {
     let avatar: String
     let banner: String
     let episodesWatched: Int
+    let chaptersRead: Int
 }
 
 struct RectCorner: OptionSet {
@@ -320,6 +321,11 @@ struct Home: View {
     @State var showWebView = false
     @State var user: userData? = nil
     @State var watchList: [AnimeEntry]? = nil
+    @State var plannedList: [AnimeEntry]? = nil
+    @State var favouritesList: favourites? = nil
+    @State var mangaWatchList: [AnimeEntry]? = nil
+    @State var mangaPlannedList: [AnimeEntry]? = nil
+    @State var mangaFavouritesList: favourites? = nil
     
     let pub = NotificationCenter.default
         .publisher(for: .authCodeUrl)
@@ -342,6 +348,9 @@ struct Home: View {
                     anime {
                       episodesWatched
                     }
+                    manga {
+                      chaptersRead
+                    }
                   }
                 }
               }
@@ -362,7 +371,7 @@ struct Home: View {
             let (data, _) = try await URLSession.shared.data(for: request)
             do {
                 let data = try JSONDecoder().decode(userInfoData.self, from: data)
-                user = userData(id: data.data.Viewer.id, name: data.data.Viewer.name, avatar: data.data.Viewer.avatar.large, banner: data.data.Viewer.bannerImage ?? "", episodesWatched: data.data.Viewer.statistics.anime.episodesWatched)
+                user = userData(id: data.data.Viewer.id, name: data.data.Viewer.name, avatar: data.data.Viewer.avatar.large, banner: data.data.Viewer.bannerImage ?? "", episodesWatched: data.data.Viewer.statistics.anime.episodesWatched, chaptersRead: data.data.Viewer.statistics.manga.chaptersRead)
                 await getUserLists()
             } catch let error {
                 print(error.localizedDescription)
@@ -381,7 +390,6 @@ struct Home: View {
     }
     
     func getUserLists() async {
-        print("test")
         if(user != nil) {
             let query = """
         {
@@ -457,7 +465,17 @@ struct Home: View {
                     let temp =  data.data.MediaListCollection.lists?.filter {
                         $0.name == "Watching"
                     }
-                    watchList = temp?[0].entries
+                    if(temp != nil && temp!.count > 0) {
+                        watchList = temp![0].entries
+                    }
+                    
+                    let planningtemp =  data.data.MediaListCollection.lists?.filter {
+                        $0.name == "Planning"
+                    }
+                    if(planningtemp != nil && planningtemp!.count > 0) {
+                        plannedList = planningtemp![0].entries
+                    }
+                    await getFavourites(type: "anime", page: 1)
                 } catch let error {
                     print(error.localizedDescription)
                     print(error)
@@ -472,9 +490,153 @@ struct Home: View {
                 showDebug = true
             }
         }
-        
     }
     
+    func getMangaLists() async {
+        if(user != nil) {
+            let query = """
+        {
+          MediaListCollection(userId: \(user!.id), type: MANGA) {
+            lists {
+              name
+              isCustomList
+              isCompletedList: isSplitCompletedList
+              entries {
+                ...mediaListEntry
+              }
+            }
+            user {
+              id
+              name
+              avatar {
+                large
+              }
+              mediaListOptions {
+                scoreFormat
+                rowOrder
+                animeList {
+                  sectionOrder
+                  customLists
+                  splitCompletedSectionByFormat
+                  theme
+                }
+                mangaList {
+                  sectionOrder
+                  customLists
+                  splitCompletedSectionByFormat
+                  theme
+                }
+              }
+            }
+          }
+        }
+        
+        fragment mediaListEntry on MediaList {
+          progress
+          media {
+            id
+            title {
+              romaji
+              english
+            }
+            coverImage {
+              extraLarge
+              large
+            }
+            episodes
+            averageScore
+          }
+        }
+        """
+            
+            let jsonData = try? JSONSerialization.data(withJSONObject: ["query": query])
+            
+            let url = URL(string: "https://graphql.anilist.co")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("Bearer \(access_token)", forHTTPHeaderField: "Authorization")
+            request.httpBody = jsonData
+            
+            print("getting user lists")
+            
+            do {
+                let (data, _) = try await URLSession.shared.data(for: request)
+                do {
+                    let data = try JSONDecoder().decode(userList.self, from: data)
+                    let temp =  data.data.MediaListCollection.lists?.filter {
+                        $0.name == "Watching"
+                    }
+                    if(temp != nil && temp!.count > 0) {
+                        mangaWatchList = temp![0].entries
+                    }
+                    
+                    let planningtemp =  data.data.MediaListCollection.lists?.filter {
+                        $0.name == "Planning"
+                    }
+                    if(planningtemp != nil && planningtemp!.count > 0) {
+                        mangaPlannedList = planningtemp![0].entries
+                    }
+                    await getFavourites(type: "manga", page: 1)
+                } catch let error {
+                    print(error.localizedDescription)
+                    print(error)
+                    debugText = error.localizedDescription
+                    debugTitle = "User list parsing Failed"
+                    showDebug = true
+                }
+            } catch let error {
+                print(error.localizedDescription)
+                debugText = error.localizedDescription
+                debugTitle = "User list Fetching Failed"
+                showDebug = true
+            }
+        }
+    }
+    
+    func getFavourites(type: String, page: Int) async {
+        if(user != nil) {
+            let query = """
+                        {User(id:\(user!.id)){id favourites{\(type)(page:\(page)){pageInfo{hasNextPage}edges{favouriteOrder node{id idMal isAdult mediaListEntry{ progress private score(format:POINT_100) status } chapters isFavourite episodes nextAiringEpisode{episode}meanScore isFavourite title{english romaji userPreferred}type status(version:2)bannerImage coverImage{large}}}}}}}
+                        """
+            
+            let jsonData = try? JSONSerialization.data(withJSONObject: ["query": query])
+            
+            let url = URL(string: "https://graphql.anilist.co")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("Bearer \(access_token)", forHTTPHeaderField: "Authorization")
+            request.httpBody = jsonData
+            
+            print("getting user favourites")
+            
+            do {
+                let (data, _) = try await URLSession.shared.data(for: request)
+                do {
+                    let data = try JSONDecoder().decode(favourites.self, from: data)
+                    if(type == "anime") {
+                        favouritesList = data
+                    } else {
+                        mangaFavouritesList = data
+                    }
+                } catch let error {
+                    print(error.localizedDescription)
+                    print(error)
+                    debugText = error.localizedDescription
+                    debugTitle = "User favourites parsing Failed"
+                    showDebug = true
+                }
+            } catch let error {
+                print(error.localizedDescription)
+                debugText = error.localizedDescription
+                debugTitle = "User favourites Fetching Failed"
+                showDebug = true
+            }
+        }
+    }
     
     @State var access_token: String = ""
     @FetchRequest(sortDescriptors: []) var userStorageData: FetchedResults<UserStorageInfo>
@@ -599,19 +761,118 @@ struct Home: View {
                                 VStack(alignment: .leading) {
                                     AnilistInfoTopBanner(user: user!, width: proxy.size.width)
                                     
-                                    Text("Currently Watching")
-                                        .foregroundColor(.white)
-                                        .font(.system(size: 18, weight: .heavy))
-                                        .padding(.top, 30)
-                                        .padding(.leading, 20)
-                                    
                                     if(watchList != nil) {
+                                        
+                                        Text("Currently Watching")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 18, weight: .heavy))
+                                            .padding(.top, 20)
+                                            .padding(.leading, 20)
+                                    
                                         ScrollView(.horizontal) {
                                             HStack(spacing: 20) {
                                                 ForEach(0..<watchList!.count) {index in
-                                                    NavigationLink(destination: Info(id: String(watchList![index].media.id))) {
-                                                        AnimeCard(image: watchList![index].media.coverImage.extraLarge, rating: watchList![index].media.averageScore, title: watchList![index].media.title.english ?? watchList![index].media.title.romaji, currentEpisodeCount: watchList![index].progress, totalEpisodes: watchList![index].media.episodes)
+                                                    NavigationLink(destination: Info(id: String(watchList![index].media.id), type: "anime")) {
+                                                        AnimeCard(image: watchList![index].media.coverImage.extraLarge ?? watchList![index].media.coverImage.large, rating: watchList![index].media.averageScore, title: watchList![index].media.title.english ?? watchList![index].media.title.romaji, currentEpisodeCount: watchList![index].progress, totalEpisodes: watchList![index].media.episodes)
                                                     }
+                                                }
+                                            }
+                                        }
+                                        .padding(.top, 10)
+                                        .padding(.leading, 20)
+                                    }
+                                    
+                                    if(favouritesList != nil && favouritesList!.data.User.favourites.anime.edges.count > 0) {
+                                        Text("Favourite Anime")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 18, weight: .heavy))
+                                            .padding(.top, 20)
+                                            .padding(.leading, 20)
+                                    
+                                        ScrollView(.horizontal) {
+                                            HStack(spacing: 20) {
+                                                ForEach(0..<favouritesList!.data.User.favourites.anime.edges.count) {index in
+                                                    NavigationLink(destination: Info(id: String(favouritesList!.data.User.favourites.anime.edges[index].node.id), type: "anime")) {
+                                                        AnimeCard(image: favouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: favouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: favouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? favouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: favouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: favouritesList!.data.User.favourites.anime.edges[index].node.episodes)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .padding(.top, 10)
+                                        .padding(.leading, 20)
+                                    }
+                                    
+                                    if(plannedList != nil) {
+                                        Text("Planned Anime")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 18, weight: .heavy))
+                                            .padding(.top, 20)
+                                            .padding(.leading, 20)
+                                    
+                                        ScrollView(.horizontal) {
+                                            HStack(spacing: 20) {
+                                                ForEach(0..<plannedList!.count) {index in
+                                                    NavigationLink(destination: Info(id: String(plannedList![index].media.id), type: "anime")) {
+                                                        AnimeCard(image: plannedList![index].media.coverImage.extraLarge ?? plannedList![index].media.coverImage.large, rating: plannedList![index].media.averageScore, title: plannedList![index].media.title.english ?? plannedList![index].media.title.romaji, currentEpisodeCount: plannedList![index].progress, totalEpisodes: plannedList![index].media.episodes)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .padding(.top, 10)
+                                        .padding(.leading, 20)
+                                    }
+                                    
+                                    if(mangaWatchList != nil) {
+                                        
+                                        Text("Currently Reading")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 18, weight: .heavy))
+                                            .padding(.top, 20)
+                                            .padding(.leading, 20)
+                                    
+                                        ScrollView(.horizontal) {
+                                            HStack(spacing: 20) {
+                                                ForEach(0..<mangaWatchList!.count) {index in
+                                                    AnimeCard(image: mangaWatchList![index].media.coverImage.extraLarge ?? mangaWatchList![index].media.coverImage.large, rating: mangaWatchList![index].media.averageScore, title: mangaWatchList![index].media.title.english ?? mangaWatchList![index].media.title.romaji, currentEpisodeCount: mangaWatchList![index].progress, totalEpisodes: mangaWatchList![index].media.episodes)
+                                                    
+                                                }
+                                            }
+                                        }
+                                        .padding(.top, 10)
+                                        .padding(.leading, 20)
+                                    }
+                                    
+                                    if(mangaFavouritesList != nil && mangaFavouritesList!.data.User.favourites.anime.edges.count > 0) {
+                                        Text("Favourite Manga")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 18, weight: .heavy))
+                                            .padding(.top, 20)
+                                            .padding(.leading, 20)
+                                    
+                                        ScrollView(.horizontal) {
+                                            HStack(spacing: 20) {
+                                                ForEach(0..<mangaFavouritesList!.data.User.favourites.anime.edges.count) {index in
+                                                    AnimeCard(image: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.episodes)
+                                                    
+                                                }
+                                            }
+                                        }
+                                        .padding(.top, 10)
+                                        .padding(.leading, 20)
+                                    }
+                                    
+                                    if(mangaPlannedList != nil) {
+                                        Text("Planned Anime")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 18, weight: .heavy))
+                                            .padding(.top, 20)
+                                            .padding(.leading, 20)
+                                    
+                                        ScrollView(.horizontal) {
+                                            HStack(spacing: 20) {
+                                                ForEach(0..<mangaPlannedList!.count) {index in
+                                                    AnimeCard(image: mangaPlannedList![index].media.coverImage.extraLarge ?? mangaPlannedList![index].media.coverImage.large, rating: mangaPlannedList![index].media.averageScore, title: mangaPlannedList![index].media.title.english ?? mangaPlannedList![index].media.title.romaji, currentEpisodeCount: mangaPlannedList![index].progress, totalEpisodes: mangaPlannedList![index].media.episodes)
+                                                    
                                                 }
                                             }
                                         }
@@ -624,7 +885,8 @@ struct Home: View {
                         .navigationBarHidden(true)
                         .tag(1)
                         
-                        Text("Manga")
+                        MangaHome(proxy: proxy)
+                            .padding(.top, -70)
                             .tag(2)
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
