@@ -166,16 +166,31 @@ struct Info: View {
     }
     
     var options: [DropdownOption] = []
+    var mangaOptions: [DropdownOption] = []
     
     init(id: String, type: String) {
         self.id = id
         self.type = type
+        
+        if(type.lowercased() == "anime") {
+            selectedProvider = "gogoanime"
+        } else {
+            selectedProvider = "mangadex"
+        }
         
         options = [
             DropdownOption(key: uniqueKey, value: "Gogo"),
             DropdownOption(key: uniqueKey, value: "Zoro"),
             DropdownOption(key: uniqueKey, value: "Animepahe"),
             DropdownOption(key: uniqueKey, value: "Animefox"),
+        ]
+        
+        mangaOptions = [
+            DropdownOption(key: uniqueKey, value: "Mangadex"),
+            DropdownOption(key: uniqueKey, value: "Mangakakalot"),
+            DropdownOption(key: uniqueKey, value: "Mangahere"),
+            DropdownOption(key: uniqueKey, value: "Mangasee123"),
+            DropdownOption(key: uniqueKey, value: "Mangareader"),
         ]
     }
     
@@ -343,7 +358,7 @@ struct Info: View {
                                                             ScrollView(.horizontal) {
                                                                 HStack(spacing: 20) {
                                                                     ForEach(0..<Int(ceil(Float(viewModel.episodedata!.count)/50))) { index in
-                                                                        EpisodePaginationChip(paginationIndex: paginationIndex, startEpisodeList: startEpisodeList, endEpisodeList: endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
+                                                                        EpisodePaginationChip(paginationIndex: $paginationIndex, startEpisodeList: $startEpisodeList, endEpisodeList: $endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
                                                                     }
                                                                 }
                                                             }
@@ -557,7 +572,7 @@ struct Info: View {
                                             ScrollView(.horizontal) {
                                                 HStack(spacing: 20) {
                                                     ForEach(0..<Int(ceil(Float(viewModel.episodedata!.count)/50))) { index in
-                                                        EpisodePaginationChip(paginationIndex: paginationIndex, startEpisodeList: startEpisodeList, endEpisodeList: endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
+                                                        EpisodePaginationChip(paginationIndex: $paginationIndex, startEpisodeList: $startEpisodeList, endEpisodeList: $endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
                                                     }
                                                 }
                                             }
@@ -628,6 +643,22 @@ struct Info: View {
                                             .padding(.horizontal, 20)
                                             .padding(.top, 20)
                                         
+                                        DropdownSelector(
+                                            placeholder: "Mangadex",
+                                            options: mangaOptions,
+                                            onOptionSelected: { option in
+                                                print(option.value)
+                                                Task {
+                                                    print(selectedProvider)
+                                                    selectedProvider = option.value.lowercased()
+                                                    
+                                                    await viewModel.fetchChapters(id: id, provider: option.value.lowercased())
+                                                }
+                                            })
+                                        .padding(.horizontal)
+                                        .zIndex(100)
+                                        .padding(.top, 30)
+                                        
                                         VStack {
                                             HStack {
                                                 Text("Chapters")
@@ -668,7 +699,7 @@ struct Info: View {
                                                     ScrollView(.horizontal) {
                                                         HStack(spacing: 20) {
                                                             ForEach(0..<Int(ceil(Float(viewModel.chapterdata!.count)/50))) { index in
-                                                                EpisodePaginationChip(paginationIndex: paginationIndex, startEpisodeList: startEpisodeList, endEpisodeList: endEpisodeList, episodeCount: viewModel.chapterdata!.count, index: index)
+                                                                EpisodePaginationChip(paginationIndex: $paginationIndex, startEpisodeList: $startEpisodeList, endEpisodeList: $endEpisodeList, episodeCount: viewModel.chapterdata!.count, index: index)
                                                             }
                                                         }
                                                     }
@@ -677,22 +708,42 @@ struct Info: View {
                                                     .padding(.bottom, 20)
                                                 }
                                                 
-                                                VStack {
-                                                    ForEach(startEpisodeList..<min(endEpisodeList, viewModel.chapterdata!.count), id: \.self) { index in
-                                                        NavigationLink(destination: Reader(mangaData: viewModel.mangaInfodata, selectedChapterIndex: index)) {
-                                                            ZStack(alignment: .leading) {
-                                                                Color(hex: "#282828")
-                                                                
-                                                                Text(viewModel.chapterdata![index].title ?? "Chapter \(index + 1)")
-                                                                    .font(.system(size: 18, weight: .heavy))
-                                                                    .foregroundColor(.white)
+                                                if(viewModel.error == nil) {
+                                                    VStack {
+                                                        ForEach(startEpisodeList..<min(endEpisodeList, viewModel.chapterdata!.count), id: \.self) { index in
+                                                            NavigationLink(destination: Reader(mangaData: viewModel.mangaInfodata, provider: selectedProvider == "gogoanime" ? "mangadex" : selectedProvider, selectedChapterIndex: index)) {
+                                                                ZStack(alignment: .leading) {
+                                                                    Color(hex: "#282828")
+                                                                    
+                                                                    VStack(alignment: .leading, spacing: 6) {
+                                                                        
+                                                                        Text("Chapter : " + (viewModel.chapterdata![index].chapterNumber ?? "\(index + 1)"))
+                                                                            .font(.system(size: 18, weight: .heavy))
+                                                                            .foregroundColor(.white)
+                                                                        
+                                                                        Text(viewModel.chapterdata![index].title ?? "")
+                                                                            .font(.system(size: 16, weight: .heavy))
+                                                                            .foregroundColor(.white.opacity(0.7))
+                                                                    }
                                                                     .padding(20)
+                                                                }
+                                                                .cornerRadius(20)
+                                                                .frame(maxWidth: proxy.size.width - 40)
                                                             }
-                                                            .cornerRadius(20)
-                                                            .frame(maxWidth: proxy.size.width - 40)
+                                                            .disabled(viewModel.chapterdata![index].pages != nil && viewModel.chapterdata![index].pages == 0)
                                                         }
+                                                        .padding(.horizontal, 20)
                                                     }
-                                                    .padding(.horizontal, 20)
+                                                } else {
+                                                    VStack {
+                                                        Text("Couldn't find anything X(")
+                                                            .font(.system(size: 20, weight: .heavy))
+                                                        
+                                                        Text("Try another source.").font(.system(size: 20, weight: .heavy))
+                                                    }
+                                                    .padding(.horizontal, 50)
+                                                    .padding(.bottom, 80)
+                                                    .frame(maxWidth: proxy.size.width)
                                                 }
                                             }
                                             else {

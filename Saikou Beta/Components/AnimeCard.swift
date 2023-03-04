@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Kingfisher
+import Shimmer
 
 struct AnimeCard: View {
     let image: String
@@ -19,6 +20,15 @@ struct AnimeCard: View {
         VStack {
             ZStack(alignment: .bottomTrailing) {
                 KFImage(URL(string: image))
+                    .placeholder({
+                        RoundedRectangle(cornerRadius: 16)
+                            .foregroundColor(Color(hex: "#444444"))
+                            .frame(width: 110, height: 160)
+                            .frame(maxWidth: 110, maxHeight: 160)
+                            .cornerRadius(18)
+                            .redacted(reason: .placeholder)
+                            .shimmering()
+                    })
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 110, height: 160)

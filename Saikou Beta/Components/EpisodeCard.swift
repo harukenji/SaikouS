@@ -56,10 +56,11 @@ struct EpisodeCard: View {
                             
                             Text(title)
                                 .font(.system(size: 14, weight: .heavy))
-                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.trailing, 20)
                                 .lineLimit(4)
                                 .foregroundColor(.white)
+                                .multilineTextAlignment(.leading)
                         }
                     }
                     

@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct EpisodePaginationChip: View {
-    @State private var paginationIndex: Int
-    @State private var startEpisodeList: Int
-    @State private var endEpisodeList: Int
+    @Binding private var paginationIndex: Int
+    @Binding private var startEpisodeList: Int
+    @Binding private var endEpisodeList: Int
     let episodeCount: Int
     let index: Int
     
-    init(paginationIndex: Int, startEpisodeList: Int, endEpisodeList: Int, episodeCount: Int, index: Int) {
-        self.paginationIndex = paginationIndex
-        self.startEpisodeList = startEpisodeList
-        self.endEpisodeList = endEpisodeList
+    init(paginationIndex: Binding<Int>, startEpisodeList: Binding<Int>, endEpisodeList: Binding<Int>, episodeCount: Int, index: Int) {
+        self._paginationIndex = paginationIndex
+        self._startEpisodeList = startEpisodeList
+        self._endEpisodeList = endEpisodeList
         self.episodeCount = episodeCount
         self.index = index
     }
@@ -48,6 +48,6 @@ struct EpisodePaginationChip: View {
 
 struct EpisodePaginationChip_Previews: PreviewProvider {
     static var previews: some View {
-        EpisodePaginationChip(paginationIndex: 1, startEpisodeList: 0, endEpisodeList: 50, episodeCount: 50, index: 1)
+        EpisodePaginationChip(paginationIndex: .constant(1), startEpisodeList: .constant(1), endEpisodeList: .constant(1), episodeCount: 50, index: 1)
     }
 }

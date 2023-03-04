@@ -159,15 +159,20 @@ final class AnilistApiService: AnilistApiServiceProtocol {
     }
     
     func fetchChapters(id: String, provider: String, completion: (ChapterFetchResult) -> Void) async {
-        guard let url = URL(string: "\(baseUrl)/chapters/\(id)?provider=\(provider)") else {
+        print("\(baseUrl)-manga/info/\(id)?provider=\(provider)")
+        guard let url = URL(string: "\(baseUrl)-manga/info/\(id)?provider=\(provider)") else {
             completion(.failure(error: AnilistFetchError.invalidUrlProvided))
             return
         }
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             do {
-                let data = try JSONDecoder().decode([Chapter].self, from: data)
-                completion(.success(data: data))
+                let data = try JSONDecoder().decode(MangaInfoData.self, from: data)
+                if(data.chapters != nil) {
+                    completion(.success(data: data.chapters!))
+                } else {
+                    completion(.failure(error: AnilistFetchError.dataLoadFailed))
+                }
             } catch let error {
                 completion(.failure(error: AnilistFetchError.dataParsingFailed(reason: error)))
             }

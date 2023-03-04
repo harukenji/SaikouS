@@ -55,11 +55,11 @@ struct NextChapterDisplay: View {
                         .frame(maxHeight: 20)
                     
                     Text(status)
-                        .foregroundColor(Color(hex: "#2B994A"))
+                        .foregroundColor(status == "Ready" ? Color(hex: "#2B994A") : Color(hex: "#E5554C"))
                         .fontWeight(.semibold)
                     
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(Color(hex: "#2B994A"))
+                    Image(systemName: status == "Ready" ? "checkmark.circle.fill" : "xmark.circle.fill")
+                        .foregroundColor(status == "Ready" ? Color(hex: "#2B994A") : Color(hex: "#E5554C"))
                     
                     Spacer()
                         .frame(maxHeight: 30)

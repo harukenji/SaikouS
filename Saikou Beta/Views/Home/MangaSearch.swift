@@ -184,17 +184,17 @@ struct MangaSearch: View {
                     }
                     .padding(.bottom, 20)
                     
-                    if(viewModel.searchresults != nil) {
+                    if(viewModel.searchresults != nil && viewModel.searchresults!.results.count > 0) {
                         if(resultDisplayGrid) {
                             LazyVGrid(columns: columns, spacing: 20) {
-                                ForEach(0..<viewModel.searchresults!.results.count) { index in
+                                ForEach(0..<viewModel.searchresults!.results.filter{$0.type == "MANGA"}.count) { index in
                                     NavigationLink(destination: Info(id: viewModel.searchresults!.results[index].id, type: "manga")) {
                                         AnimeCard(image: viewModel.searchresults!.results[index].image, rating: viewModel.searchresults!.results[index].rating, title: viewModel.searchresults!.results[index].title.english ?? viewModel.searchresults!.results[index].title.romaji, currentEpisodeCount: viewModel.searchresults!.results[index].currentEpisodeCount, totalEpisodes: viewModel.searchresults!.results[index].totalEpisodes)
                                     }
                                 }
                             }
                         } else {
-                            ForEach(0..<viewModel.searchresults!.results.count) { index in
+                            ForEach(0..<viewModel.searchresults!.results.filter{$0.type == "MANGA"}.count) { index in
                                 NavigationLink(destination: Info(id: viewModel.searchresults!.results[index].id, type: "manga")) {
                                     ZStack(alignment: .center) {
                                         KFImage(URL(string: viewModel.searchresults!.results[index].cover ?? viewModel.searchresults!.results[index].image))

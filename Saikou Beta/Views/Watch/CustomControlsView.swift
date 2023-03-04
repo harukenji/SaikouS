@@ -737,6 +737,7 @@ struct CustomControlsView: View {
                                                             .font(.system(size: 12, weight: .heavy))
                                                             .lineLimit(3)
                                                             .padding(.trailing, 8)
+                                                            .multilineTextAlignment(.leading)
                                                     }
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                                     .padding(.leading, -14)
@@ -747,6 +748,7 @@ struct CustomControlsView: View {
                                                             .foregroundColor(.white.opacity(0.7))
                                                             .padding(12)
                                                             .padding(.top, -12)
+                                                            .lineLimit(4)
                                                     }
                                                 }
                                                 .animation(.spring(response: 0.3))

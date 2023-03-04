@@ -29,6 +29,7 @@ final class InfoViewModel: ObservableObject {
                     switch result {
                     case .success(let data):
                         self.infodata = data
+                        self.error = nil
                     case .failure(let reason):
                         self.error = reason
                     }
@@ -41,6 +42,7 @@ final class InfoViewModel: ObservableObject {
                         if(mangaInfodata != nil) {
                             self.chapterdata = mangaInfodata!.chapters
                         }
+                        self.error = nil
                     case .failure(let reason):
                         self.error = reason
                     }
@@ -58,6 +60,7 @@ final class InfoViewModel: ObservableObject {
                         if(self.infodata != nil) {
                             self.infodata!.episodes = self.episodedata
                         }
+                        self.error = nil
                     case .failure(let reason):
                         self.error = reason
                 }
@@ -72,9 +75,11 @@ final class InfoViewModel: ObservableObject {
                     case .success(let data):
                         self.chapterdata = data
                         if(self.mangaInfodata != nil) {
-                            self.mangaInfodata!.chapters = self.chapterdata
+                            self.mangaInfodata!.chapters = data
                         }
+                    self.error = nil
                     case .failure(let reason):
+                    print(reason)
                         self.error = reason
                 }
             }

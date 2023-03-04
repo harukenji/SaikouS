@@ -12,5 +12,5 @@ struct Chapter: Codable {
     let title: String?
     let chapterNumber: String?
     let volumeNumber: String?
-    let pages: Int
+    let pages: Int?
 }

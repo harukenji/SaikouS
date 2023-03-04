@@ -11,6 +11,7 @@ import WebKit
 import AuthenticationServices
 import Combine
 import CoreData
+import SwiftUIFontIcon
 
 @available(iOS 15.0, *)
 struct AdaptiveSheet<T: View>: ViewModifier {
@@ -906,63 +907,76 @@ struct Home: View {
                             
                             HStack {
                                 VStack {
-                                    Image(systemName: "book.fill")
-                                        .resizable()
-                                        .frame(minWidth: 28, minHeight: 20)
-                                        .frame(maxWidth: 28, maxHeight: 20)
-                                        .foregroundColor(.white.opacity(0.5))
-                                    
-                                    if(selectedItem == 0) {
-                                        Rectangle()
-                                            .foregroundColor(Color(hex: "#8ca7ff"))
-                                            .frame(maxWidth: 18, maxHeight: 3)
+                                    VStack(spacing: 20) {
+                                        FontIcon.button(.materialIcon(code: .movie_filter), action: {
+                                            selectedItem = 0
+                                        }, fontsize: 28)
+                                        .foregroundColor(Color(hex: "#555555"))
+                                        
+                                        Text("ANIME")
+                                            .font(.system(size: 16, weight: .heavy))
+                                            .foregroundColor(Color(hex: "#ff4cb0"))
+                                            .padding(.bottom, 0)
                                     }
+                                    .offset(y: selectedItem == 0 ? -24 : 20)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
                                 }
-                                .padding(.top, selectedItem == 0 ? 8 : 0)
+                                .frame(maxWidth: 80, maxHeight: 30)
+                                .clipped()
                                 .onTapGesture {
                                     selectedItem = 0
                                 }
                                 
                                 VStack {
-                                    Text("HOME")
-                                        .font(.system(size: 14, weight: .heavy))
-                                        .foregroundColor(Color(hex: "#ff4cb0"))
-                                    
-                                    if(selectedItem == 1) {
-                                        Rectangle()
-                                            .foregroundColor(Color(hex: "#8ca7ff"))
-                                            .frame(maxWidth: 18, maxHeight: 3)
+                                    VStack(spacing: 20) {
+                                        FontIcon.button(.materialIcon(code: .home), action: {
+                                            selectedItem = 1
+                                        }, fontsize: 28)
+                                        .foregroundColor(Color(hex: "#555555"))
+                                        
+                                        Text("HOME")
+                                            .font(.system(size: 16, weight: .heavy))
+                                            .foregroundColor(Color(hex: "#ff4cb0"))
+                                            .padding(.bottom, 0)
                                     }
+                                    .offset(y: selectedItem == 1 ? -24 : 20)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
                                 }
-                                .frame(width: 70)
-                                .padding(.top, selectedItem == 1 ? 8 : 0)
-                                .padding(.trailing, 24)
-                                .padding(.leading, 24)
+                                .frame(maxWidth: 80, maxHeight: 30)
+                                .clipped()
                                 .onTapGesture {
                                     selectedItem = 1
                                 }
                                 
                                 VStack {
-                                    Image(systemName: "book.fill")
-                                        .resizable()
-                                        .frame(minWidth: 28, minHeight: 20)
-                                        .frame(maxWidth: 28, maxHeight: 20)
-                                        .foregroundColor(.white.opacity(0.5))
-                                    
-                                    if(selectedItem == 2) {
-                                        Rectangle()
-                                            .foregroundColor(Color(hex: "#8ca7ff"))
-                                            .frame(maxWidth: 18, maxHeight: 3)
+                                    VStack(spacing: 20) {
+                                        Image("book")
+                                            .resizable()
+                                            .frame(minWidth: 28, minHeight: 20)
+                                            .frame(maxWidth: 28, maxHeight: 20)
+                                            .foregroundColor(Color(hex: "#555555"))
+                                        
+                                        Text("MANGA")
+                                            .font(.system(size: 16, weight: .heavy))
+                                            .foregroundColor(Color(hex: "#ff4cb0"))
                                     }
+                                    .offset(y: selectedItem == 2 ? -24 : 20)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
                                 }
-                                .padding(.top, selectedItem == 2 ? 8 : 0)
+                                .frame(maxWidth: 80, maxHeight: 30)
+                                .clipped()
                                 .onTapGesture {
                                     selectedItem = 2
                                 }
                             }
-                            .padding(.horizontal, 44)
-                            .padding(.top, 14)
-                            .padding(.bottom, 12)
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 16)
+                            
+                            Rectangle()
+                                .foregroundColor(Color(hex: "#8ca7ff"))
+                                .frame(maxWidth: 18, maxHeight: 3)
+                                .offset(x: selectedItem == 0 ? -80 : selectedItem == 1 ? 0 : 80, y: 16)
+                                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
                         }
                         .fixedSize()
                         .cornerRadius(40)
