@@ -146,6 +146,8 @@ struct Info: View {
     
     @StateObject private var viewModel = InfoViewModel()
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(sortDescriptors: []) var animeEpisodes: FetchedResults<AnimeWatchStorage>
     
     @State private var isOn = false
     @State var startEpisodeList = 0
@@ -368,17 +370,24 @@ struct Info: View {
                                                         }
                                                         
                                                         if(!episodeDisplayGrid) {
-                                                            
                                                             VStack {
                                                                 ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST)
+                                                                    let ep = animeEpisodes.first(where: {
+                                                                        index.id == viewModel.episodedata![index].id
+                                                                    })
+                                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST, watched: ep?.episodeWatched ?? false, progress: ep?.progress ?? 0.0)
+                                                                    
                                                                 }
                                                                 .padding(.horizontal, 20)
                                                             }
                                                         } else {
                                                             LazyVGrid(columns: columns, spacing: 20) {
                                                                 ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID)
+                                                                    let ep = animeEpisodes.first(where: {
+                                                                        index.id == viewModel.episodedata![index].id
+                                                                    })
+                                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID, watched: ep?.episodeWatched ?? false, progress: ep?.progress ?? 0.0)
+                                                                    
                                                                 }
                                                             }
                                                             .padding(.horizontal, 20)
@@ -582,17 +591,24 @@ struct Info: View {
                                         }
                                         
                                         if(!episodeDisplayGrid) {
-                                            
                                             VStack {
                                                 ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST)
+                                                    let ep = animeEpisodes.first(where: {
+                                                        index.id == viewModel.episodedata![index].id
+                                                    })
+                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST, watched: ep?.episodeWatched ?? false, progress: ep?.progress ?? 0.0)
+                                                    
                                                 }
                                                 .padding(.horizontal, 20)
                                             }
                                         } else {
                                             LazyVGrid(columns: columns, spacing: 20) {
                                                 ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID)
+                                                    let ep = animeEpisodes.first(where: {
+                                                        index.id == viewModel.episodedata![index].id
+                                                    })
+                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID, watched: ep?.episodeWatched ?? false, progress: ep?.progress ?? 0.0)
+                                                    
                                                 }
                                             }
                                             .padding(.horizontal, 20)

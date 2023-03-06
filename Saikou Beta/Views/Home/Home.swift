@@ -664,346 +664,348 @@ struct Home: View {
     @State var showDebug = false
     @State var debugTitle = ""
     @State var debugText = ""
+    @State var animateAnime = false
     
     var body: some View {
-        NavigationView {
-            GeometryReader { proxy in
-                ZStack {
-                    Color(.black)
+        GeometryReader { proxy in
+            ZStack {
+                Color(.black)
+                
+                TabView(selection: $selectedItem) {
+                    AnimeHome(proxy: proxy, startAnimation: $animateAnime)
+                        .padding(.top, -70)
+                        .tag(0)
                     
-                    TabView(selection: $selectedItem) {
-                        AnimeHome(proxy: proxy)
-                            .padding(.top, -70)
-                            .tag(0)
-                        
-                        ScrollView {
-                            if(user == nil) {
-                                VStack {
-                                    Text("Saikou S")
-                                        .font(.system(size: 90, weight: .ultraLight))
-                                        .foregroundColor(Color(hex: "#ff4cb0"))
-                                        .padding(.bottom, 12)
-                                    
-                                    Text("The Best Anime & Manga app for iOS")
-                                        .padding(.horizontal, 60)
-                                        .multilineTextAlignment(.center)
-                                    
-                                    Button(action: {
-                                        print("LOGIN")
-                                        //showWebView.toggle()
-                                        if let url = URL(string: "https://anilist.co/api/v2/oauth/authorize?client_id=11248&response_type=token") {
-                                            UIApplication.shared.open(url)
-                                        }
-                                    }) {
-                                        ZStack {
-                                            Color(hex: "#ff4cb0")
+                    ScrollView {
+                        if(user == nil) {
+                            VStack {
+                                Text("Saikou S")
+                                    .font(.system(size: 90, weight: .ultraLight))
+                                    .foregroundColor(Color(hex: "#ff4cb0"))
+                                    .padding(.bottom, 12)
+                                
+                                Text("The Best Anime & Manga app for iOS")
+                                    .padding(.horizontal, 60)
+                                    .multilineTextAlignment(.center)
+                                
+                                Button(action: {
+                                    print("LOGIN")
+                                    //showWebView.toggle()
+                                    if let url = URL(string: "https://anilist.co/api/v2/oauth/authorize?client_id=11248&response_type=token") {
+                                        UIApplication.shared.open(url)
+                                    }
+                                }) {
+                                    ZStack {
+                                        Color(hex: "#ff4cb0")
+                                        
+                                        HStack {
+                                            Image("anilist")
+                                                .resizable()
+                                                .frame(maxWidth: 20, maxHeight: 15)
+                                                .foregroundColor(Color(hex: "#ffc5e5"))
+                                                .padding(.leading, 30)
                                             
-                                            HStack {
-                                                Image("anilist")
-                                                    .resizable()
-                                                    .frame(maxWidth: 20, maxHeight: 15)
-                                                    .foregroundColor(Color(hex: "#ffc5e5"))
-                                                    .padding(.leading, 30)
-                                                
-                                                Text("Login")
-                                                    .fontWeight(.heavy)
-                                                    .foregroundColor(Color(hex: "#ffc5e5"))
-                                                    .frame(width: 50)
-                                                    .padding(.vertical, 20)
-                                                    .padding(.trailing, 50)
-                                                    .padding(.leading, 30)
-                                            }
-                                        }
-                                        .fixedSize()
-                                        .cornerRadius(16)
-                                        .padding(.vertical, 28)
-                                        .onReceive(pub) { (output) in
-                                            Task {
-                                                setAccessToken(token: output.userInfo!["myText"]! as! String)
-                                                await getUserData()
-                                                //showDebug = true
-                                            }
+                                            Text("Login")
+                                                .fontWeight(.heavy)
+                                                .foregroundColor(Color(hex: "#ffc5e5"))
+                                                .frame(width: 50)
+                                                .padding(.vertical, 20)
+                                                .padding(.trailing, 50)
+                                                .padding(.leading, 30)
                                         }
                                     }
-                                    
-                                    Button(action: {
+                                    .fixedSize()
+                                    .cornerRadius(16)
+                                    .padding(.vertical, 28)
+                                    .onReceive(pub) { (output) in
                                         Task {
-                                            let fetchRequest1: NSFetchRequest<NSFetchRequestResult> = UserStorageInfo.fetchRequest()
-                                            let batchDeleteRequest1 = NSBatchDeleteRequest(fetchRequest: fetchRequest1)
-                                            _ = try? moc.execute(batchDeleteRequest1)
+                                            setAccessToken(token: output.userInfo!["myText"]! as! String)
+                                            await getUserData()
+                                            //showDebug = true
                                         }
-                                    }) {
-                                        ZStack {
-                                            Color(hex: "#D65050")
+                                    }
+                                }
+                                
+                                Button(action: {
+                                    Task {
+                                        let fetchRequest1: NSFetchRequest<NSFetchRequestResult> = UserStorageInfo.fetchRequest()
+                                        let batchDeleteRequest1 = NSBatchDeleteRequest(fetchRequest: fetchRequest1)
+                                        _ = try? moc.execute(batchDeleteRequest1)
+                                    }
+                                }) {
+                                    ZStack {
+                                        Color(hex: "#D65050")
+                                        
+                                        HStack {
+                                            Image("anilist")
+                                                .resizable()
+                                                .frame(maxWidth: 20, maxHeight: 15)
+                                                .foregroundColor(Color(hex: "#ffc5e5"))
+                                                .padding(.leading, 30)
                                             
-                                            HStack {
-                                                Image("anilist")
-                                                    .resizable()
-                                                    .frame(maxWidth: 20, maxHeight: 15)
-                                                    .foregroundColor(Color(hex: "#ffc5e5"))
-                                                    .padding(.leading, 30)
+                                            Text("Remove Stored Data")
+                                                .fontWeight(.heavy)
+                                                .foregroundColor(Color(hex: "#ffc5e5"))
+                                                .padding(.vertical, 20)
+                                                .padding(.trailing, 50)
+                                                .padding(.leading, 30)
+                                        }
+                                    }
+                                    .fixedSize()
+                                    .cornerRadius(16)
+                                    .padding(.vertical, 28)
+                                }
+                            }
+                            .frame(maxWidth: proxy.size.width)
+                            .padding(.top, 250)
+                        } else {
+                            VStack(alignment: .leading) {
+                                AnilistInfoTopBanner(user: user!, width: proxy.size.width)
+                                
+                                if(watchList != nil) {
+                                    
+                                    Text("Currently Watching")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 18, weight: .heavy))
+                                        .padding(.top, 20)
+                                        .padding(.leading, 20)
+                                
+                                    ScrollView(.horizontal) {
+                                        HStack(spacing: 20) {
+                                            ForEach(0..<watchList!.count) {index in
+                                                NavigationLink(destination: Info(id: String(watchList![index].media.id), type: "anime")) {
+                                                    AnimeCard(image: watchList![index].media.coverImage.extraLarge ?? watchList![index].media.coverImage.large, rating: watchList![index].media.averageScore, title: watchList![index].media.title.english ?? watchList![index].media.title.romaji, currentEpisodeCount: watchList![index].progress, totalEpisodes: watchList![index].media.episodes)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .padding(.top, 10)
+                                    .padding(.leading, 20)
+                                }
+                                
+                                if(favouritesList != nil && favouritesList!.data.User.favourites.anime.edges.count > 0) {
+                                    Text("Favourite Anime")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 18, weight: .heavy))
+                                        .padding(.top, 20)
+                                        .padding(.leading, 20)
+                                
+                                    ScrollView(.horizontal) {
+                                        HStack(spacing: 20) {
+                                            ForEach(0..<favouritesList!.data.User.favourites.anime.edges.count) {index in
+                                                NavigationLink(destination: Info(id: String(favouritesList!.data.User.favourites.anime.edges[index].node.id), type: "anime")) {
+                                                    AnimeCard(image: favouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: favouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: favouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? favouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: favouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: favouritesList!.data.User.favourites.anime.edges[index].node.episodes)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .padding(.top, 10)
+                                    .padding(.leading, 20)
+                                }
+                                
+                                if(plannedList != nil) {
+                                    Text("Planned Anime")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 18, weight: .heavy))
+                                        .padding(.top, 20)
+                                        .padding(.leading, 20)
+                                
+                                    ScrollView(.horizontal) {
+                                        HStack(spacing: 20) {
+                                            ForEach(0..<plannedList!.count) {index in
+                                                NavigationLink(destination: Info(id: String(plannedList![index].media.id), type: "anime")) {
+                                                    AnimeCard(image: plannedList![index].media.coverImage.extraLarge ?? plannedList![index].media.coverImage.large, rating: plannedList![index].media.averageScore, title: plannedList![index].media.title.english ?? plannedList![index].media.title.romaji, currentEpisodeCount: plannedList![index].progress, totalEpisodes: plannedList![index].media.episodes)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .padding(.top, 10)
+                                    .padding(.leading, 20)
+                                }
+                                
+                                if(mangaWatchList != nil) {
+                                    
+                                    Text("Currently Reading")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 18, weight: .heavy))
+                                        .padding(.top, 20)
+                                        .padding(.leading, 20)
+                                
+                                    ScrollView(.horizontal) {
+                                        HStack(spacing: 20) {
+                                            ForEach(0..<mangaWatchList!.count) {index in
+                                                AnimeCard(image: mangaWatchList![index].media.coverImage.extraLarge ?? mangaWatchList![index].media.coverImage.large, rating: mangaWatchList![index].media.averageScore, title: mangaWatchList![index].media.title.english ?? mangaWatchList![index].media.title.romaji, currentEpisodeCount: mangaWatchList![index].progress, totalEpisodes: mangaWatchList![index].media.episodes)
                                                 
-                                                Text("Remove Stored Data")
-                                                    .fontWeight(.heavy)
-                                                    .foregroundColor(Color(hex: "#ffc5e5"))
-                                                    .padding(.vertical, 20)
-                                                    .padding(.trailing, 50)
-                                                    .padding(.leading, 30)
                                             }
                                         }
-                                        .fixedSize()
-                                        .cornerRadius(16)
-                                        .padding(.vertical, 28)
                                     }
+                                    .padding(.top, 10)
+                                    .padding(.leading, 20)
                                 }
-                                .frame(maxWidth: proxy.size.width)
-                                .padding(.top, 250)
-                            } else {
-                                VStack(alignment: .leading) {
-                                    AnilistInfoTopBanner(user: user!, width: proxy.size.width)
-                                    
-                                    if(watchList != nil) {
-                                        
-                                        Text("Currently Watching")
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 18, weight: .heavy))
-                                            .padding(.top, 20)
-                                            .padding(.leading, 20)
-                                    
-                                        ScrollView(.horizontal) {
-                                            HStack(spacing: 20) {
-                                                ForEach(0..<watchList!.count) {index in
-                                                    NavigationLink(destination: Info(id: String(watchList![index].media.id), type: "anime")) {
-                                                        AnimeCard(image: watchList![index].media.coverImage.extraLarge ?? watchList![index].media.coverImage.large, rating: watchList![index].media.averageScore, title: watchList![index].media.title.english ?? watchList![index].media.title.romaji, currentEpisodeCount: watchList![index].progress, totalEpisodes: watchList![index].media.episodes)
-                                                    }
-                                                }
+                                
+                                if(mangaFavouritesList != nil && mangaFavouritesList!.data.User.favourites.anime.edges.count > 0) {
+                                    Text("Favourite Manga")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 18, weight: .heavy))
+                                        .padding(.top, 20)
+                                        .padding(.leading, 20)
+                                
+                                    ScrollView(.horizontal) {
+                                        HStack(spacing: 20) {
+                                            ForEach(0..<mangaFavouritesList!.data.User.favourites.anime.edges.count) {index in
+                                                AnimeCard(image: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.episodes)
+                                                
                                             }
                                         }
-                                        .padding(.top, 10)
-                                        .padding(.leading, 20)
                                     }
-                                    
-                                    if(favouritesList != nil && favouritesList!.data.User.favourites.anime.edges.count > 0) {
-                                        Text("Favourite Anime")
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 18, weight: .heavy))
-                                            .padding(.top, 20)
-                                            .padding(.leading, 20)
-                                    
-                                        ScrollView(.horizontal) {
-                                            HStack(spacing: 20) {
-                                                ForEach(0..<favouritesList!.data.User.favourites.anime.edges.count) {index in
-                                                    NavigationLink(destination: Info(id: String(favouritesList!.data.User.favourites.anime.edges[index].node.id), type: "anime")) {
-                                                        AnimeCard(image: favouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: favouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: favouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? favouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: favouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: favouritesList!.data.User.favourites.anime.edges[index].node.episodes)
-                                                    }
-                                                }
+                                    .padding(.top, 10)
+                                    .padding(.leading, 20)
+                                }
+                                
+                                if(mangaPlannedList != nil) {
+                                    Text("Planned Anime")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 18, weight: .heavy))
+                                        .padding(.top, 20)
+                                        .padding(.leading, 20)
+                                
+                                    ScrollView(.horizontal) {
+                                        HStack(spacing: 20) {
+                                            ForEach(0..<mangaPlannedList!.count) {index in
+                                                AnimeCard(image: mangaPlannedList![index].media.coverImage.extraLarge ?? mangaPlannedList![index].media.coverImage.large, rating: mangaPlannedList![index].media.averageScore, title: mangaPlannedList![index].media.title.english ?? mangaPlannedList![index].media.title.romaji, currentEpisodeCount: mangaPlannedList![index].progress, totalEpisodes: mangaPlannedList![index].media.episodes)
+                                                
                                             }
                                         }
-                                        .padding(.top, 10)
-                                        .padding(.leading, 20)
                                     }
-                                    
-                                    if(plannedList != nil) {
-                                        Text("Planned Anime")
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 18, weight: .heavy))
-                                            .padding(.top, 20)
-                                            .padding(.leading, 20)
-                                    
-                                        ScrollView(.horizontal) {
-                                            HStack(spacing: 20) {
-                                                ForEach(0..<plannedList!.count) {index in
-                                                    NavigationLink(destination: Info(id: String(plannedList![index].media.id), type: "anime")) {
-                                                        AnimeCard(image: plannedList![index].media.coverImage.extraLarge ?? plannedList![index].media.coverImage.large, rating: plannedList![index].media.averageScore, title: plannedList![index].media.title.english ?? plannedList![index].media.title.romaji, currentEpisodeCount: plannedList![index].progress, totalEpisodes: plannedList![index].media.episodes)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        .padding(.top, 10)
-                                        .padding(.leading, 20)
-                                    }
-                                    
-                                    if(mangaWatchList != nil) {
-                                        
-                                        Text("Currently Reading")
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 18, weight: .heavy))
-                                            .padding(.top, 20)
-                                            .padding(.leading, 20)
-                                    
-                                        ScrollView(.horizontal) {
-                                            HStack(spacing: 20) {
-                                                ForEach(0..<mangaWatchList!.count) {index in
-                                                    AnimeCard(image: mangaWatchList![index].media.coverImage.extraLarge ?? mangaWatchList![index].media.coverImage.large, rating: mangaWatchList![index].media.averageScore, title: mangaWatchList![index].media.title.english ?? mangaWatchList![index].media.title.romaji, currentEpisodeCount: mangaWatchList![index].progress, totalEpisodes: mangaWatchList![index].media.episodes)
-                                                    
-                                                }
-                                            }
-                                        }
-                                        .padding(.top, 10)
-                                        .padding(.leading, 20)
-                                    }
-                                    
-                                    if(mangaFavouritesList != nil && mangaFavouritesList!.data.User.favourites.anime.edges.count > 0) {
-                                        Text("Favourite Manga")
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 18, weight: .heavy))
-                                            .padding(.top, 20)
-                                            .padding(.leading, 20)
-                                    
-                                        ScrollView(.horizontal) {
-                                            HStack(spacing: 20) {
-                                                ForEach(0..<mangaFavouritesList!.data.User.favourites.anime.edges.count) {index in
-                                                    AnimeCard(image: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.episodes)
-                                                    
-                                                }
-                                            }
-                                        }
-                                        .padding(.top, 10)
-                                        .padding(.leading, 20)
-                                    }
-                                    
-                                    if(mangaPlannedList != nil) {
-                                        Text("Planned Anime")
-                                            .foregroundColor(.white)
-                                            .font(.system(size: 18, weight: .heavy))
-                                            .padding(.top, 20)
-                                            .padding(.leading, 20)
-                                    
-                                        ScrollView(.horizontal) {
-                                            HStack(spacing: 20) {
-                                                ForEach(0..<mangaPlannedList!.count) {index in
-                                                    AnimeCard(image: mangaPlannedList![index].media.coverImage.extraLarge ?? mangaPlannedList![index].media.coverImage.large, rating: mangaPlannedList![index].media.averageScore, title: mangaPlannedList![index].media.title.english ?? mangaPlannedList![index].media.title.romaji, currentEpisodeCount: mangaPlannedList![index].progress, totalEpisodes: mangaPlannedList![index].media.episodes)
-                                                    
-                                                }
-                                            }
-                                        }
-                                        .padding(.top, 10)
-                                        .padding(.leading, 20)
-                                    }
+                                    .padding(.top, 10)
+                                    .padding(.leading, 20)
                                 }
                             }
                         }
-                        .navigationBarHidden(true)
-                        .tag(1)
-                        
-                        MangaHome(proxy: proxy)
-                            .padding(.top, -70)
-                            .tag(2)
                     }
-                    .tabViewStyle(.page(indexDisplayMode: .never))
-                    .ignoresSafeArea()
-                    .animation(.easeInOut)
-                    .transition(.slide)
-                    .popover(isPresented: $showDebug) {
-                        VStack {
-                            Text(debugTitle)
-                            Text(debugText)
-                        }
-                    }
+                    .navigationBarHidden(true)
+                    .tag(1)
                     
-                    ZStack {
-                        ZStack {
-                            Color(hex: "#1c1c1c")
-                            
-                            HStack {
-                                VStack {
-                                    VStack(spacing: 20) {
-                                        FontIcon.button(.materialIcon(code: .movie_filter), action: {
-                                            selectedItem = 0
-                                        }, fontsize: 28)
-                                        .foregroundColor(Color(hex: "#555555"))
-                                        
-                                        Text("ANIME")
-                                            .font(.system(size: 16, weight: .heavy))
-                                            .foregroundColor(Color(hex: "#ff4cb0"))
-                                            .padding(.bottom, 0)
-                                    }
-                                    .offset(y: selectedItem == 0 ? -24 : 20)
-                                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
-                                }
-                                .frame(maxWidth: 80, maxHeight: 30)
-                                .clipped()
-                                .onTapGesture {
-                                    selectedItem = 0
-                                }
-                                
-                                VStack {
-                                    VStack(spacing: 20) {
-                                        FontIcon.button(.materialIcon(code: .home), action: {
-                                            selectedItem = 1
-                                        }, fontsize: 28)
-                                        .foregroundColor(Color(hex: "#555555"))
-                                        
-                                        Text("HOME")
-                                            .font(.system(size: 16, weight: .heavy))
-                                            .foregroundColor(Color(hex: "#ff4cb0"))
-                                            .padding(.bottom, 0)
-                                    }
-                                    .offset(y: selectedItem == 1 ? -24 : 20)
-                                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
-                                }
-                                .frame(maxWidth: 80, maxHeight: 30)
-                                .clipped()
-                                .onTapGesture {
-                                    selectedItem = 1
-                                }
-                                
-                                VStack {
-                                    VStack(spacing: 20) {
-                                        Image("book")
-                                            .resizable()
-                                            .frame(minWidth: 28, minHeight: 20)
-                                            .frame(maxWidth: 28, maxHeight: 20)
-                                            .foregroundColor(Color(hex: "#555555"))
-                                        
-                                        Text("MANGA")
-                                            .font(.system(size: 16, weight: .heavy))
-                                            .foregroundColor(Color(hex: "#ff4cb0"))
-                                    }
-                                    .offset(y: selectedItem == 2 ? -24 : 20)
-                                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
-                                }
-                                .frame(maxWidth: 80, maxHeight: 30)
-                                .clipped()
-                                .onTapGesture {
-                                    selectedItem = 2
-                                }
-                            }
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 16)
-                            
-                            Rectangle()
-                                .foregroundColor(Color(hex: "#8ca7ff"))
-                                .frame(maxWidth: 18, maxHeight: 3)
-                                .offset(x: selectedItem == 0 ? -80 : selectedItem == 1 ? 0 : 80, y: 16)
-                                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
-                        }
-                        .fixedSize()
-                        .cornerRadius(40)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                    .padding(.bottom, 70)
+                    MangaHome(proxy: proxy)
+                        .padding(.top, -70)
+                        .tag(2)
                 }
-                .onAppear {
-                    Task {
-                        print("A WILD APP APPEARED!")
-                        if(userStorageData.count > 0) {
-                            access_token = userStorageData[0].access_token ?? ""
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .ignoresSafeArea()
+                .animation(.easeInOut)
+                .transition(.slide)
+                .popover(isPresented: $showDebug) {
+                    VStack {
+                        Text(debugTitle)
+                        Text(debugText)
+                    }
+                }
+                
+                ZStack {
+                    ZStack {
+                        Color(hex: "#1c1c1c")
+                        
+                        HStack {
+                            VStack {
+                                VStack(spacing: 20) {
+                                    FontIcon.button(.materialIcon(code: .movie_filter), action: {
+                                        selectedItem = 0
+                                        animateAnime = true
+                                    }, fontsize: 28)
+                                    .foregroundColor(Color(hex: "#555555"))
+                                    
+                                    Text("ANIME")
+                                        .font(.system(size: 16, weight: .heavy))
+                                        .foregroundColor(Color(hex: "#ff4cb0"))
+                                        .padding(.bottom, 0)
+                                }
+                                .frame(minWidth: 70, maxWidth: 70)
+                                .offset(y: selectedItem == 0 ? -24 : 20)
+                                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
+                            }
+                            .frame(minWidth: 70, maxWidth: 70, maxHeight: 30)
+                            .clipped()
+                            .onTapGesture {
+                                selectedItem = 0
+                                animateAnime = true
+                            }
+                            
+                            VStack {
+                                VStack(spacing: 20) {
+                                    FontIcon.button(.materialIcon(code: .home), action: {
+                                        selectedItem = 1
+                                        animateAnime = false
+                                    }, fontsize: 28)
+                                    .foregroundColor(Color(hex: "#555555"))
+                                    
+                                    Text("HOME")
+                                        .font(.system(size: 16, weight: .heavy))
+                                        .foregroundColor(Color(hex: "#ff4cb0"))
+                                        .padding(.bottom, 0)
+                                }
+                                .frame(minWidth: 70, maxWidth: 70)
+                                .offset(y: selectedItem == 1 ? -24 : 20)
+                                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
+                            }
+                            .frame(minWidth: 70, maxWidth: 70, maxHeight: 30)
+                            .clipped()
+                            .onTapGesture {
+                                selectedItem = 1
+                                animateAnime = false
+                            }
+                            
+                            VStack {
+                                VStack(spacing: 20) {
+                                    Image("book")
+                                        .resizable()
+                                        .frame(minWidth: 28, minHeight: 20)
+                                        .frame(maxWidth: 28, maxHeight: 20)
+                                        .foregroundColor(Color(hex: "#555555"))
+                                    
+                                    Text("MANGA")
+                                        .font(.system(size: 16, weight: .heavy))
+                                        .foregroundColor(Color(hex: "#ff4cb0"))
+                                }
+                                .frame(minWidth: 70, maxWidth: 70)
+                                .offset(y: selectedItem == 2 ? -20 : 20)
+                                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
+                            }
+                            .frame(minWidth: 70, maxWidth: 70, maxHeight: 30)
+                            .clipped()
+                            .onTapGesture {
+                                selectedItem = 2
+                                animateAnime = false
+                            }
                         }
-                        if(access_token.count > 0) {
-                            await getUserData()
-                        }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 16)
+                        
+                        Rectangle()
+                            .foregroundColor(Color(hex: "#8ca7ff"))
+                            .frame(maxWidth: 18, maxHeight: 3)
+                            .offset(x: selectedItem == 0 ? -76 : selectedItem == 1 ? 0 : 78, y: 16)
+                            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedItem)
+                    }
+                    .fixedSize()
+                    .cornerRadius(40)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                .padding(.bottom, 70)
+            }
+            .onAppear {
+                Task {
+                    print("A WILD APP APPEARED!")
+                    if(userStorageData.count > 0) {
+                        access_token = userStorageData[0].access_token ?? ""
+                    }
+                    if(access_token.count > 0) {
+                        await getUserData()
                     }
                 }
             }
+        }
             .ignoresSafeArea()
             .preferredColorScheme(.dark)
-        }
-        .accentColor(Color(hex: "#00000000"))
-        #if os(iOS)
-        .navigationViewStyle(.stack)
-        #endif
-        .navigationBarBackButtonHidden(true)
         .overlay {
             VStack {
                 ZStack {

@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "elephant",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/s2mr/Elephant.git",
+      "state" : {
+        "revision" : "c6cb1d4e39a3cceadf44c0b95e11230e3eec0904",
+        "version" : "0.1.2"
+      }
+    },
+    {
       "identity" : "kingfisher",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher",

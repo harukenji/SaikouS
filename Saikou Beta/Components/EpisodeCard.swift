@@ -25,8 +25,10 @@ struct EpisodeCard: View {
     @Binding var lineLimitArray: [Int]
     let viewModel: InfoViewModel
     let type: EpisodeCardType
+    let watched: Bool
+    let progress: Double
     
-    init(image: String, episodeIndex: Int, title: String, description: String, episodeNumber: Int, selectedProvider: String, id: String, index: Int, lineLimitArray: Binding<[Int]>, viewModel: InfoViewModel, type: EpisodeCardType) {
+    init(image: String, episodeIndex: Int, title: String, description: String, episodeNumber: Int, selectedProvider: String, id: String, index: Int, lineLimitArray: Binding<[Int]>, viewModel: InfoViewModel, type: EpisodeCardType, watched: Bool, progress: Double) {
         self.image = image
         self.episodeIndex = episodeIndex
         self.title = title
@@ -38,6 +40,8 @@ struct EpisodeCard: View {
         _lineLimitArray = lineLimitArray
         self.viewModel = viewModel
         self.type = type
+        self.watched = watched
+        self.progress = progress
     }
     
     var body: some View {
@@ -48,19 +52,49 @@ struct EpisodeCard: View {
                 VStack {
                     NavigationLink(destination: WatchPage(aniData: viewModel.infodata!, episodeIndex: episodeIndex, anilistId: id, provider: selectedProvider, episodedata: viewModel.episodedata ?? [])) {
                         HStack {
-                            KFImage(URL(string: image))
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: 170, maxHeight: 170 / 16 * 9)
-                                .cornerRadius(12)
+                            ZStack(alignment: .bottom) {
+                                KFImage(URL(string: image))
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: 170, maxHeight: 170 / 16 * 9)
+                                
+                                // progress bar
+                                if watched {
+                                    ZStack(alignment: .bottomLeading) {
+                                        Color(.white).opacity(0.3)
+                                        
+                                        RoundedRectangle(cornerRadius: 2, style: .continuous)
+                                            .fill(Color(hex: "#FF007F"))
+                                            .frame(maxWidth: 170 * progress, maxHeight: 4)
+                                    }
+                                    .frame(maxWidth: .infinity, maxHeight: 4)
+                                    .cornerRadius(2)
+                                    .clipped()
+                                }
+                                
+                            }
+                            .frame(minWidth: 170, maxWidth: 170, minHeight: 170 / 16 * 9, maxHeight: 170 / 16 * 9)
+                            .cornerRadius(12)
                             
-                            Text(title)
-                                .font(.system(size: 14, weight: .heavy))
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.trailing, 20)
-                                .lineLimit(4)
-                                .foregroundColor(.white)
-                                .multilineTextAlignment(.leading)
+                            ZStack(alignment: .leading) {
+                                Text(title)
+                                    .font(.system(size: 14, weight: .heavy))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.trailing, 20)
+                                    .lineLimit(4)
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.leading)
+                                
+                                HStack {
+                                    if watched {
+                                        Image(systemName: "eye.fill")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 20))
+                                            .padding(12)
+                                    }
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                            }
                         }
                     }
                     

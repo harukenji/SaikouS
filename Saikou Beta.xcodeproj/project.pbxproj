@@ -14,7 +14,6 @@
 		E90707AF29AD0D060010F00F /* RecentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90707AE29AD0D060010F00F /* RecentData.swift */; };
 		E90707B129AD0DC30010F00F /* RecentFetchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90707B029AD0DC30010F00F /* RecentFetchResult.swift */; };
 		E90707B329AD54370010F00F /* ProfileSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90707B229AD54360010F00F /* ProfileSelector.swift */; };
-		E90707B529AD69200010F00F /* FakeHome.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90707B429AD69200010F00F /* FakeHome.swift */; };
 		E9136E6A299D60E500B46D72 /* AnimeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9136E69299D60E500B46D72 /* AnimeCard.swift */; };
 		E937CB6129A4009500714848 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6029A4009500714848 /* PlayerViewModel.swift */; };
 		E937CB6329A400F200714848 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6229A400F200714848 /* Player.swift */; };
@@ -33,6 +32,8 @@
 		E937CB7F29A4034000714848 /* subtitleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB7E29A4034000714848 /* subtitleData.swift */; };
 		E937CB8129A4037200714848 /* CustomPlayerWithControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB8029A4037200714848 /* CustomPlayerWithControls.swift */; };
 		E937CB8329A4039B00714848 /* Loading.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB8229A4039B00714848 /* Loading.swift */; };
+		E9557F1429B634BD0004E9BD /* OpeningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9557F1329B634BD0004E9BD /* OpeningView.swift */; };
+		E9557F1729B6354F0004E9BD /* Elephant in Frameworks */ = {isa = PBXBuildFile; productRef = E9557F1629B6354F0004E9BD /* Elephant */; };
 		E95E84E8298EA10F0051D834 /* Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95E84E7298EA10F0051D834 /* Info.swift */; };
 		E95E84EA298EA1100051D834 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84E9298EA1100051D834 /* Assets.xcassets */; };
 		E95E84EE298EA1100051D834 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95E84ED298EA1100051D834 /* Preview Assets.xcassets */; };
@@ -83,6 +84,7 @@
 		E98FE20F299986D100909E8D /* UserDataStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE20E299986D100909E8D /* UserDataStorageService.swift */; };
 		E98FE213299986E900909E8D /* UserData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E98FE211299986E800909E8D /* UserData.xcdatamodeld */; };
 		E98FE2162999A94E00909E8D /* UserListAnime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E98FE2152999A94D00909E8D /* UserListAnime.swift */; };
+		E9B133D429B5596E00D5CABF /* SubtitleTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B133D329B5596E00D5CABF /* SubtitleTest.swift */; };
 		E9F230CD29AE661B009434E3 /* SkipTimes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F230CC29AE661B009434E3 /* SkipTimes.swift */; };
 		E9F230CF29AE67C5009434E3 /* SkipTimesFetchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F230CE29AE67C5009434E3 /* SkipTimesFetchResult.swift */; };
 		E9F230D129AFF9A0009434E3 /* ImageButtonWithText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F230D029AFF9A0009434E3 /* ImageButtonWithText.swift */; };
@@ -125,7 +127,6 @@
 		E90707AE29AD0D060010F00F /* RecentData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentData.swift; sourceTree = "<group>"; };
 		E90707B029AD0DC30010F00F /* RecentFetchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFetchResult.swift; sourceTree = "<group>"; };
 		E90707B229AD54360010F00F /* ProfileSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSelector.swift; sourceTree = "<group>"; };
-		E90707B429AD69200010F00F /* FakeHome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeHome.swift; sourceTree = "<group>"; };
 		E9136E69299D60E500B46D72 /* AnimeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeCard.swift; sourceTree = "<group>"; };
 		E937CB4529A3FF6100714848 /* SaikouSwiftiOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaikouSwiftiOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E937CB4F29A3FF6100714848 /* SaikouSwiftiOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaikouSwiftiOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +147,7 @@
 		E937CB7E29A4034000714848 /* subtitleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = subtitleData.swift; sourceTree = "<group>"; };
 		E937CB8029A4037200714848 /* CustomPlayerWithControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPlayerWithControls.swift; sourceTree = "<group>"; };
 		E937CB8229A4039B00714848 /* Loading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loading.swift; sourceTree = "<group>"; };
+		E9557F1329B634BD0004E9BD /* OpeningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpeningView.swift; sourceTree = "<group>"; };
 		E95E84E2298EA10F0051D834 /* Saikou Beta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Saikou Beta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95E84E7298EA10F0051D834 /* Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Info.swift; sourceTree = "<group>"; };
 		E95E84E9298EA1100051D834 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 		E98FE20E299986D100909E8D /* UserDataStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataStorageService.swift; sourceTree = "<group>"; };
 		E98FE212299986E900909E8D /* UserData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UserData.xcdatamodel; sourceTree = "<group>"; };
 		E98FE2152999A94D00909E8D /* UserListAnime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListAnime.swift; sourceTree = "<group>"; };
+		E9B133D329B5596E00D5CABF /* SubtitleTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleTest.swift; sourceTree = "<group>"; };
 		E9F230CC29AE661B009434E3 /* SkipTimes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkipTimes.swift; sourceTree = "<group>"; };
 		E9F230CE29AE67C5009434E3 /* SkipTimesFetchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkipTimesFetchResult.swift; sourceTree = "<group>"; };
 		E9F230D029AFF9A0009434E3 /* ImageButtonWithText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageButtonWithText.swift; sourceTree = "<group>"; };
@@ -235,6 +238,7 @@
 				E95E8520298EEBC60051D834 /* ActivityIndicatorView in Frameworks */,
 				E95E851D298EEBB10051D834 /* SwiftWebVTT in Frameworks */,
 				E95E851A298EEB7E0051D834 /* SwiftUIFontIcon in Frameworks */,
+				E9557F1729B6354F0004E9BD /* Elephant in Frameworks */,
 				E95E8515298EE24D0051D834 /* Shimmer in Frameworks */,
 				E95E8512298EA1840051D834 /* Kingfisher in Frameworks */,
 			);
@@ -341,6 +345,8 @@
 				E95E84EB298EA1100051D834 /* Saikou_Beta.entitlements */,
 				E95E84EC298EA1100051D834 /* Preview Content */,
 				E98FE1C529959A8F00909E8D /* Notifications.swift */,
+				E9B133D329B5596E00D5CABF /* SubtitleTest.swift */,
+				E9557F1329B634BD0004E9BD /* OpeningView.swift */,
 			);
 			path = "Saikou Beta";
 			sourceTree = "<group>";
@@ -443,7 +449,6 @@
 				E98FE20C29997C1000909E8D /* AnilistInfoTopBanner.swift */,
 				E90707A529ACF7C40010F00F /* AnimeHome.swift */,
 				E90707A929AD08320010F00F /* Home.swift */,
-				E90707B429AD69200010F00F /* FakeHome.swift */,
 				E9F230DB29B067E9009434E3 /* MangaHome.swift */,
 				E9F230DF29B06AF6009434E3 /* MangaSearch.swift */,
 			);
@@ -596,6 +601,7 @@
 				E95E8519298EEB7E0051D834 /* SwiftUIFontIcon */,
 				E95E851C298EEBB10051D834 /* SwiftWebVTT */,
 				E95E851F298EEBC60051D834 /* ActivityIndicatorView */,
+				E9557F1629B6354F0004E9BD /* Elephant */,
 			);
 			productName = "Saikou Beta";
 			productReference = E95E84E2298EA10F0051D834 /* Saikou Beta.app */;
@@ -683,6 +689,7 @@
 				E95E8518298EEB7E0051D834 /* XCRemoteSwiftPackageReference "SwiftUIFontIcon" */,
 				E95E851B298EEBB10051D834 /* XCRemoteSwiftPackageReference "SwiftWebVTT" */,
 				E95E851E298EEBC60051D834 /* XCRemoteSwiftPackageReference "ActivityIndicatorView" */,
+				E9557F1529B6354F0004E9BD /* XCRemoteSwiftPackageReference "Elephant" */,
 			);
 			productRefGroup = E95E84E3298EA10F0051D834 /* Products */;
 			projectDirPath = "";
@@ -759,12 +766,12 @@
 				E90707B329AD54370010F00F /* ProfileSelector.swift in Sources */,
 				E98FE213299986E900909E8D /* UserData.xcdatamodeld in Sources */,
 				E98FE20D29997C1000909E8D /* AnilistInfoTopBanner.swift in Sources */,
+				E9557F1429B634BD0004E9BD /* OpeningView.swift in Sources */,
 				E98FE1EF29993B9E00909E8D /* SearchResults.swift in Sources */,
 				E9F230DA29B065C5009434E3 /* Chapter.swift in Sources */,
 				E98FE1F62999419A00909E8D /* InfoFetchResult.swift in Sources */,
 				E90707AF29AD0D060010F00F /* RecentData.swift in Sources */,
 				E90707AA29AD08320010F00F /* Home.swift in Sources */,
-				E90707B529AD69200010F00F /* FakeHome.swift in Sources */,
 				E98FE1FE299947D800909E8D /* WatchViewModel.swift in Sources */,
 				E98FE1EA29993B7700909E8D /* Related.swift in Sources */,
 				E98FE1EC29993B8500909E8D /* Recommended.swift in Sources */,
@@ -777,6 +784,7 @@
 				E9136E6A299D60E500B46D72 /* AnimeCard.swift in Sources */,
 				E98FE207299952C400909E8D /* EpisodeCard.swift in Sources */,
 				E95E8525298EECDB0051D834 /* HostingController.swift in Sources */,
+				E9B133D429B5596E00D5CABF /* SubtitleTest.swift in Sources */,
 				E937CB8329A4039B00714848 /* Loading.swift in Sources */,
 				E98FE2162999A94E00909E8D /* UserListAnime.swift in Sources */,
 				E98FE20F299986D100909E8D /* UserDataStorageService.swift in Sources */,
@@ -1306,6 +1314,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E9557F1529B6354F0004E9BD /* XCRemoteSwiftPackageReference "Elephant" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/s2mr/Elephant.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.2;
+			};
+		};
 		E95E8510298EA1830051D834 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher";
@@ -1349,6 +1365,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E9557F1629B6354F0004E9BD /* Elephant */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E9557F1529B6354F0004E9BD /* XCRemoteSwiftPackageReference "Elephant" */;
+			productName = Elephant;
+		};
 		E95E8511298EA1840051D834 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E95E8510298EA1830051D834 /* XCRemoteSwiftPackageReference "Kingfisher" */;

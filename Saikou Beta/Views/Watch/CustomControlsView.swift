@@ -105,6 +105,8 @@ struct CustomControlsView: View {
     @State var startEpisodeList = 0
     @State var endEpisodeList = 50
     @State var paginationIndex = 0
+    @State var animateBackward: Bool = false
+    @State var animateForward: Bool = false
     
     var body: some View {
         ZStack {
@@ -274,14 +276,32 @@ struct CustomControlsView: View {
                         
                         if(playerVM.isLoading == false) {
                             Spacer()
-                            Image("goBackward")
-                                .resizable()
-                                .frame(width: 28, height: 28)
-                                .foregroundColor(.white.opacity(0.6))
-                                .onTapGesture {
-                                    playerVM.player.seek(to: CMTime(seconds: playerVM.currentTime - 15, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
-                                    
-                                }
+                            ZStack {
+                                Text("10")
+                                    .font(.system(size: 10, weight: .bold))
+                                
+                                Image("goBackward")
+                                    .resizable()
+                                    .frame(width: 28, height: 28)
+                                    .foregroundColor(.white.opacity(1.0))
+                                    .rotationEffect(animateBackward ? Angle(degrees: -30) : .zero)
+                                    .animation(.spring(response: 0.3), value: animateBackward)
+                                    .onTapGesture {
+                                        Task {
+                                            await playerVM.player.seek(to: CMTime(seconds: playerVM.currentTime - 15, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
+                                            // add crunchy animation
+                                            animateBackward = true
+                                            try? await Task.sleep(nanoseconds: 400_000_000)
+                                            animateBackward = false
+                                        }
+                                    }
+                                
+                                Text("-10")
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .offset(x: animateBackward ? -40 : 0)
+                                    .opacity(animateBackward ? 1.0 : 0.0)
+                                    .animation(.spring(response: 0.3), value: animateBackward)
+                            }
                             
                             Spacer().frame(maxWidth: 72)
                             
@@ -306,13 +326,32 @@ struct CustomControlsView: View {
                             
                             Spacer().frame(maxWidth: 72)
                             
-                            Image("goForward")
-                                .resizable()
-                                .frame(width: 28, height: 28)
-                                .foregroundColor(.white)
-                                .onTapGesture {
-                                    playerVM.player.seek(to: CMTime(seconds: playerVM.currentTime + 15, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
-                                }
+                            ZStack {
+                                Text("10")
+                                    .font(.system(size: 10, weight: .bold))
+                                
+                                Image("goForward")
+                                    .resizable()
+                                    .frame(width: 28, height: 28)
+                                    .foregroundColor(.white.opacity(1.0))
+                                    .rotationEffect(animateForward ? Angle(degrees: 30) : .zero)
+                                    .animation(.spring(response: 0.3), value: animateForward)
+                                    .onTapGesture {
+                                        Task {
+                                            await playerVM.player.seek(to: CMTime(seconds: playerVM.currentTime + 15, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
+                                            // add crunchy animation
+                                            animateForward = true
+                                            try? await Task.sleep(nanoseconds: 400_000_000)
+                                            animateForward = false
+                                        }
+                                    }
+                                
+                                Text("+10")
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .offset(x: animateForward ? 40 : 0)
+                                    .opacity(animateForward ? 1.0 : 0.0)
+                                    .animation(.spring(response: 0.3), value: animateForward)
+                            }
                             
                             Spacer()
                             

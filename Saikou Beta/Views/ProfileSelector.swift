@@ -197,7 +197,6 @@ struct ProfileSelector: View {
                             ProfileCard(profile: profile)
                                 .scaleEffect(selectedProfile?.id == profile.id && showHome ? 0.3 : 1)
                         }
-                        .buttonStyle(ScaledButtonStyle())
                     }
                     .padding(.horizontal, 20)
                     

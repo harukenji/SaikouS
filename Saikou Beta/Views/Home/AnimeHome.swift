@@ -12,6 +12,8 @@ import ActivityIndicatorView
 struct AnimeHome: View {
     let proxy: GeometryProxy
     @StateObject var viewModel: AnimeHomeViewModel = AnimeHomeViewModel()
+    @Binding var startAnimation: Bool
+    @State var internalAnim: Bool = false
     
     var body: some View {
         ScrollView {
@@ -77,6 +79,7 @@ struct AnimeHome: View {
                                 )
                             }
                         }
+                        .padding(.leading, 30)
                         .padding(.bottom, 30)
                         .padding(.top, 80)
                         
@@ -122,6 +125,7 @@ struct AnimeHome: View {
                                         .foregroundColor(Color(hex: "#ff4caf"))
                                 }
                             }
+                            .padding(.leading, 30)
                             
                             HStack {
                                 Text("8 / 12")
@@ -134,12 +138,13 @@ struct AnimeHome: View {
                                     .foregroundColor(.white.opacity(0.7))
                                     .font(.system(size: 16))
                             }
+                            .padding(.leading, 30)
                             .padding(.trailing, 30)
                             
                             Spacer()
                                 .frame(maxHeight: 20)
                             
-                            ScrollView(.horizontal) {
+                            ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 12) {
                                     ZStack {
                                         Color(hex: "#1c1b1f")
@@ -154,6 +159,8 @@ struct AnimeHome: View {
                                         RoundedRectangle(cornerRadius: 8)
                                             .stroke(Color.white.opacity(0.4), lineWidth: 1.4)
                                     )
+                                    .padding(.leading, 30)
+                                    
                                     ZStack {
                                         Color(hex: "#1c1b1f")
                                         Text("Next Season")
@@ -180,16 +187,24 @@ struct AnimeHome: View {
                                         RoundedRectangle(cornerRadius: 8)
                                             .stroke(Color.white.opacity(0.4), lineWidth: 1.4)
                                     )
+                                    .padding(.trailing, 30)
                                 }
                             }
                             
                             HStack {
                                 ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg", text: "GENRES")
+                                    .offset(x: startAnimation ? 0 : 60)
+                                    .opacity(startAnimation ? 1.0: 0.0)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.7).delay(0.4), value: startAnimation)
                                 
                                 Spacer()
                                 
                                 ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/125367-hGPJLSNfprO3.jpg", text: "CALENDAR")
+                                    .offset(x: startAnimation ? 0 : 60)
+                                    .opacity(startAnimation ? 1.0: 0.0)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.7).delay(0.3 + 0.4), value: startAnimation)
                             }
+                            .padding(.leading, 30)
                             .padding(.trailing, 30)
                         }
                         
@@ -199,6 +214,7 @@ struct AnimeHome: View {
                         
                         Text("Recently Uploaded")
                             .font(.system(size: 18, weight: .heavy))
+                            .padding(.leading, 30)
                         
                         Spacer()
                             .frame(maxHeight: 20)
@@ -211,10 +227,10 @@ struct AnimeHome: View {
                                     }
                                 }
                             }
+                            .padding(.leading, 30)
                             .padding(.bottom, 140)
                         }
                     }
-                    .padding(.leading, 30)
                     .frame(maxWidth: proxy.size.width, maxHeight: .infinity, alignment: .top)
                 }
         }
@@ -223,7 +239,6 @@ struct AnimeHome: View {
             Task {
                 print("Getting recent episodes")
                 await viewModel.fetchRecentEpisodes()
-                
             }
         }
     }
@@ -232,7 +247,7 @@ struct AnimeHome: View {
 struct AnimeHome_Previews: PreviewProvider {
     static var previews: some View {
         GeometryReader {proxy in
-            AnimeHome(proxy: proxy)
+            AnimeHome(proxy: proxy, startAnimation: .constant(false))
         }
     }
 }

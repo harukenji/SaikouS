@@ -25,6 +25,10 @@ struct CustomPlayerWithControls: View {
     
     @StateObject private var playerVM = PlayerViewModel()
     
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(sortDescriptors: []) var animeEpisodes: FetchedResults<AnimeWatchStorage>
+    
+    
     init(animeData: InfoData?, episodeIndex: Int, provider: String?, episodedata: [Episode], viewModel: WatchViewModel) {
         self.animeData = animeData
         self.episodeIndex = episodeIndex
@@ -171,7 +175,71 @@ struct CustomPlayerWithControls: View {
                     .onDisappear {
                         playerVM.player.pause()
                         
+                        if(playerVM.duration != nil) {
+                            var foundEpisode = false
+                            for episode in animeEpisodes {
+                                if(episode.id != nil && episode.id == self.episodedata[episodeIndex].id) {
+                                    if episode.episodeWatched {
+                                        foundEpisode = true
+                                    } else {
+                                        episode.duration = playerVM.duration!
+                                        episode.currentTime = playerVM.currentTime
+                                        episode.episodeIndex = Int32(episodeIndex)
+                                        episode.episodeWatched = playerVM.currentTime / playerVM.duration! >= 0.8
+                                        episode.progress = playerVM.currentTime / playerVM.duration!
+                                        try? moc.save()
+                                        foundEpisode = true
+                                    }
+                                }
+                            }
+                            // if its not in the existing episodes list, create a new entry
+                            if !foundEpisode {
+                                var episode = AnimeWatchStorage(context: moc)
+                                episode.id = self.episodedata[episodeIndex].id
+                                episode.duration = playerVM.duration!
+                                episode.currentTime = playerVM.currentTime
+                                episode.episodeIndex = Int32(episodeIndex)
+                                episode.episodeWatched = playerVM.currentTime / playerVM.duration! >= 0.8
+                                episode.progress = playerVM.currentTime / playerVM.duration!
+                                try? moc.save()
+                            }
+                        }
+                        
                         playerVM.player.replaceCurrentItem(with: nil)
+                    }
+                    .onReceive(playerVM.$currentTime) { newValue in
+                        if playerVM.duration != nil && newValue / playerVM.duration! >= 0.8 {
+                            // set episode to watched
+                            
+                            // check if episode exists in CoreData
+                            var foundEpisode = false
+                            for episode in animeEpisodes {
+                                if(episode.id != nil && episode.id == self.episodedata[episodeIndex].id) {
+                                    if episode.episodeWatched {
+                                        foundEpisode = true
+                                    } else {
+                                        episode.duration = playerVM.duration!
+                                        episode.currentTime = newValue
+                                        episode.episodeIndex = Int32(episodeIndex)
+                                        episode.episodeWatched = true
+                                        episode.progress = newValue / playerVM.duration!
+                                        try? moc.save()
+                                        foundEpisode = true
+                                    }
+                                }
+                            }
+                            // if its not in the existing episodes list, create a new entry
+                            if !foundEpisode {
+                                var episode = AnimeWatchStorage(context: moc)
+                                episode.id = self.episodedata[episodeIndex].id
+                                episode.duration = playerVM.duration!
+                                episode.currentTime = newValue
+                                episode.episodeIndex = Int32(episodeIndex)
+                                episode.episodeWatched = true
+                                episode.progress = newValue / playerVM.duration!
+                                try? moc.save()
+                            }
+                        }
                     }
                     
                 }
@@ -189,9 +257,9 @@ struct CustomPlayerWithControls: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .edgesIgnoringSafeArea(.all)
                             .ignoresSafeArea(.all)
-#if !targetEnvironment(macCatalyst)
-.persistentSystemOverlays(.hidden)
-#endif
+                            #if !targetEnvironment(macCatalyst)
+                            .persistentSystemOverlays(.hidden)
+                            #endif
                     } else {
                         Color(.black)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -304,7 +372,69 @@ struct CustomPlayerWithControls: View {
                     .onDisappear {
                         playerVM.player.pause()
                         
+                        if(playerVM.duration != nil) {
+                            var foundEpisode = false
+                            for episode in animeEpisodes {
+                                if(episode.id != nil && episode.id == self.episodedata[episodeIndex].id) {
+                                    if episode.episodeWatched {
+                                        foundEpisode = true
+                                    } else {
+                                        episode.duration = playerVM.duration!
+                                        episode.currentTime = playerVM.currentTime
+                                        episode.episodeIndex = Int32(episodeIndex)
+                                        episode.episodeWatched = playerVM.currentTime / playerVM.duration! >= 0.8
+                                        episode.progress = playerVM.currentTime / playerVM.duration!
+                                        try? moc.save()
+                                        foundEpisode = true
+                                    }
+                                }
+                            }
+                            // if its not in the existing episodes list, create a new entry
+                            if !foundEpisode {
+                                var episode = AnimeWatchStorage(context: moc)
+                                episode.duration = playerVM.duration!
+                                episode.currentTime = playerVM.currentTime
+                                episode.episodeIndex = Int32(episodeIndex)
+                                episode.episodeWatched = playerVM.currentTime / playerVM.duration! >= 0.8
+                                episode.progress = playerVM.currentTime / playerVM.duration!
+                                try? moc.save()
+                            }
+                        }
+                        
                         playerVM.player.replaceCurrentItem(with: nil)
+                    }
+                    .onReceive(playerVM.$currentTime) { newValue in
+                        if playerVM.duration != nil && newValue / playerVM.duration! >= 0.8 {
+                            // set episode to watched
+                            
+                            // check if episode exists in CoreData
+                            var foundEpisode = false
+                            for episode in animeEpisodes {
+                                if(episode.id != nil && episode.id == self.episodedata[episodeIndex].id) {
+                                    if episode.episodeWatched {
+                                        foundEpisode = true
+                                    } else {
+                                        episode.duration = playerVM.duration!
+                                        episode.currentTime = newValue
+                                        episode.episodeIndex = Int32(episodeIndex)
+                                        episode.episodeWatched = true
+                                        episode.progress = newValue / playerVM.duration!
+                                        try? moc.save()
+                                        foundEpisode = true
+                                    }
+                                }
+                            }
+                            // if its not in the existing episodes list, create a new entry
+                            if !foundEpisode {
+                                var episode = AnimeWatchStorage(context: moc)
+                                episode.duration = playerVM.duration!
+                                episode.currentTime = newValue
+                                episode.episodeIndex = Int32(episodeIndex)
+                                episode.episodeWatched = true
+                                episode.progress = newValue / playerVM.duration!
+                                try? moc.save()
+                            }
+                        }
                     }
                     
                 }
