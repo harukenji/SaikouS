@@ -194,11 +194,11 @@ struct MangaHome: View {
                             }
                             
                             HStack {
-                                ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg", text: "GENRES")
+                                ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg", text: "GENRES", screenWidth: proxy.size.width)
                                 
                                 Spacer()
                                 
-                                ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/125367-hGPJLSNfprO3.jpg", text: "CALENDAR")
+                                ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/125367-hGPJLSNfprO3.jpg", text: "CALENDAR", screenWidth: proxy.size.width)
                             }
                             .padding(.trailing, 30)
                         }
@@ -217,7 +217,7 @@ struct MangaHome: View {
                             ScrollView(.horizontal) {
                                 HStack(spacing: 20) {
                                     ForEach(0..<viewModel.recentresults!.results.count) { index in
-                                        AnimeCard(image: viewModel.recentresults!.results[index].image, rating: viewModel.recentresults!.results[index].rating, title: viewModel.recentresults!.results[index].title.romaji, currentEpisodeCount: viewModel.recentresults!.results[index].currentEpisode, totalEpisodes: viewModel.recentresults!.results[index].totalEpisodes)
+                                        AnimeCard(image: viewModel.recentresults!.results[index].image, rating: viewModel.recentresults!.results[index].rating, title: viewModel.recentresults!.results[index].title.romaji, currentEpisodeCount: viewModel.recentresults!.results[index].currentEpisode, totalEpisodes: viewModel.recentresults!.results[index].totalEpisodes, isMacos: proxy.size.width > 900)
                                     }
                                 }
                             }

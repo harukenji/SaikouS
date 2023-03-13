@@ -78,11 +78,11 @@ struct AnilistInfoTopBanner: View {
                 .padding(.bottom, 30)
                 
                 HStack {
-                    ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/114535-ASUprf4AsNwC.jpg", text: "ANIME LIST")
+                    ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/114535-ASUprf4AsNwC.jpg", text: "ANIME LIST", screenWidth: width)
                     
                     Spacer()
                     
-                    ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/manga/banner/101606-OXPYcB9KD9qT.png", text: "MANGA LIST")
+                    ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/manga/banner/101606-OXPYcB9KD9qT.png", text: "MANGA LIST", screenWidth: width)
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 20)

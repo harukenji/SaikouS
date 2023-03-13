@@ -51,7 +51,7 @@ public struct Popup<PopupContent>: ViewModifier where PopupContent: View {
         if (!isHorizontal) {
             return screenHeight - presenterContentRect.midY - 168
         } else {
-            return screenWidth - presenterContentRect.width + 150
+            return screenWidth - presenterContentRect.width + (presenterContentRect.width / 1.65)
         }
     }
     

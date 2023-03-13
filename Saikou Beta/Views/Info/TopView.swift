@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Kingfisher
+import Shimmer
 
 struct TopView: View {
     let cover: String
@@ -17,13 +18,16 @@ struct TopView: View {
     let height: CGFloat
     let showHeader: Bool
     let totalEpisodes: Int?
+    let isMacos: Bool
+    
+    var animation: Namespace.ID?
     
     var body: some View {
         ZStack(alignment: .bottom) {
             GeometryReader { reader in
                 FillAspectImage(
                     url: URL(string: cover),
-                    doesAnimateHorizontal: true
+                    doesAnimateHorizontal: width < 900
                 )
                 .frame(
                     width: reader.size.width,
@@ -62,10 +66,22 @@ struct TopView: View {
                     Spacer()
                     HStack(alignment: .bottom) {
                         KFImage(URL(string: image))
+                            .placeholder({
+                                RoundedRectangle(cornerRadius: 18)
+                                    .foregroundColor(Color(hex: "#444444"))
+                                    .frame(width: 120, height: 180)
+                                    .frame(maxWidth: 120, maxHeight: 180)
+                                    .cornerRadius(18)
+                                    .redacted(reason: .placeholder)
+                                    .shimmering()
+                            })
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(maxWidth: 120, maxHeight: 180)
                             .cornerRadius(18)
+                            .if(animation != nil) {view in
+                                view.matchedGeometryEffect(id: image, in: animation!)
+                            }
                         
                         Spacer()
                             .frame(maxWidth: 20)
@@ -86,21 +102,23 @@ struct TopView: View {
                     }
                     .padding(.horizontal, 20)
                     
-                    Button(action: {
-                        print("Hello button tapped!")
-                    }) {
-                        Text("ADD TO LIST")
-                            .font(.system(size: 16, weight: .heavy))
-                            .foregroundColor(Color(hex: "#8ca7ff"))
-                            .padding(.vertical, 16)
-                            .frame(maxWidth: .infinity)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .stroke(Color.white.opacity(0.7), lineWidth: 1)
-                            )
+                    if !isMacos {
+                        Button(action: {
+                            print("Hello button tapped!")
+                        }) {
+                            Text("ADD TO LIST")
+                                .font(.system(size: 16, weight: .heavy))
+                                .foregroundColor(Color(hex: "#8ca7ff"))
+                                .padding(.vertical, 16)
+                                .frame(maxWidth: .infinity)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                                )
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.top, 12)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 12)
                     
                     HStack {
                         Text("Total of ")
@@ -122,11 +140,12 @@ struct TopView: View {
             .animation(.linear(duration: 0.1), value: showHeader)
         }
         .frame(height: height)
+        .foregroundColor(.white)
     }
 }
 
 struct TopView_Previews: PreviewProvider {
     static var previews: some View {
-        TopView(cover: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/98659-u46B5RCNl9il.jpg", image: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b98659-sH5z5RfMuyMr.png", romajiTitle: "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e", status: "Completed", width: 400, height: 420, showHeader: false, totalEpisodes: 12)
+        TopView(cover: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/98659-u46B5RCNl9il.jpg", image: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/b98659-sH5z5RfMuyMr.png", romajiTitle: "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e", status: "Completed", width: 400, height: 420, showHeader: false, totalEpisodes: 12, isMacos: false)
     }
 }

@@ -28,8 +28,11 @@ final class InfoViewModel: ObservableObject {
                 await repository.fetchInfo(id: id, provider: provider) { result in
                     switch result {
                     case .success(let data):
-                        self.infodata = data
-                        self.error = nil
+                        DispatchQueue.main.async {
+                            self.infodata = data
+                            self.error = nil
+                        }
+                        
                     case .failure(let reason):
                         self.error = reason
                     }

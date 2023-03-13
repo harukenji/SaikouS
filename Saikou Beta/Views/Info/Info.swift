@@ -143,11 +143,15 @@ struct ViewOffsetKey: PreferenceKey {
 struct Info: View {
     var id: String
     var type: String
+    var animation: Namespace.ID?
+    @Binding var show: Bool
+    var image: String?
     
     @StateObject private var viewModel = InfoViewModel()
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var animeEpisodes: FetchedResults<AnimeWatchStorage>
+    @FetchRequest(sortDescriptors: []) var userStorageData: FetchedResults<UserStorageInfo>
     
     @State private var isOn = false
     @State var startEpisodeList = 0
@@ -170,9 +174,12 @@ struct Info: View {
     var options: [DropdownOption] = []
     var mangaOptions: [DropdownOption] = []
     
-    init(id: String, type: String) {
+    init(id: String, type: String, animation: Namespace.ID?, show: Binding<Bool>, image: String?) {
         self.id = id
         self.type = type
+        self.animation = animation
+        self._show = show
+        self.image = image
         
         if(type.lowercased() == "anime") {
             selectedProvider = "gogoanime"
@@ -201,6 +208,102 @@ struct Info: View {
     @State var offset: CGFloat = 0.0
     @State var movingOffset: CGFloat = 0.0
     
+    func episodeWatched(index: Int) -> Bool {
+        let ep = animeEpisodes.first(where: { el in
+            el.id == viewModel.episodedata![index].id
+        })
+        return ep?.episodeWatched ?? false
+    }
+    
+    func episodeProgress(index: Int) -> Double {
+        let ep = animeEpisodes.first(where: { el in
+            el.id == viewModel.episodedata![index].id
+        })
+        return ep?.progress ?? 0.0
+    }
+    
+    @State var access_token = ""
+    
+    func updateAnilistProgress(index: Int) async {
+        if(userStorageData.count > 0) {
+            access_token = userStorageData[0].access_token ?? ""
+        }
+        print(access_token)
+        if viewModel.infodata != nil && access_token.count > 0 {
+            
+            
+            let query = """
+                    mutation {
+                        SaveMediaListEntry( mediaId: \(viewModel.infodata!.id), progress: \(viewModel.episodedata![index].number ?? index + 1) ) {
+                            score(format:POINT_10_DECIMAL) startedAt{year month day} completedAt{year month day}
+                        }
+                    }
+                """
+            
+            let jsonData = try? JSONSerialization.data(withJSONObject: ["query": query])
+            
+            let url = URL(string: "https://graphql.anilist.co")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("Bearer \(access_token)", forHTTPHeaderField: "Authorization")
+            request.httpBody = jsonData
+            
+            do {
+                let (data, response) = try await URLSession.shared.data(for: request)
+                print("response: ")
+                print(response)
+                print("data: ")
+                print(query)
+            } catch let error {
+                print(error.localizedDescription)
+                
+            }
+        }
+    }
+    
+    func updateAnilistMangaProgress(index: Int) async {
+        if(userStorageData.count > 0) {
+            access_token = userStorageData[0].access_token ?? ""
+        }
+        print(access_token)
+        if viewModel.mangaInfodata != nil && access_token.count > 0 && viewModel.mangaInfodata!.chapters != nil {
+            
+            
+            let query = """
+                    mutation {
+                        SaveMediaListEntry( mediaId: \(viewModel.mangaInfodata!.id), progress: \(viewModel.mangaInfodata!.chapters![index].chapterNumber != nil ? viewModel.mangaInfodata!.chapters![index].chapterNumber! : String(index + 1))) {
+                            score(format:POINT_10_DECIMAL) startedAt{year month day} completedAt{year month day}
+                        }
+                    }
+                """
+            
+            let jsonData = try? JSONSerialization.data(withJSONObject: ["query": query])
+            
+            let url = URL(string: "https://graphql.anilist.co")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("Bearer \(access_token)", forHTTPHeaderField: "Authorization")
+            request.httpBody = jsonData
+            
+            do {
+                let (data, response) = try await URLSession.shared.data(for: request)
+                print("response: ")
+                print(response)
+                print("data: ")
+                print(query)
+            } catch let error {
+                print(error.localizedDescription)
+                
+            }
+        }
+    }
+    
+    @State var canNavigate: Bool = false
+    
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .top) {
@@ -211,7 +314,7 @@ struct Info: View {
                         ScrollView {
                             VStack {
                                 VStack {
-                                    TopView(cover: viewModel.infodata!.cover, image: viewModel.infodata!.image, romajiTitle: viewModel.infodata!.title.romaji, status: viewModel.infodata!.status, width: proxy.size.width, height: 500, showHeader: showHeader, totalEpisodes: viewModel.infodata!.totalEpisodes)
+                                    TopView(cover: viewModel.infodata!.cover, image: self.image ?? viewModel.infodata!.image, romajiTitle: viewModel.infodata!.title.romaji, status: viewModel.infodata!.status, width: proxy.size.width, height: 500, showHeader: showHeader, totalEpisodes: viewModel.infodata!.totalEpisodes, isMacos: false, animation: animation)
                                     
                                     HStack(alignment: .top) {
                                         VStack(spacing: 12) {
@@ -239,9 +342,9 @@ struct Info: View {
                                         .padding(.horizontal, 30)
                                         .frame(minWidth: proxy.size.width,maxWidth: proxy.size.width, maxHeight: .infinity, alignment: .top)
                                         
+                                        
                                         VStack {
                                             VStack {
-                                                VStack {
                                                     
                                                         Button(action: {
                                                             print("Hello button tapped!")
@@ -275,129 +378,128 @@ struct Info: View {
                                                             .padding(.top, 20)
                                                 }
                                                 
-                                                VStack {
-                                                    DropdownSelector(
-                                                        placeholder: "Gogo",
-                                                        options: options,
-                                                        onOptionSelected: { option in
-                                                            print(option.value)
-                                                            Task {
-                                                                switch option.value {
-                                                                case "Gogo":
-                                                                    selectedProvider = "gogoanime"
-                                                                case "Zoro":
-                                                                    selectedProvider = "zoro"
-                                                                case "Animepahe":
-                                                                    selectedProvider = "animepahe"
-                                                                case "Animefox":
-                                                                    selectedProvider = "animefox"
-                                                                default:
-                                                                    selectedProvider = "gogoanime"
+                                            VStack {
+                                                DropdownSelector(
+                                                    placeholder: "Gogo",
+                                                    options: options,
+                                                    onOptionSelected: { option in
+                                                        print(option.value)
+                                                        Task {
+                                                            switch option.value {
+                                                            case "Gogo":
+                                                                selectedProvider = "gogoanime"
+                                                            case "Zoro":
+                                                                selectedProvider = "zoro"
+                                                            case "Animepahe":
+                                                                selectedProvider = "animepahe"
+                                                            case "Animefox":
+                                                                selectedProvider = "animefox"
+                                                            default:
+                                                                selectedProvider = "gogoanime"
+                                                            }
+                                                            await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
+                                                            self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                            viewModel.infodata!.episodes = viewModel.episodedata
+                                                        }
+                                                    })
+                                                .padding(.horizontal)
+                                                .zIndex(100)
+                                                
+                                                HStack {
+                                                    Toggle(isOn: $isOn, label: {
+                                                        Text(isOn ? "Dubbed" : "Subbed")
+                                                            .font(.system(size: 18, weight: .heavy))
+                                                            .foregroundColor(.white)
+                                                    })
+                                                    .toggleStyle(MaterialToggleStyle())
+                                                    .onChange(of: isOn) { value in
+                                                        Task {
+                                                            await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
+                                                            self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
+                                                            viewModel.infodata!.episodes = viewModel.episodedata
+                                                        }
+                                                    }
+                                                }
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .padding(.horizontal, 20)
+                                                
+                                                
+                                                HStack {
+                                                    Text("Episodes")
+                                                        .font(.system(size: 20, weight: .heavy))
+                                                    
+                                                    HStack {
+                                                        Button(action: {
+                                                            episodeDisplayGrid = false
+                                                            print(episodeDisplayGrid)
+                                                        }) {
+                                                            Image("list")
+                                                                .resizable()
+                                                                .frame(maxWidth: 16, maxHeight: 16)
+                                                                .foregroundColor(.white.opacity(!episodeDisplayGrid ? 1.0 : 0.5))
+                                                                .padding(.trailing, 12)
+                                                        }
+                                                        
+                                                        Button(action: {
+                                                            episodeDisplayGrid = true
+                                                            print(episodeDisplayGrid)
+                                                        }) {
+                                                            Image("grid")
+                                                                .resizable()
+                                                                .frame(maxWidth: 16, maxHeight: 16)
+                                                                .foregroundColor(.white.opacity(episodeDisplayGrid ? 1.0 : 0.5))
+                                                        }
+                                                    }
+                                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                                                }
+                                                .padding(.horizontal, 20)
+                                                .padding(.top, 12)
+                                                
+                                                
+                                                if(viewModel.episodedata != nil && viewModel.episodedata!.count > 0) {
+                                                    ContinueWatchingCard(image: viewModel.episodedata![0].image, title: viewModel.episodedata![0].title ?? "Title", width: proxy.size.width)
+                                                    
+                                                    if(viewModel.episodedata!.count > 50) {
+                                                        ScrollView(.horizontal) {
+                                                            HStack(spacing: 20) {
+                                                                ForEach(0..<Int(ceil(Float(viewModel.episodedata!.count)/50))) { index in
+                                                                    EpisodePaginationChip(paginationIndex: $paginationIndex, startEpisodeList: $startEpisodeList, endEpisodeList: $endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
                                                                 }
-                                                                await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
-                                                                self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
-                                                                viewModel.infodata!.episodes = viewModel.episodedata
-                                                            }
-                                                        })
-                                                    .padding(.horizontal)
-                                                    .zIndex(100)
-                                                    
-                                                    HStack {
-                                                        Toggle(isOn: $isOn, label: {
-                                                            Text(isOn ? "Dubbed" : "Subbed")
-                                                                .font(.system(size: 18, weight: .heavy))
-                                                                .foregroundColor(.white)
-                                                        })
-                                                        .toggleStyle(MaterialToggleStyle())
-                                                        .onChange(of: isOn) { value in
-                                                            Task {
-                                                                await viewModel.fetchEpisodes(id: id, provider: selectedProvider, dubbed: isOn)
-                                                                self.lineLimitArray = Array(repeating: 3, count: viewModel.episodedata!.count)
-                                                                viewModel.infodata!.episodes = viewModel.episodedata
                                                             }
                                                         }
+                                                        .frame(maxWidth: proxy.size.width - 20, alignment: .leading)
+                                                        .padding(.leading, 20)
+                                                        .padding(.bottom, 20)
                                                     }
-                                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                                    .padding(.horizontal, 20)
                                                     
-                                                    
-                                                    HStack {
-                                                        Text("Episodes")
-                                                            .font(.system(size: 20, weight: .heavy))
-                                                        
-                                                        HStack {
-                                                            Button(action: {
-                                                                episodeDisplayGrid = false
-                                                                print(episodeDisplayGrid)
-                                                            }) {
-                                                                Image("list")
-                                                                    .resizable()
-                                                                    .frame(maxWidth: 16, maxHeight: 16)
-                                                                    .foregroundColor(.white.opacity(!episodeDisplayGrid ? 1.0 : 0.5))
-                                                                    .padding(.trailing, 12)
-                                                            }
-                                                            
-                                                            Button(action: {
-                                                                episodeDisplayGrid = true
-                                                                print(episodeDisplayGrid)
-                                                            }) {
-                                                                Image("grid")
-                                                                    .resizable()
-                                                                    .frame(maxWidth: 16, maxHeight: 16)
-                                                                    .foregroundColor(.white.opacity(episodeDisplayGrid ? 1.0 : 0.5))
-                                                            }
-                                                        }
-                                                        .frame(maxWidth: .infinity, alignment: .trailing)
-                                                    }
-                                                    .padding(.horizontal, 20)
-                                                    .padding(.top, 12)
-                                                    
-                                                    
-                                                    if(viewModel.episodedata != nil && viewModel.episodedata!.count > 0) {
-                                                        ContinueWatchingCard(image: viewModel.episodedata![0].image, title: viewModel.episodedata![0].title ?? "Title", width: proxy.size.width)
-                                                        
-                                                        if(viewModel.episodedata!.count > 50) {
-                                                            ScrollView(.horizontal) {
-                                                                HStack(spacing: 20) {
-                                                                    ForEach(0..<Int(ceil(Float(viewModel.episodedata!.count)/50))) { index in
-                                                                        EpisodePaginationChip(paginationIndex: $paginationIndex, startEpisodeList: $startEpisodeList, endEpisodeList: $endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
+                                                    if(!episodeDisplayGrid) {
+                                                        VStack {
+                                                            ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
+                                                                EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST, watched: episodeWatched(index: index), progress: episodeProgress(index: index))
+                                                                    .onLongPressGesture {
+                                                                        Task {
+                                                                            await updateAnilistProgress(index: index)
+                                                                        }
                                                                     }
-                                                                }
-                                                            }
-                                                            .frame(maxWidth: proxy.size.width - 20, alignment: .leading)
-                                                            .padding(.leading, 20)
-                                                            .padding(.bottom, 20)
-                                                        }
-                                                        
-                                                        if(!episodeDisplayGrid) {
-                                                            VStack {
-                                                                ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                                    let ep = animeEpisodes.first(where: {
-                                                                        index.id == viewModel.episodedata![index].id
-                                                                    })
-                                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST, watched: ep?.episodeWatched ?? false, progress: ep?.progress ?? 0.0)
-                                                                    
-                                                                }
-                                                                .padding(.horizontal, 20)
-                                                            }
-                                                        } else {
-                                                            LazyVGrid(columns: columns, spacing: 20) {
-                                                                ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                                    let ep = animeEpisodes.first(where: {
-                                                                        index.id == viewModel.episodedata![index].id
-                                                                    })
-                                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID, watched: ep?.episodeWatched ?? false, progress: ep?.progress ?? 0.0)
-                                                                    
-                                                                }
+                                                                
                                                             }
                                                             .padding(.horizontal, 20)
                                                         }
-                                                    }
-                                                    else {
-                                                        ProgressView()
+                                                    } else {
+                                                        LazyVGrid(columns: columns, spacing: 20) {
+                                                            ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
+                                                                EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID, watched: episodeWatched(index: index), progress: episodeProgress(index: index))
+                                                                
+                                                            }
+                                                        }
+                                                        .padding(.horizontal, 20)
                                                     }
                                                 }
+                                                else {
+                                                    ProgressView()
+                                                }
                                             }
+                                            
                                         }
                                         .frame(minWidth: proxy.size.width,maxWidth: proxy.size.width)
                                     }
@@ -426,11 +528,11 @@ struct Info: View {
                             }
                         }
                         .coordinateSpace(name: "scroll")
-                    } else {
+                    }  else {
                         HStack {
                             ScrollView {
                                 VStack {
-                                    TopView(cover: viewModel.infodata!.cover, image: viewModel.infodata!.image, romajiTitle: viewModel.infodata!.title.romaji, status: viewModel.infodata!.status, width: proxy.size.width * 0.68, height: 300, showHeader: false, totalEpisodes: viewModel.infodata!.totalEpisodes)
+                                    TopView(cover: viewModel.infodata!.cover, image: viewModel.infodata!.image, romajiTitle: viewModel.infodata!.title.romaji, status: viewModel.infodata!.status, width: proxy.size.width * 0.68, height: 420, showHeader: false, totalEpisodes: viewModel.infodata!.totalEpisodes, isMacos: true, animation: animation)
                                     
                                     HStack(alignment: .top) {
                                         VStack(alignment: .leading) {
@@ -461,8 +563,9 @@ struct Info: View {
                                             
                                             KFImage(URL(string: viewModel.infodata!.trailer != nil ? viewModel.infodata!.trailer!.thumbnail : ""))
                                                 .resizable()
-                                                .aspectRatio(16/9,contentMode: .fit)
-                                                .frame(maxWidth: proxy.size.width * 0.34)
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(maxWidth: proxy.size.width * 0.30, maxHeight: (proxy.size.width * 0.30) / 16 * 9)
+                                                .cornerRadius(20)
                                         }
                                         .padding(.horizontal, 20)
                                         .frame(width: proxy.size.width * 0.34)
@@ -470,16 +573,17 @@ struct Info: View {
                                     }
                                     .frame(maxWidth: proxy.size.width * 0.68, alignment: .top)
                                     .padding(.top, 18)
+                                    .padding(.leading, 20)
                                     
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("Description")
                                             .font(.system(size: 14, weight: .heavy))
                                             .foregroundColor(.white)
-                                        Text("    " + (try! AttributedString(markdown: viewModel.infodata!.description.replacingOccurrences(of: "_", with: "*").replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "<br>", with: "\n"), options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace))))
-                                            .font(.system(size: 14, weight: .bold))
+                                        Text("    " + (try! AttributedString(markdown: viewModel.infodata!.description.replacingOccurrences(of: "<b>", with: "**").replacingOccurrences(of: "</b>", with: "**").replacingOccurrences(of: "_", with: "*").replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "<br>", with: "\n"), options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace))))
+                                            .font(.system(size: 14, weight: .semibold))
                                             .foregroundColor(.white.opacity(0.7))
                                     }
-                                    .padding(.horizontal, 20)
+                                    .padding(.horizontal, 16)
                                     .frame(maxWidth: proxy.size.width * 0.68)
                                     .padding(.top, 20)
                                 }
@@ -574,7 +678,7 @@ struct Info: View {
                                     .padding(.top, 12)
                                     
                                     
-                                    if(viewModel.episodedata != nil) {
+                                    if(viewModel.episodedata != nil && viewModel.episodedata!.count > 0) {
                                         ContinueWatchingCard(image: viewModel.episodedata![0].image, title: viewModel.episodedata![0].title ?? "Title", width: proxy.size.width)
                                         
                                         if(viewModel.episodedata!.count > 50) {
@@ -584,19 +688,16 @@ struct Info: View {
                                                         EpisodePaginationChip(paginationIndex: $paginationIndex, startEpisodeList: $startEpisodeList, endEpisodeList: $endEpisodeList, episodeCount: viewModel.episodedata!.count, index: index)
                                                     }
                                                 }
+                                                .padding(.horizontal, 20)
                                             }
                                             .frame(maxWidth: proxy.size.width - 20, alignment: .leading)
-                                            .padding(.leading, 20)
                                             .padding(.bottom, 20)
                                         }
                                         
                                         if(!episodeDisplayGrid) {
                                             VStack {
                                                 ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                    let ep = animeEpisodes.first(where: {
-                                                        index.id == viewModel.episodedata![index].id
-                                                    })
-                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST, watched: ep?.episodeWatched ?? false, progress: ep?.progress ?? 0.0)
+                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .LIST, watched: episodeWatched(index: index), progress: episodeProgress(index: index))
                                                     
                                                 }
                                                 .padding(.horizontal, 20)
@@ -604,10 +705,7 @@ struct Info: View {
                                         } else {
                                             LazyVGrid(columns: columns, spacing: 20) {
                                                 ForEach(startEpisodeList..<min(endEpisodeList, viewModel.episodedata!.count), id: \.self) { index in
-                                                    let ep = animeEpisodes.first(where: {
-                                                        index.id == viewModel.episodedata![index].id
-                                                    })
-                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID, watched: ep?.episodeWatched ?? false, progress: ep?.progress ?? 0.0)
+                                                    EpisodeCard(image: viewModel.episodedata![index].image, episodeIndex: index, title: viewModel.episodedata![index].title ?? "", description: viewModel.episodedata![index].description ?? "", episodeNumber: viewModel.episodedata![index].number ?? 0, selectedProvider: selectedProvider, id: id, index: index, lineLimitArray: $lineLimitArray, viewModel: viewModel, type: .GRID, watched: episodeWatched(index: index), progress: episodeProgress(index: index))
                                                     
                                                 }
                                             }
@@ -625,7 +723,7 @@ struct Info: View {
                     ScrollView {
                         VStack {
                             VStack {
-                                TopView(cover: viewModel.mangaInfodata!.cover, image: viewModel.mangaInfodata!.image, romajiTitle: viewModel.mangaInfodata!.title.romaji, status: viewModel.mangaInfodata!.status, width: proxy.size.width, height: 500, showHeader: showHeader, totalEpisodes: viewModel.mangaInfodata!.totalEpisodes)
+                                TopView(cover: viewModel.mangaInfodata!.cover, image: viewModel.mangaInfodata!.image, romajiTitle: viewModel.mangaInfodata!.title.romaji, status: viewModel.mangaInfodata!.status, width: proxy.size.width, height: 500, showHeader: showHeader, totalEpisodes: viewModel.mangaInfodata!.totalEpisodes, isMacos: proxy.size.width > 900)
                                 
                                 VStack {
                                     VStack {
@@ -746,7 +844,13 @@ struct Info: View {
                                                                 .cornerRadius(20)
                                                                 .frame(maxWidth: proxy.size.width - 40)
                                                             }
-                                                            .disabled(viewModel.chapterdata![index].pages != nil && viewModel.chapterdata![index].pages == 0)
+                                                            .disabled((viewModel.chapterdata![index].pages != nil && viewModel.chapterdata![index].pages == 0))
+                                                            .simultaneousGesture(LongPressGesture(minimumDuration: 2.5).onEnded{ finished in
+                                                                print("DONE")
+                                                                Task {
+                                                                    await updateAnilistMangaProgress(index: index)
+                                                                }
+                                                            })
                                                         }
                                                         .padding(.horizontal, 20)
                                                     }
@@ -764,6 +868,7 @@ struct Info: View {
                                             }
                                             else {
                                                 ProgressView()
+                                                    .padding(.bottom, 180)
                                             }
                                         }
                                     }
@@ -815,12 +920,23 @@ struct Info: View {
                                 
                                 
                                 HStack(alignment: .bottom) {
-                                    Rectangle()
-                                        .foregroundColor(Color(hex: "#444444"))
-                                        .frame(maxWidth: 120, maxHeight: 180)
-                                        .cornerRadius(18)
-                                        .redacted(reason: .placeholder)
-                                        .shimmering()
+                                    if image != nil {
+                                        KFImage(URL(string: image!))
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(maxWidth: 120, maxHeight: 180)
+                                            .cornerRadius(18)
+                                            .if(animation != nil) {view in
+                                                view.matchedGeometryEffect(id: image!, in: animation!)
+                                            }
+                                    } else {
+                                        Rectangle()
+                                            .foregroundColor(Color(hex: "#444444"))
+                                            .frame(maxWidth: 120, maxHeight: 180)
+                                            .cornerRadius(18)
+                                            .redacted(reason: .placeholder)
+                                            .shimmering()
+                                    }
                                     
                                     Spacer()
                                         .frame(maxWidth: 20)
@@ -1083,7 +1199,7 @@ struct Info: View {
                 }
                 
                 
-                
+
                 VStack {
                     ZStack(alignment: .bottom) {
                         if(viewModel.infodata != nil) {
@@ -1118,7 +1234,12 @@ struct Info: View {
                         
                         HStack {
                             Button(
-                                action: { self.presentationMode.wrappedValue.dismiss() }
+                                action: {
+                                    //self.presentationMode.wrappedValue.dismiss()
+                                    withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.7, blendDuration: 0.7)) {
+                                        show = false
+                                    }
+                                }
                             ) {
                                 ZStack {
                                     Color.white
@@ -1130,7 +1251,7 @@ struct Info: View {
                                 }
                                 .fixedSize()
                                 .cornerRadius(40)
-                            }
+                            }.keyboardShortcut(.cancelAction)
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.trailing, 20)
@@ -1201,6 +1322,7 @@ struct Info: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
             }
+            .foregroundColor(.white)
             .onAppear{
                 Task {
                     if(type == "anime") {
@@ -1229,6 +1351,6 @@ struct Info: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        Info(id: "98659", type: "anime")
+        Info(id: "98659", type: "anime", animation: nil, show: .constant(true), image: nil)
     }
 }

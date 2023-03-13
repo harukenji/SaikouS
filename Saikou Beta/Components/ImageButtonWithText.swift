@@ -11,6 +11,7 @@ import Kingfisher
 struct ImageButtonWithText: View {
     let image: String
     let text: String
+    let screenWidth: Double
     
     var body: some View {
         ZStack {
@@ -29,8 +30,8 @@ struct ImageButtonWithText: View {
                     .frame(maxWidth: 72,maxHeight: 3)
             }
         }
-        .frame(maxWidth: 162, maxHeight: 72)
-        .frame(width: 162, height: 72)
+        .frame(maxWidth: screenWidth < 900 ? 162 : 320, maxHeight: screenWidth < 900 ? 72 : 90)
+        .frame(width: screenWidth < 900 ? 162 : 320, height: screenWidth < 900 ? 72 : 90)
         .clipped()
         .cornerRadius(16)
         .overlay(
@@ -42,6 +43,6 @@ struct ImageButtonWithText: View {
 
 struct ImageButtonWithText_Previews: PreviewProvider {
     static var previews: some View {
-        ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg", text: "GENRES")
+        ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg", text: "GENRES", screenWidth: 400)
     }
 }

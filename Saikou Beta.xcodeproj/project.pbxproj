@@ -15,6 +15,10 @@
 		E90707B129AD0DC30010F00F /* RecentFetchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90707B029AD0DC30010F00F /* RecentFetchResult.swift */; };
 		E90707B329AD54370010F00F /* ProfileSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90707B229AD54360010F00F /* ProfileSelector.swift */; };
 		E9136E6A299D60E500B46D72 /* AnimeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9136E69299D60E500B46D72 /* AnimeCard.swift */; };
+		E92FED0029B981D300D2E195 /* MyCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92FECFF29B981D300D2E195 /* MyCollectionViewController.swift */; };
+		E92FED0229B981FD00D2E195 /* HorizontalPeekingPagesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92FED0129B981FD00D2E195 /* HorizontalPeekingPagesCollectionViewController.swift */; };
+		E92FED0429BBD03900D2E195 /* ReaderV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92FED0329BBD03900D2E195 /* ReaderV3.swift */; };
+		E92FED0729BBDAD900D2E195 /* FTImageSize in Frameworks */ = {isa = PBXBuildFile; productRef = E92FED0629BBDAD900D2E195 /* FTImageSize */; };
 		E937CB6129A4009500714848 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6029A4009500714848 /* PlayerViewModel.swift */; };
 		E937CB6329A400F200714848 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6229A400F200714848 /* Player.swift */; };
 		E937CB6529A4012A00714848 /* CustomVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E937CB6429A4012A00714848 /* CustomVideoPlayer.swift */; };
@@ -128,6 +132,9 @@
 		E90707B029AD0DC30010F00F /* RecentFetchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFetchResult.swift; sourceTree = "<group>"; };
 		E90707B229AD54360010F00F /* ProfileSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSelector.swift; sourceTree = "<group>"; };
 		E9136E69299D60E500B46D72 /* AnimeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeCard.swift; sourceTree = "<group>"; };
+		E92FECFF29B981D300D2E195 /* MyCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewController.swift; sourceTree = "<group>"; };
+		E92FED0129B981FD00D2E195 /* HorizontalPeekingPagesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalPeekingPagesCollectionViewController.swift; sourceTree = "<group>"; };
+		E92FED0329BBD03900D2E195 /* ReaderV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderV3.swift; sourceTree = "<group>"; };
 		E937CB4529A3FF6100714848 /* SaikouSwiftiOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaikouSwiftiOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E937CB4F29A3FF6100714848 /* SaikouSwiftiOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaikouSwiftiOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E937CB6029A4009500714848 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
@@ -241,6 +248,7 @@
 				E9557F1729B6354F0004E9BD /* Elephant in Frameworks */,
 				E95E8515298EE24D0051D834 /* Shimmer in Frameworks */,
 				E95E8512298EA1840051D834 /* Kingfisher in Frameworks */,
+				E92FED0729BBDAD900D2E195 /* FTImageSize in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -541,6 +549,9 @@
 			children = (
 				E9F230D529B02F7B009434E3 /* Reader.swift */,
 				E9F230D729B042F9009434E3 /* NextChapterDisplay.swift */,
+				E92FECFF29B981D300D2E195 /* MyCollectionViewController.swift */,
+				E92FED0129B981FD00D2E195 /* HorizontalPeekingPagesCollectionViewController.swift */,
+				E92FED0329BBD03900D2E195 /* ReaderV3.swift */,
 			);
 			path = Read;
 			sourceTree = "<group>";
@@ -602,6 +613,7 @@
 				E95E851C298EEBB10051D834 /* SwiftWebVTT */,
 				E95E851F298EEBC60051D834 /* ActivityIndicatorView */,
 				E9557F1629B6354F0004E9BD /* Elephant */,
+				E92FED0629BBDAD900D2E195 /* FTImageSize */,
 			);
 			productName = "Saikou Beta";
 			productReference = E95E84E2298EA10F0051D834 /* Saikou Beta.app */;
@@ -690,6 +702,7 @@
 				E95E851B298EEBB10051D834 /* XCRemoteSwiftPackageReference "SwiftWebVTT" */,
 				E95E851E298EEBC60051D834 /* XCRemoteSwiftPackageReference "ActivityIndicatorView" */,
 				E9557F1529B6354F0004E9BD /* XCRemoteSwiftPackageReference "Elephant" */,
+				E92FED0529BBDAD900D2E195 /* XCRemoteSwiftPackageReference "FTImageSize" */,
 			);
 			productRefGroup = E95E84E3298EA10F0051D834 /* Products */;
 			projectDirPath = "";
@@ -794,6 +807,7 @@
 				E937CB6729A4017E00714848 /* Media.swift in Sources */,
 				E98FE201299948BB00909E8D /* Dropdown.swift in Sources */,
 				E98FE20329994FFD00909E8D /* ContinueWatchingCard.swift in Sources */,
+				E92FED0429BBD03900D2E195 /* ReaderV3.swift in Sources */,
 				E937CB6929A401B300714848 /* UISliderView.swift in Sources */,
 				E98FE1D629993AAE00909E8D /* InfoData.swift in Sources */,
 				E9F230E229B06B88009434E3 /* MangaSearchViewModel.swift in Sources */,
@@ -806,6 +820,7 @@
 				E937CB7929A4030500714848 /* StreamData.swift in Sources */,
 				E9F230E029B06AF6009434E3 /* MangaSearch.swift in Sources */,
 				E937CB6C29A4023700714848 /* Subtitle.swift in Sources */,
+				E92FED0029B981D300D2E195 /* MyCollectionViewController.swift in Sources */,
 				E95E84E8298EA10F0051D834 /* Info.swift in Sources */,
 				E98FE20B2999683700909E8D /* FillAspectImage.swift in Sources */,
 				E9F230DE29B06814009434E3 /* MangaHomeViewModel.swift in Sources */,
@@ -831,6 +846,7 @@
 				E98FE1DC29993AF400909E8D /* AiringDate.swift in Sources */,
 				E98FE1FA2999429800909E8D /* EpisodeFetchResult.swift in Sources */,
 				E98FE1F129993BB700909E8D /* SearchData.swift in Sources */,
+				E92FED0229B981FD00D2E195 /* HorizontalPeekingPagesCollectionViewController.swift in Sources */,
 				E937CB6529A4012A00714848 /* CustomVideoPlayer.swift in Sources */,
 				E98FE1E129993B2C00909E8D /* Episode.swift in Sources */,
 				E95E852C298EF0C50051D834 /* Search.swift in Sources */,
@@ -1314,6 +1330,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E92FED0529BBDAD900D2E195 /* XCRemoteSwiftPackageReference "FTImageSize" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/liufengting/FTImageSize";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.6;
+			};
+		};
 		E9557F1529B6354F0004E9BD /* XCRemoteSwiftPackageReference "Elephant" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/s2mr/Elephant.git";
@@ -1365,6 +1389,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E92FED0629BBDAD900D2E195 /* FTImageSize */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E92FED0529BBDAD900D2E195 /* XCRemoteSwiftPackageReference "FTImageSize" */;
+			productName = FTImageSize;
+		};
 		E9557F1629B6354F0004E9BD /* Elephant */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E9557F1529B6354F0004E9BD /* XCRemoteSwiftPackageReference "Elephant" */;

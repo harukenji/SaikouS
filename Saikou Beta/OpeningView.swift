@@ -17,23 +17,30 @@ struct OpeningView: View {
     
     var body: some View {
         NavigationView {
-            NavigationLink(destination: Home(), isActive: $navigate) {
-                Image(uiImage: self.animatedIcons[index])
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding(.horizontal, 120)
-                    .onReceive(timer) { (_) in
-                        if(!animationDone) {
-                            self.index = self.index + 1
-                            if self.index == self.animatedIcons.count - 1 {
-                                animationDone = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                    navigate = true
+            ZStack {
+                Color(.black)
+                
+                NavigationLink(destination: Home(), isActive: $navigate) {
+                    Image(uiImage: self.animatedIcons[index])
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .padding(.horizontal, 120)
+                        .frame(maxWidth: 400)
+                        .onReceive(timer) { (_) in
+                            if(!animationDone) {
+                                self.index = self.index + 1
+                                if self.index == self.animatedIcons.count - 1 {
+                                    animationDone = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        navigate = true
+                                    }
                                 }
                             }
                         }
-                    }
+                }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
         }
         .accentColor(Color(hex: "#00000000"))
         #if os(iOS)

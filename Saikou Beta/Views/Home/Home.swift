@@ -476,6 +476,7 @@ struct Home: View {
                     if(planningtemp != nil && planningtemp!.count > 0) {
                         plannedList = planningtemp![0].entries
                     }
+                    await getMangaLists()
                     await getFavourites(type: "anime", page: 1)
                 } catch let error {
                     print(error.localizedDescription)
@@ -567,7 +568,7 @@ struct Home: View {
                 do {
                     let data = try JSONDecoder().decode(userList.self, from: data)
                     let temp =  data.data.MediaListCollection.lists?.filter {
-                        $0.name == "Watching"
+                        $0.name == "Reading"
                     }
                     if(temp != nil && temp!.count > 0) {
                         mangaWatchList = temp![0].entries
@@ -661,6 +662,10 @@ struct Home: View {
         
     }
     
+    func accessTokenExists() -> Bool {
+        return userStorageData[0].access_token != nil
+    }
+    
     @State var showDebug = false
     @State var debugTitle = ""
     @State var debugText = ""
@@ -677,7 +682,7 @@ struct Home: View {
                         .tag(0)
                     
                     ScrollView {
-                        if(user == nil) {
+                        if(!accessTokenExists() && user == nil) {
                             VStack {
                                 Text("Saikou S")
                                     .font(.system(size: 90, weight: .ultraLight))
@@ -760,8 +765,10 @@ struct Home: View {
                             .padding(.top, 250)
                         } else {
                             VStack(alignment: .leading) {
-                                AnilistInfoTopBanner(user: user!, width: proxy.size.width)
-                                
+                                if user != nil {
+                                    AnilistInfoTopBanner(user: user!, width: proxy.size.width)
+                                }
+                                    
                                 if(watchList != nil) {
                                     
                                     Text("Currently Watching")
@@ -773,8 +780,8 @@ struct Home: View {
                                     ScrollView(.horizontal) {
                                         HStack(spacing: 20) {
                                             ForEach(0..<watchList!.count) {index in
-                                                NavigationLink(destination: Info(id: String(watchList![index].media.id), type: "anime")) {
-                                                    AnimeCard(image: watchList![index].media.coverImage.extraLarge ?? watchList![index].media.coverImage.large, rating: watchList![index].media.averageScore, title: watchList![index].media.title.english ?? watchList![index].media.title.romaji, currentEpisodeCount: watchList![index].progress, totalEpisodes: watchList![index].media.episodes)
+                                                NavigationLink(destination: Info(id: String(watchList![index].media.id), type: "anime", animation: nil, show: .constant(true), image: nil)) {
+                                                    AnimeCard(image: watchList![index].media.coverImage.extraLarge ?? watchList![index].media.coverImage.large, rating: watchList![index].media.averageScore, title: watchList![index].media.title.english ?? watchList![index].media.title.romaji, currentEpisodeCount: watchList![index].progress, totalEpisodes: watchList![index].media.episodes, isMacos: proxy.size.width > 900)
                                                 }
                                             }
                                         }
@@ -793,8 +800,8 @@ struct Home: View {
                                     ScrollView(.horizontal) {
                                         HStack(spacing: 20) {
                                             ForEach(0..<favouritesList!.data.User.favourites.anime.edges.count) {index in
-                                                NavigationLink(destination: Info(id: String(favouritesList!.data.User.favourites.anime.edges[index].node.id), type: "anime")) {
-                                                    AnimeCard(image: favouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: favouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: favouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? favouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: favouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: favouritesList!.data.User.favourites.anime.edges[index].node.episodes)
+                                                NavigationLink(destination: Info(id: String(favouritesList!.data.User.favourites.anime.edges[index].node.id), type: "anime", animation: nil, show: .constant(true), image: nil)) {
+                                                    AnimeCard(image: favouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: favouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: favouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? favouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: favouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: favouritesList!.data.User.favourites.anime.edges[index].node.episodes, isMacos: proxy.size.width > 900)
                                                 }
                                             }
                                         }
@@ -813,8 +820,8 @@ struct Home: View {
                                     ScrollView(.horizontal) {
                                         HStack(spacing: 20) {
                                             ForEach(0..<plannedList!.count) {index in
-                                                NavigationLink(destination: Info(id: String(plannedList![index].media.id), type: "anime")) {
-                                                    AnimeCard(image: plannedList![index].media.coverImage.extraLarge ?? plannedList![index].media.coverImage.large, rating: plannedList![index].media.averageScore, title: plannedList![index].media.title.english ?? plannedList![index].media.title.romaji, currentEpisodeCount: plannedList![index].progress, totalEpisodes: plannedList![index].media.episodes)
+                                                NavigationLink(destination: Info(id: String(plannedList![index].media.id), type: "anime", animation: nil, show: .constant(true), image: nil)) {
+                                                    AnimeCard(image: plannedList![index].media.coverImage.extraLarge ?? plannedList![index].media.coverImage.large, rating: plannedList![index].media.averageScore, title: plannedList![index].media.title.english ?? plannedList![index].media.title.romaji, currentEpisodeCount: plannedList![index].progress, totalEpisodes: plannedList![index].media.episodes, isMacos: proxy.size.width > 900)
                                                 }
                                             }
                                         }
@@ -834,7 +841,7 @@ struct Home: View {
                                     ScrollView(.horizontal) {
                                         HStack(spacing: 20) {
                                             ForEach(0..<mangaWatchList!.count) {index in
-                                                AnimeCard(image: mangaWatchList![index].media.coverImage.extraLarge ?? mangaWatchList![index].media.coverImage.large, rating: mangaWatchList![index].media.averageScore, title: mangaWatchList![index].media.title.english ?? mangaWatchList![index].media.title.romaji, currentEpisodeCount: mangaWatchList![index].progress, totalEpisodes: mangaWatchList![index].media.episodes)
+                                                AnimeCard(image: mangaWatchList![index].media.coverImage.extraLarge ?? mangaWatchList![index].media.coverImage.large, rating: mangaWatchList![index].media.averageScore, title: mangaWatchList![index].media.title.english ?? mangaWatchList![index].media.title.romaji, currentEpisodeCount: mangaWatchList![index].progress, totalEpisodes: mangaWatchList![index].media.episodes, isMacos: proxy.size.width > 900)
                                                 
                                             }
                                         }
@@ -853,7 +860,7 @@ struct Home: View {
                                     ScrollView(.horizontal) {
                                         HStack(spacing: 20) {
                                             ForEach(0..<mangaFavouritesList!.data.User.favourites.anime.edges.count) {index in
-                                                AnimeCard(image: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.episodes)
+                                                AnimeCard(image: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.coverImage.large, rating: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.meanScore, title: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.english ?? mangaFavouritesList!.data.User.favourites.anime.edges[index].node.title.romaji, currentEpisodeCount: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.nextAiringEpisode?.episode, totalEpisodes: mangaFavouritesList!.data.User.favourites.anime.edges[index].node.episodes, isMacos: proxy.size.width > 900)
                                                 
                                             }
                                         }
@@ -872,7 +879,7 @@ struct Home: View {
                                     ScrollView(.horizontal) {
                                         HStack(spacing: 20) {
                                             ForEach(0..<mangaPlannedList!.count) {index in
-                                                AnimeCard(image: mangaPlannedList![index].media.coverImage.extraLarge ?? mangaPlannedList![index].media.coverImage.large, rating: mangaPlannedList![index].media.averageScore, title: mangaPlannedList![index].media.title.english ?? mangaPlannedList![index].media.title.romaji, currentEpisodeCount: mangaPlannedList![index].progress, totalEpisodes: mangaPlannedList![index].media.episodes)
+                                                AnimeCard(image: mangaPlannedList![index].media.coverImage.extraLarge ?? mangaPlannedList![index].media.coverImage.large, rating: mangaPlannedList![index].media.averageScore, title: mangaPlannedList![index].media.title.english ?? mangaPlannedList![index].media.title.romaji, currentEpisodeCount: mangaPlannedList![index].progress, totalEpisodes: mangaPlannedList![index].media.episodes, isMacos: proxy.size.width > 900)
                                                 
                                             }
                                         }
@@ -992,6 +999,7 @@ struct Home: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                 .padding(.bottom, 70)
             }
+            
             .onAppear {
                 Task {
                     print("A WILD APP APPEARED!")
@@ -1006,6 +1014,7 @@ struct Home: View {
         }
             .ignoresSafeArea()
             .preferredColorScheme(.dark)
+            .navigationBarHidden(true)
         .overlay {
             VStack {
                 ZStack {

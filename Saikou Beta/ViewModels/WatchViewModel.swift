@@ -85,7 +85,9 @@ final class WatchViewModel: ObservableObject {
             await repository.fetchEpisodes(id: id, provider: provider, dubbed: dubbed){ result in
                 switch result {
                     case .success(let data):
-                        self.episodedata = data
+                        DispatchQueue.main.async {
+                            self.episodedata = data
+                        }
                     case .failure(let reason):
                         self.error = reason
                 }

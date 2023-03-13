@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = HostingController(
                 wrappedView:
-                    OpeningView()
+                    ReaderV3()
                         .environment(\.managedObjectContext, dataController.container.viewContext)
             )
             self.window = window

@@ -29,7 +29,11 @@ class StreamApi : ObservableObject{
         }
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            self.streamdata = try! JSONDecoder().decode(StreamData.self, from: data)
+            do {
+                self.streamdata = try JSONDecoder().decode(StreamData.self, from: data)
+            } catch let error {
+                print(error.localizedDescription)
+            }
         } catch {
             print("couldnt load data")
         }
@@ -86,6 +90,7 @@ struct WatchPage: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .ignoresSafeArea(.all)
             .edgesIgnoringSafeArea(.all)
+            .navigationBarHidden(true)
             .supportedOrientation(.landscape)
             .prefersHomeIndicatorAutoHidden(true)
             .onAppear {
@@ -96,6 +101,7 @@ struct WatchPage: View {
                 .contentShape(Rectangle())
                 .ignoresSafeArea(.all)
                 .edgesIgnoringSafeArea(.all)
+                .navigationBarHidden(true)
                 .navigationBarBackButtonHidden(true)
                 .supportedOrientation(.landscape)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -178,9 +184,10 @@ struct CustomView: View {
     
     @Binding var percentage: Double // or some value binded
     @Binding var isDragging: Bool
+    var total: Double
+    @Binding var isMacos: Bool
     @State var barHeight: CGFloat = 6
     
-    var total: Double
     
     var body: some View {
         GeometryReader { geometry in
@@ -193,11 +200,11 @@ struct CustomView: View {
                         .onEnded({ value in
                             self.percentage = min(max(0, Double(value.location.x / geometry.size.width * total)), total)
                             self.isDragging = false
-                            self.barHeight = 6
+                            self.barHeight = isMacos ? 12 : 6
                         })
                             .onChanged({ value in
                                 self.isDragging = true
-                                self.barHeight = 10
+                                self.barHeight = isMacos ? 18 : 10
                                 print(value)
                                 // TODO: - maybe use other logic here
                                 self.percentage = min(max(0, Double(value.location.x / geometry.size.width * total)), total)
@@ -213,11 +220,11 @@ struct CustomView: View {
                     .onEnded({ value in
                         self.percentage = min(max(0, Double(value.location.x / geometry.size.width * total)), total)
                         self.isDragging = false
-                        self.barHeight = 6
+                        self.barHeight = isMacos ? 12 : 6
                     })
                         .onChanged({ value in
                             self.isDragging = true
-                            self.barHeight = 10
+                            self.barHeight = isMacos ? 18 : 10
                             print(value)
                             // TODO: - maybe use other logic here
                             self.percentage = min(max(0, Double(value.location.x / geometry.size.width * total)), total)

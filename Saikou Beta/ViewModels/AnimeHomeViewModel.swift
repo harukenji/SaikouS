@@ -27,7 +27,12 @@ final class AnimeHomeViewModel: ObservableObject {
                 case .success(let data):
                     print(self.recentresults)
                     self.recentresults = data
-                    didRun = true
+                    if(self.recentresults != nil) {
+                        self.recentresults!.results = self.recentresults!.results.filter {
+                            $0.countryOfOrigin != "CH"
+                        }
+                        didRun = true
+                    }
                 case .failure(let reason):
                     self.error = reason
                 }

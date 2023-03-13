@@ -8,12 +8,12 @@
 import SwiftUI
 
 class FileDownloader {
-
+    
     static func loadFileSync(url: URL, completion: @escaping (String?, Error?) -> Void) {
         let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-
+        
         let destinationUrl = documentsUrl.appendingPathComponent(url.lastPathComponent)
-
+        
         if FileManager().fileExists(atPath: destinationUrl.path)
         {
             print("File already exists [\(destinationUrl.path)]")
@@ -39,12 +39,12 @@ class FileDownloader {
             completion(destinationUrl.path, error)
         }
     }
-
+    
     static func loadFileAsync(url: URL, completion: @escaping (String?, Error?) -> Void) async {
         let documentsUrl =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-
+        
         let destinationUrl = documentsUrl.appendingPathComponent(url.lastPathComponent)
-
+        
         if FileManager().fileExists(atPath: destinationUrl.path)
         {
             print("File already exists [\(destinationUrl.path)]")
@@ -101,27 +101,27 @@ struct DownloadTests: View {
     var body: some View {
         VStack {
             
-                Text("Downloaded: \(filesDownloaded)")
+            Text("Downloaded: \(filesDownloaded)")
             
-                Text("Errored: \(erroredDownloads)")
+            Text("Errored: \(erroredDownloads)")
         }
-            .onAppear {
-                Task {
-                    await getImages(id: "0615033f-404c-4a57-a595-613a6277f553")
-                    print(images)
-                    if(images != nil) {
-                        for index in 0..<images!.count {
-                            await FileDownloader.loadFileAsync(url: URL(string: images![index].img)!) { result,error  in
-                                if error != nil {
-                                    erroredDownloads += 1
-                                } else {
-                                    filesDownloaded += 1
-                                }
+        .onAppear {
+            Task {
+                await getImages(id: "0615033f-404c-4a57-a595-613a6277f553")
+                print(images)
+                if(images != nil) {
+                    for index in 0..<images!.count {
+                        await FileDownloader.loadFileAsync(url: URL(string: images![index].img)!) { result,error  in
+                            if error != nil {
+                                erroredDownloads += 1
+                            } else {
+                                filesDownloaded += 1
                             }
                         }
                     }
                 }
             }
+        }
     }
 }
 

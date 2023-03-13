@@ -19,6 +19,15 @@
       }
     },
     {
+      "identity" : "ftimagesize",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/liufengting/FTImageSize",
+      "state" : {
+        "revision" : "fb0a9d3083f2bbf4129dfc1e312187e73fff4f54",
+        "version" : "0.0.6"
+      }
+    },
+    {
       "identity" : "kingfisher",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher",

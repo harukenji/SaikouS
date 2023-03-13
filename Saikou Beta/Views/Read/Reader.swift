@@ -63,6 +63,52 @@ struct Reader: View {
     @State var movingOffset: CGFloat = 0
     @State var animationFix: Bool = false
     @State var status: String = "Loading"
+    @State var disabled: Bool = false
+    
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(sortDescriptors: []) var mangaChaptersCoreData: FetchedResults<MangaReadStorage>
+    @FetchRequest(sortDescriptors: []) var userStorageData: FetchedResults<UserStorageInfo>
+    
+    @State var access_token: String = ""
+    
+    func updateAnilistProgress(index: Int) async {
+        if(userStorageData.count > 0) {
+            access_token = userStorageData[0].access_token ?? ""
+        }
+        print(access_token)
+        if mangaData != nil && access_token.count > 0 {
+            
+            
+            let query = """
+                    mutation {
+                        SaveMediaListEntry( mediaId: \(mangaData!.id), progress: \(mangaData!.chapters?[index].chapterNumber ?? index + 1) ) {
+                            score(format:POINT_10_DECIMAL) startedAt{year month day} completedAt{year month day}
+                        }
+                    }
+                """
+            
+            let jsonData = try? JSONSerialization.data(withJSONObject: ["query": query])
+            
+            let url = URL(string: "https://graphql.anilist.co")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("Bearer \(access_token)", forHTTPHeaderField: "Authorization")
+            request.httpBody = jsonData
+            
+            do {
+                let (data, response) = try await URLSession.shared.data(for: request)
+                print("response: ")
+                print(response)
+                print("data: ")
+                print(query)
+            } catch let error {
+                print(error.localizedDescription)
+                
+            }
+        }
+    }
     
     var body: some View {
         GeometryReader { proxy in
@@ -230,38 +276,77 @@ struct Reader: View {
                                 }
                                 
                                 if value.translation.width > 0 {
-                                    // right
-                                    if(chapterManager != nil && currentPage != chapterManager!.current.count + 1) {
-                                        currentPage += 1
-                                    }
-                                    
-                                    offset = CGFloat((currentPage - 1)) * width
-                                    movingOffset = 0
-                                    if(currentPage == totalPages + 1) {
-                                        // Delay of 7.5 seconds (1 second = 1_000_000_000 nanoseconds)
-                                        try? await Task.sleep(nanoseconds: 350_000_000)
-                                        print("done")
-                                        animationFix = true
-                                        if(chapterManager != nil && chapterManager!.next != nil) {
-                                            if(selectedChapterIndex < mangaData!.chapters!.count - 1) {
-                                                selectedChapterIndex += 1
-                                                status = "Loading"
-                                                
-                                                chapterManager!.previous = chapterManager!.current
-                                                chapterManager!.current = chapterManager!.next!
-                                                
-                                                currentPage = 0
-                                                totalPages = chapterManager!.current.count
-                                                offset = -width
-                                                
-                                                if(selectedChapterIndex < mangaData!.chapters!.count - 1) {
-                                                    chapterManager!.next = await getImages(id: mangaData!.chapters![selectedChapterIndex + 1].id, provider: provider)
-                                                    status = "Ready"
+                                    if(!disabled) {
+                                        // right
+                                        if(chapterManager != nil && currentPage != chapterManager!.current.count + 1) {
+                                            currentPage += 1
+                                            
+                                            // update internal manga progress
+                                            var foundChapter = false
+                                            for chapter in mangaChaptersCoreData {
+                                                if(chapter.id != nil && self.mangaData != nil && self.mangaData!.chapters != nil && self.mangaData!.chapters!.count > 0 && chapter.id == self.mangaData!.chapters![selectedChapterIndex].id) {
+                                                    if chapter.chapterRead {
+                                                        foundChapter = true
+                                                    } else {
+                                                        chapter.totalPages = Int32(totalPages)
+                                                        chapter.chapterPage = Int32(currentPage)
+                                                        chapter.chapterIndex = Int32(selectedChapterIndex)
+                                                        chapter.chapterRead = currentPage / totalPages >= 1
+                                                        try? moc.save()
+                                                        Task {
+                                                            // update anilist
+                                                            await updateAnilistProgress(index: selectedChapterIndex)
+                                                        }
+                                                        foundChapter = true
+                                                    }
                                                 }
                                             }
-                                            
+                                            // if its not in the existing episodes list, create a new entry
+                                            if (!foundChapter && self.mangaData != nil && self.mangaData!.chapters != nil && self.mangaData!.chapters!.count > 0) {
+                                                var chapter = MangaReadStorage(context: moc)
+                                                chapter.id = self.mangaData!.chapters![selectedChapterIndex].id
+                                                chapter.totalPages = Int32(totalPages)
+                                                chapter.chapterPage = Int32(currentPage)
+                                                chapter.chapterIndex = Int32(selectedChapterIndex)
+                                                chapter.chapterRead = currentPage / totalPages >= 1
+                                                try? moc.save()
+                                                Task {
+                                                    // update anilist
+                                                    await updateAnilistProgress(index: selectedChapterIndex)
+                                                }
+                                            }
                                         }
-                                        animationFix = false
+                                        
+                                        offset = CGFloat((currentPage - 1)) * width
+                                        movingOffset = 0
+                                        if(currentPage == totalPages + 1) {
+                                            // Delay of 7.5 seconds (1 second = 1_000_000_000 nanoseconds)
+                                            try? await Task.sleep(nanoseconds: 350_000_000)
+                                            print("done")
+                                            animationFix = true
+                                            if(chapterManager != nil && chapterManager!.next != nil) {
+                                                if(selectedChapterIndex < mangaData!.chapters!.count - 1) {
+                                                    selectedChapterIndex += 1
+                                                    disabled = true
+                                                    status = "Loading"
+                                                    
+                                                    chapterManager!.previous = chapterManager!.current
+                                                    chapterManager!.current = chapterManager!.next!
+                                                    
+                                                    currentPage = 0
+                                                    totalPages = chapterManager!.current.count
+                                                    offset = -width
+                                                    
+                                                    if(selectedChapterIndex < mangaData!.chapters!.count - 1) {
+                                                        chapterManager!.next = await getImages(id: mangaData!.chapters![selectedChapterIndex + 1].id, provider: provider)
+                                                        status = "Ready"
+                                                        disabled = false
+                                                    }
+                                                }
+                                                
+                                            }
+                                            animationFix = false
+                                        }
                                     }
                                 }
                             }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Kingfisher
+import Shimmer
 
 enum EpisodeCardType {
     case GRID
@@ -54,6 +55,15 @@ struct EpisodeCard: View {
                         HStack {
                             ZStack(alignment: .bottom) {
                                 KFImage(URL(string: image))
+                                    .placeholder({
+                                        RoundedRectangle(cornerRadius: 18)
+                                            .foregroundColor(Color(hex: "#444444"))
+                                            .frame(width: 170, height: 170 / 16 * 9)
+                                            .frame(maxWidth: 170, maxHeight: 170 / 16 * 9)
+                                            .cornerRadius(12)
+                                            .redacted(reason: .placeholder)
+                                            .shimmering()
+                                    })
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxWidth: 170, maxHeight: 170 / 16 * 9)
@@ -156,7 +166,7 @@ struct EpisodeCard: View {
                             .frame(maxWidth: 170, maxHeight: 120, alignment: .topLeading)
                         
                         Text(String(episodeNumber))
-                            .font(.system(size: 62, weight: .heavy))
+                            .font(.system(size: episodeNumber > 999 ? 44 : 62, weight: .heavy))
                             .foregroundColor(.white.opacity(0.4))
                             .frame(width: 170, height: 120, alignment: .bottomTrailing)
                             .frame(maxWidth: 170, maxHeight: 120, alignment: .bottomTrailing)

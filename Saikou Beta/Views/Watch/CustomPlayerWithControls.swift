@@ -27,6 +27,7 @@ struct CustomPlayerWithControls: View {
     
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var animeEpisodes: FetchedResults<AnimeWatchStorage>
+    @FetchRequest(sortDescriptors: []) var userStorageData: FetchedResults<UserStorageInfo>
     
     
     init(animeData: InfoData?, episodeIndex: Int, provider: String?, episodedata: [Episode], viewModel: WatchViewModel) {
@@ -44,6 +45,47 @@ struct CustomPlayerWithControls: View {
             try audioSession.setCategory(.playback)
         } catch {
             print("Setting category to AVAudioSessionCategoryPlayback failed.")
+        }
+    }
+    
+    @State var access_token: String = ""
+    
+    func updateAnilistProgress() async {
+        if(userStorageData.count > 0) {
+            access_token = userStorageData[0].access_token ?? ""
+        }
+        print(access_token)
+        if self.animeData != nil && access_token.count > 0 {
+            
+            
+            let query = """
+                    mutation {
+                        SaveMediaListEntry( mediaId: \(self.animeData!.id), progress: \(self.episodedata[episodeIndex].number ?? episodeIndex + 1) ) {
+                            score(format:POINT_10_DECIMAL) startedAt{year month day} completedAt{year month day}
+                        }
+                    }
+                """
+            
+            let jsonData = try? JSONSerialization.data(withJSONObject: ["query": query])
+            
+            let url = URL(string: "https://graphql.anilist.co")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("Bearer \(access_token)", forHTTPHeaderField: "Authorization")
+            request.httpBody = jsonData
+            
+            do {
+                let (data, response) = try await URLSession.shared.data(for: request)
+                print("token: ")
+                print(access_token)
+                print("query: ")
+                print(query)
+            } catch let error {
+                print(error.localizedDescription)
+                
+            }
         }
     }
     
@@ -73,7 +115,7 @@ struct CustomPlayerWithControls: View {
                                     .overlay(
                                         HStack {
                                             Color.clear
-                                                .frame(width: .infinity, height: 300)
+                                                .frame(width: .infinity, height: .infinity)
                                                 .contentShape(Rectangle())
                                                 .gesture(
                                                     TapGesture(count: 2)
@@ -85,14 +127,14 @@ struct CustomPlayerWithControls: View {
                                                 )
                                             
                                             Color.clear
-                                                .frame(width: .infinity, height: 300)
+                                                .frame(width: .infinity, height: .infinity)
                                                 .contentShape(Rectangle())
                                                 .onTapGesture {
                                                     showUI = true
                                                 }
                                             
                                             Color.clear
-                                                .frame(width: .infinity, height: 300)
+                                                .frame(width: .infinity, height: .infinity)
                                                 .contentShape(Rectangle())
                                                 .gesture(
                                                     TapGesture(count: 2)
@@ -108,7 +150,6 @@ struct CustomPlayerWithControls: View {
                                     .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, episodedata: episodedata, viewModel: viewModel, qualityIndex: resIndex, showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
                                                 , alignment: .bottom)
                             }
-                                .padding(.horizontal, 60)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                                 .edgesIgnoringSafeArea(.all)
                                 .ignoresSafeArea(.all)
@@ -188,6 +229,11 @@ struct CustomPlayerWithControls: View {
                                         episode.episodeWatched = playerVM.currentTime / playerVM.duration! >= 0.8
                                         episode.progress = playerVM.currentTime / playerVM.duration!
                                         try? moc.save()
+                                        if(playerVM.currentTime / playerVM.duration! >= 0.8) {
+                                            Task {
+                                                await updateAnilistProgress()
+                                            }
+                                        }
                                         foundEpisode = true
                                     }
                                 }
@@ -202,6 +248,11 @@ struct CustomPlayerWithControls: View {
                                 episode.episodeWatched = playerVM.currentTime / playerVM.duration! >= 0.8
                                 episode.progress = playerVM.currentTime / playerVM.duration!
                                 try? moc.save()
+                                if(playerVM.currentTime / playerVM.duration! >= 0.8) {
+                                    Task {
+                                        await updateAnilistProgress()
+                                    }
+                                }
                             }
                         }
                         
@@ -224,6 +275,9 @@ struct CustomPlayerWithControls: View {
                                         episode.episodeWatched = true
                                         episode.progress = newValue / playerVM.duration!
                                         try? moc.save()
+                                        Task {
+                                            await updateAnilistProgress()
+                                        }
                                         foundEpisode = true
                                     }
                                 }
@@ -238,6 +292,9 @@ struct CustomPlayerWithControls: View {
                                 episode.episodeWatched = true
                                 episode.progress = newValue / playerVM.duration!
                                 try? moc.save()
+                                Task {
+                                    await updateAnilistProgress()
+                                }
                             }
                         }
                     }
@@ -270,6 +327,9 @@ struct CustomPlayerWithControls: View {
                         VStack {
                             ZStack {
                                 CustomVideoPlayer(playerVM: playerVM, showUI: showUI)
+                                    .frame(maxHeight: .infinity, alignment: .center)
+                                    .edgesIgnoringSafeArea(.all)
+                                    .ignoresSafeArea(.all)
                                     .overlay(
                                         HStack {
                                             Color.clear
@@ -308,7 +368,6 @@ struct CustomPlayerWithControls: View {
                                     .overlay(CustomControlsView(episodeData: episodeData,animeData: animeData!, episodedata: episodedata, viewModel: viewModel, qualityIndex: resIndex,showUI: $showUI, episodeIndex: episodeIndex, playerVM: playerVM)
                                              , alignment: .bottom)
                             }
-                            .padding(.horizontal, 60)
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                             .edgesIgnoringSafeArea(.all)
                             .ignoresSafeArea(.all)

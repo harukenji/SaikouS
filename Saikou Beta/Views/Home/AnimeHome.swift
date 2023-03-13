@@ -8,6 +8,7 @@
 import SwiftUI
 import Kingfisher
 import ActivityIndicatorView
+import Shimmer
 
 struct AnimeHome: View {
     let proxy: GeometryProxy
@@ -20,20 +21,24 @@ struct AnimeHome: View {
                 ZStack(alignment: .top) {
                     Color(.black)
                     
-                    KFImage(URL(string: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/147864-wb2Qj3djHXEa.jpg"))
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: proxy.size.width, maxHeight: 500)
-                        .blur(radius: 8)
+                    GeometryReader { reader in
+                        KFImage(URL(string: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/147864-wb2Qj3djHXEa.jpg"))
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .contentShape(Rectangle())
+                            .clipped()
+                    }
+                    .frame(width: proxy.size.width, height: 500)
+                    .blur(radius: 8)
                     
                     Rectangle().fill(LinearGradient(colors: [.black.opacity(0.0), Color(.black)], startPoint: UnitPoint(x: 0.0, y: 0.0), endPoint: UnitPoint(x: 0.0, y: 1.0)))
-                        .frame(maxHeight: 510)
+                        .frame(maxHeight: 514)
                     
                     VStack(alignment: .leading) {
                         
                         // input, which seems to just be a button
                         HStack {
-                            NavigationLink(destination: Search(proxy: proxy)) {
+                            NavigationLink(destination: Search()) {
                                 ZStack {
                                     Color(.black.withAlphaComponent(0.4))
                                     
@@ -51,8 +56,8 @@ struct AnimeHome: View {
                                             .font(.system(size: 20, weight: .bold))
                                             .padding(.trailing, 20)
                                     }
-                                    .frame(maxWidth: 280, alignment: .leading)
-                                    .frame(width: 280)
+                                    .frame(maxWidth: proxy.size.width < 900 ? 280 : 480, alignment: .leading)
+                                    .frame(width: proxy.size.width < 900 ? 280 : 480)
                                 }
                                 .fixedSize()
                                 .cornerRadius(40)
@@ -60,6 +65,13 @@ struct AnimeHome: View {
                                     RoundedRectangle(cornerRadius: 40)
                                         .stroke(Color.white.opacity(0.3), lineWidth: 1.5)
                                 )
+                            }
+                            .onTapGesture {
+                                print("tapped")
+                            }
+                            
+                            if proxy.size.width > 900 {
+                                Spacer()
                             }
                             
                             Button(action: {}) {
@@ -78,6 +90,7 @@ struct AnimeHome: View {
                                         .stroke(Color.white.opacity(0.3), lineWidth: 1.5)
                                 )
                             }
+                            .padding(.trailing, proxy.size.width < 900 ? nil : 30)
                         }
                         .padding(.leading, 30)
                         .padding(.bottom, 30)
@@ -87,6 +100,15 @@ struct AnimeHome: View {
                             HStack(alignment: .bottom, spacing: 20) {
                                 ZStack(alignment: .bottomTrailing) {
                                     KFImage(URL(string: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx147864-Idb77ylQTTBh.png"))
+                                        .placeholder({
+                                            RoundedRectangle(cornerRadius: 16)
+                                                .foregroundColor(Color(hex: "#444444"))
+                                                .frame(width: 120, height: 190)
+                                                .frame(maxWidth: 120, maxHeight: 190)
+                                                .cornerRadius(18)
+                                                .redacted(reason: .placeholder)
+                                                .shimmering()
+                                        })
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
                                         .frame(width: 120, height: 190)
@@ -192,17 +214,19 @@ struct AnimeHome: View {
                             }
                             
                             HStack {
-                                ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg", text: "GENRES")
+                                Spacer()
+                                ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCOcDmneX.jpg", text: "GENRES", screenWidth: proxy.size.width)
                                     .offset(x: startAnimation ? 0 : 60)
                                     .opacity(startAnimation ? 1.0: 0.0)
                                     .animation(.spring(response: 0.3, dampingFraction: 0.7).delay(0.4), value: startAnimation)
                                 
                                 Spacer()
                                 
-                                ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/125367-hGPJLSNfprO3.jpg", text: "CALENDAR")
+                                ImageButtonWithText(image: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/125367-hGPJLSNfprO3.jpg", text: "CALENDAR", screenWidth: proxy.size.width)
                                     .offset(x: startAnimation ? 0 : 60)
                                     .opacity(startAnimation ? 1.0: 0.0)
                                     .animation(.spring(response: 0.3, dampingFraction: 0.7).delay(0.3 + 0.4), value: startAnimation)
+                                Spacer()
                             }
                             .padding(.leading, 30)
                             .padding(.trailing, 30)
@@ -223,11 +247,11 @@ struct AnimeHome: View {
                             ScrollView(.horizontal) {
                                 HStack(spacing: 20) {
                                     ForEach(0..<viewModel.recentresults!.results.count) { index in
-                                        AnimeCard(image: viewModel.recentresults!.results[index].image, rating: viewModel.recentresults!.results[index].rating, title: viewModel.recentresults!.results[index].title.romaji, currentEpisodeCount: viewModel.recentresults!.results[index].currentEpisode, totalEpisodes: viewModel.recentresults!.results[index].totalEpisodes)
+                                        AnimeCard(image: viewModel.recentresults!.results[index].image, rating: viewModel.recentresults!.results[index].rating, title: viewModel.recentresults!.results[index].title.romaji, currentEpisodeCount: viewModel.recentresults!.results[index].currentEpisode, totalEpisodes: viewModel.recentresults!.results[index].totalEpisodes, isMacos: proxy.size.width > 900)
                                     }
                                 }
+                                .padding(.horizontal, 30)
                             }
-                            .padding(.leading, 30)
                             .padding(.bottom, 140)
                         }
                     }

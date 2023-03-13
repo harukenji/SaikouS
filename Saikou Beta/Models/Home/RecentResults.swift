@@ -12,5 +12,5 @@ struct RecentResults: Codable {
     let hasNextPage: Bool?
     let totalPages: Int?
     let totalResults: Int?
-    let results: [RecentData]
+    var results: [RecentData]
 }

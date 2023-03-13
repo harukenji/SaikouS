@@ -188,14 +188,14 @@ struct MangaSearch: View {
                         if(resultDisplayGrid) {
                             LazyVGrid(columns: columns, spacing: 20) {
                                 ForEach(0..<viewModel.searchresults!.results.filter{$0.type == "MANGA"}.count) { index in
-                                    NavigationLink(destination: Info(id: viewModel.searchresults!.results[index].id, type: "manga")) {
-                                        AnimeCard(image: viewModel.searchresults!.results[index].image, rating: viewModel.searchresults!.results[index].rating, title: viewModel.searchresults!.results[index].title.english ?? viewModel.searchresults!.results[index].title.romaji, currentEpisodeCount: viewModel.searchresults!.results[index].currentEpisodeCount, totalEpisodes: viewModel.searchresults!.results[index].totalEpisodes)
+                                    NavigationLink(destination: Info(id: viewModel.searchresults!.results[index].id, type: "manga", animation: nil, show: .constant(true), image: nil)) {
+                                        AnimeCard(image: viewModel.searchresults!.results[index].image, rating: viewModel.searchresults!.results[index].rating, title: viewModel.searchresults!.results[index].title.english ?? viewModel.searchresults!.results[index].title.romaji, currentEpisodeCount: viewModel.searchresults!.results[index].currentEpisodeCount, totalEpisodes: viewModel.searchresults!.results[index].totalEpisodes, isMacos: proxy.size.width > 900)
                                     }
                                 }
                             }
                         } else {
                             ForEach(0..<viewModel.searchresults!.results.filter{$0.type == "MANGA"}.count) { index in
-                                NavigationLink(destination: Info(id: viewModel.searchresults!.results[index].id, type: "manga")) {
+                                NavigationLink(destination: Info(id: viewModel.searchresults!.results[index].id, type: "manga", animation: nil, show: .constant(true), image: nil)) {
                                     ZStack(alignment: .center) {
                                         KFImage(URL(string: viewModel.searchresults!.results[index].cover ?? viewModel.searchresults!.results[index].image))
                                             .resizable()
@@ -540,6 +540,7 @@ struct MangaSearch: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .navigationBarHidden(true)
         .navigationBarTitle("")
         .foregroundColor(Color(hex: "#00ffffff"))
     }

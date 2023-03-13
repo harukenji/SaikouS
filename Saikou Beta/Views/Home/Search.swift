@@ -12,7 +12,6 @@ import AuthenticationServices
 import Combine
 
 struct Search: View {
-    let proxy: GeometryProxy
     @State var query = ""
     @StateObject var anilist: Anilist = Anilist()
     @ObservedObject var viewModel: SearchViewModel = SearchViewModel()
@@ -21,6 +20,7 @@ struct Search: View {
     @State var resultDisplayGrid = true
     @State private var selectedItem = 1
     @State private var showingPopover = false
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     let supportedGenres = [
         "Action",
@@ -86,53 +86,53 @@ struct Search: View {
     @State var selectedFormat: String = ""
     @State var selectedGenres: [String] = []
     
-    let columns = [
-        GridItem(.adaptive(minimum: 100), alignment: .top)
-    ]
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    
+    @Namespace private var animation
+    @State var showInfo = false
+    @State var selectedId: String?
+    @State var image: String = ""
     
     var body: some View {
         ZStack {
-            ScrollView {
-                VStack {
-                    ZStack {
-                        TextField("Search for an anime...", text: $query, onEditingChanged: { (editingChanged) in
-                            focused = editingChanged
-                            print(focused)
-                        })
-                        .foregroundColor(.white)
-                        .padding(.vertical, 12)
-                        .padding(.leading, 20)
-                        .frame(maxWidth: .infinity)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 40)
-                                .stroke(focused ? Color(hex: "#ff4cb0") : Color.white.opacity(0.7), lineWidth: focused ? 2 : 1)
-                        )
-                        .onSubmit {
-                            Task {
-                                await anilist.search(query: query.replacingOccurrences(of: " ", with: "%20"), year: selectedYear, season: selectedSeason, genres: selectedGenres, format: selectedFormat, sort_by: selectedSorting)
-                            }
-                        }
-                        .animation(.spring())
-                        
+            Color(.black)
+            GeometryReader { proxy in
+                ScrollView {
+                    VStack {
                         ZStack {
-                            Color(.black)
+                            TextField("Search for an anime...", text: $query, onEditingChanged: { (editingChanged) in
+                                focused = editingChanged
+                                print(focused)
+                            })
+                            .foregroundColor(.white)
+                            .padding(.vertical, 12)
+                            .padding(.leading, 20)
+                            .frame(maxWidth: .infinity)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 40)
+                                    .stroke(focused ? Color(hex: "#ff4cb0") : Color.white.opacity(0.7), lineWidth: focused ? 2 : 1)
+                            )
+                            .onSubmit {
+                                Task {
+                                    await anilist.search(query: query.replacingOccurrences(of: " ", with: "%20"), year: selectedYear, season: selectedSeason, genres: selectedGenres, format: selectedFormat, sort_by: selectedSorting)
+                                }
+                            }
+                            .animation(.spring())
                             
-                            Text("ANIME")
-                                .font(.system(size: 14, weight: .heavy))
-                                .foregroundColor(focused ? Color(hex: "#ff4cb0") : Color(hex: "#8b8789"))
-                                .padding(.horizontal, 6)
-                                .animation(.spring())
+                            ZStack {
+                                Color(.black)
+                                
+                                Text("ANIME")
+                                    .font(.system(size: 14, weight: .heavy))
+                                    .foregroundColor(focused ? Color(hex: "#ff4cb0") : Color(hex: "#8b8789"))
+                                    .padding(.horizontal, 6)
+                                    .animation(.spring())
+                            }
+                            .fixedSize()
+                            .padding(.trailing, 270)
+                            .padding(.bottom, 46)
+                            
                         }
-                        .fixedSize()
-                        .padding(.trailing, 270)
-                        .padding(.bottom, 46)
+                        .padding(.bottom, 10)
                         
-                    }
-                    .padding(.bottom, 10)
-                    
-                    HStack {
                         Button(action: {
                             showingPopover = true
                         }) {
@@ -154,129 +154,138 @@ struct Search: View {
                             .fixedSize()
                             .cornerRadius(12)
                         }
-                    }
-                    .frame(maxWidth: proxy.size.width, alignment: .trailing)
-                    .padding(.bottom, 14)
-                    
-                    HStack {
-                        Text("Search Results")
-                            .font(.system(size: 20, weight: .heavy))
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(maxWidth: proxy.size.width, alignment: .trailing)
+                        .padding(.bottom, 14)
                         
-                        Spacer()
-                        
-                        Button(action: {
-                            resultDisplayGrid = false
-                        }) {
-                            Image("list")
-                                .resizable()
-                                .frame(maxWidth: 16, maxHeight: 16)
-                                .foregroundColor(.white.opacity(!resultDisplayGrid ? 1.0 : 0.7))
-                                .padding(.trailing, 12)
+                        HStack {
+                            Text("Search Results")
+                                .font(.system(size: 20, weight: .heavy))
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                resultDisplayGrid = false
+                            }) {
+                                Image("list")
+                                    .resizable()
+                                    .frame(maxWidth: 16, maxHeight: 16)
+                                    .foregroundColor(.white.opacity(!resultDisplayGrid ? 1.0 : 0.7))
+                                    .padding(.trailing, 12)
+                            }
+                            
+                            Button(action: {
+                                resultDisplayGrid = true
+                            }) {
+                                Image("grid")
+                                    .resizable()
+                                    .frame(maxWidth: 16, maxHeight: 16)
+                                    .foregroundColor(.white.opacity(resultDisplayGrid ? 1.0 : 0.7))
+                            }
                         }
-                        
-                        Button(action: {
-                            resultDisplayGrid = true
-                        }) {
-                            Image("grid")
-                                .resizable()
-                                .frame(maxWidth: 16, maxHeight: 16)
-                                .foregroundColor(.white.opacity(resultDisplayGrid ? 1.0 : 0.7))
-                        }
-                    }
-                    .padding(.bottom, 20)
-                    
-                    if(anilist.searchresults != nil) {
-                        if(resultDisplayGrid) {
-                            LazyVGrid(columns: columns, spacing: 20) {
-                                ForEach(0..<anilist.searchresults!.results.count) { index in
-                                    NavigationLink(destination: Info(id: anilist.searchresults!.results[index].id, type: "anime")) {
-                                        AnimeCard(image: anilist.searchresults!.results[index].image, rating: anilist.searchresults!.results[index].rating, title: anilist.searchresults!.results[index].title.english ?? anilist.searchresults!.results[index].title.romaji, currentEpisodeCount: anilist.searchresults!.results[index].currentEpisodeCount, totalEpisodes: anilist.searchresults!.results[index].totalEpisodes)
+                        .padding(.bottom, 20)
+
+                        if(anilist.searchresults != nil) {
+                            if(resultDisplayGrid) {
+                                LazyVGrid(columns: [GridItem(.adaptive(minimum: proxy.size.width > 900 ? 160 : 100), alignment: .top)], spacing: 20) {
+                                    ForEach(0..<anilist.searchresults!.results.count) { index in
+                                        
+                                            AnimeCard(image: anilist.searchresults!.results[index].image, rating: anilist.searchresults!.results[index].rating, title: anilist.searchresults!.results[index].title.english ?? anilist.searchresults!.results[index].title.romaji, currentEpisodeCount: anilist.searchresults!.results[index].currentEpisodeCount, totalEpisodes: anilist.searchresults!.results[index].totalEpisodes, isMacos: proxy.size.width > 900, animation: animation)
+                                            .opacity(!(showInfo && selectedId == anilist.searchresults!.results[index].id) ? 1.0 : 0.0)
+                                                .onTapGesture {
+                                                    withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.7, blendDuration: 0.7)) {
+                                                        image = anilist.searchresults!.results[index].image
+                                                        selectedId = anilist.searchresults!.results[index].id
+                                                        showInfo = true
+                                                    }
+                                                }
+                                        
                                     }
                                 }
-                            }
-                        } else {
-                            ForEach(0..<anilist.searchresults!.results.count) { index in
-                                NavigationLink(destination: Info(id: anilist.searchresults!.results[index].id, type: "anime")) {
-                                    ZStack(alignment: .center) {
-                                        KFImage(URL(string: anilist.searchresults!.results[index].cover ?? anilist.searchresults!.results[index].image))
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: proxy.size.width - 40, height: 200)
-                                            .frame(maxWidth: proxy.size.width - 40, maxHeight: 200)
-                                            .cornerRadius(30)
-                                        
-                                        
-                                        Rectangle()
-                                            .fill(LinearGradient(
-                                                gradient: Gradient(stops: [
-                                                    .init(color: Color(hex: "#001C1C1C"), location: 0.4),
-                                                    .init(color: Color(hex: "#901C1C1C"), location: 0.671875),
-                                                    .init(color: Color(hex: "#ff1C1C1C"), location: 0.7864583134651184)]),
-                                                startPoint: UnitPoint(x: 0, y: 0),
-                                                endPoint: UnitPoint(x: 0, y: 1)))
-                                            .frame(width: proxy.size.width - 40, height: 200)
-                                            .cornerRadius(30)
-                                        
-                                        HStack(alignment: .bottom) {
-                                            ZStack(alignment: .bottomTrailing) {
-                                                KFImage(URL(string: anilist.searchresults!.results[index].image))
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .frame(width: 110, height: 160)
-                                                    .frame(maxWidth: 110, maxHeight: 160)
-                                                    .cornerRadius(12)
-                                                
-                                                ZStack {
-                                                    Rectangle()
-                                                        .foregroundColor(Color(hex: "#80ff5dae"))
-                                                    
-                                                    Text(anilist.searchresults!.results[index].rating != nil ? String(format: "%.1f", Float(anilist.searchresults!.results[index].rating!) / 10) : "0.0")
-                                                        .font(.system(size: 12, weight: .heavy))
-                                                        .padding(.vertical, 6)
-                                                        .padding(.horizontal, 8)
-                                                }
-                                                .fixedSize()
-                                                .clipShape(
-                                                    RoundCorner(
-                                                        cornerRadius: 30,
-                                                        maskedCorners: [.topLeft]
-                                                    )//OUR CUSTOM SHAPE
-                                                )
-                                            }
-                                            .frame(maxWidth: 110, maxHeight: 160)
-                                            .cornerRadius(12)
-                                            .clipped()
+                            } else {
+                                ForEach(0..<anilist.searchresults!.results.count) { index in
+                                    NavigationLink(destination: Info(id: anilist.searchresults!.results[index].id, type: "anime", animation: nil, show: .constant(true), image: nil)) {
+                                        ZStack(alignment: .center) {
+                                            KFImage(URL(string: anilist.searchresults!.results[index].cover ?? anilist.searchresults!.results[index].image))
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(width: proxy.size.width - 40, height: 200)
+                                                .frame(maxWidth: proxy.size.width - 40, maxHeight: 200)
+                                                .cornerRadius(30)
                                             
-                                            VStack {
-                                                Text(anilist.searchresults!.results[index].title.romaji)
-                                                    .fontWeight(.heavy)
-                                                    .lineLimit(2)
-                                                    .multilineTextAlignment(.leading)
-                                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                                    .padding(.bottom, 6)
+                                            
+                                            Rectangle()
+                                                .fill(LinearGradient(
+                                                    gradient: Gradient(stops: [
+                                                        .init(color: Color(hex: "#001C1C1C"), location: 0.4),
+                                                        .init(color: Color(hex: "#901C1C1C"), location: 0.671875),
+                                                        .init(color: Color(hex: "#ff1C1C1C"), location: 0.7864583134651184)]),
+                                                    startPoint: UnitPoint(x: 0, y: 0),
+                                                    endPoint: UnitPoint(x: 0, y: 1)))
+                                                .frame(width: proxy.size.width - 40, height: 200)
+                                                .cornerRadius(30)
+                                            
+                                            HStack(alignment: .bottom) {
+                                                ZStack(alignment: .bottomTrailing) {
+                                                    KFImage(URL(string: anilist.searchresults!.results[index].image))
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(width: 110, height: 160)
+                                                        .frame(maxWidth: 110, maxHeight: 160)
+                                                        .cornerRadius(12)
+                                                    
+                                                    ZStack {
+                                                        Rectangle()
+                                                            .foregroundColor(Color(hex: "#80ff5dae"))
+                                                        
+                                                        Text(anilist.searchresults!.results[index].rating != nil ? String(format: "%.1f", Float(anilist.searchresults!.results[index].rating!) / 10) : "0.0")
+                                                            .font(.system(size: 12, weight: .heavy))
+                                                            .padding(.vertical, 6)
+                                                            .padding(.horizontal, 8)
+                                                    }
+                                                    .fixedSize()
+                                                    .clipShape(
+                                                        RoundCorner(
+                                                            cornerRadius: 30,
+                                                            maskedCorners: [.topLeft]
+                                                        )//OUR CUSTOM SHAPE
+                                                    )
+                                                }
+                                                .frame(maxWidth: 110, maxHeight: 160)
+                                                .cornerRadius(12)
+                                                .clipped()
                                                 
-                                                Text(String(anilist.searchresults!.results[index].totalEpisodes ?? 0) + " Episodes")
-                                                    .font(.system(size: 16))
-                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                                VStack {
+                                                    Text(anilist.searchresults!.results[index].title.romaji)
+                                                        .fontWeight(.heavy)
+                                                        .lineLimit(2)
+                                                        .multilineTextAlignment(.leading)
+                                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                                        .padding(.bottom, 6)
+                                                    
+                                                    Text(String(anilist.searchresults!.results[index].totalEpisodes ?? 0) + " Episodes")
+                                                        .font(.system(size: 16))
+                                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                                }
+                                                
                                             }
+                                            .padding(.horizontal, 20)
                                             
                                         }
-                                        .padding(.horizontal, 20)
-                                        
+                                        .foregroundColor(.white)
                                     }
-                                    .foregroundColor(.white)
                                 }
                             }
+                            
                         }
-                        
                     }
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 80)
             }
         }
+        .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.horizontal, 20)
-        .padding(.top, 40)
         .adaptiveSheet(isPresented: $showingPopover, detents: [.medium()], smallestUndimmedDetentIdentifier: .large){
             Rectangle()
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
@@ -542,6 +551,21 @@ struct Search: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .overlay {
+            Button {
+                self.presentationMode.wrappedValue.dismiss()
+            } label: {
+                
+            }
+            .keyboardShortcut(.cancelAction)
+        }
+        .overlay {
+            if let selectedId, showInfo {
+                Info(id: selectedId, type: "anime", animation: animation, show: $showInfo, image: image)
+                    .transition(.asymmetric(insertion: .identity, removal: .offset(y: 5)))
+            }
+        }
+        .navigationBarHidden(true)
         .navigationBarTitle("")
         .foregroundColor(Color(hex: "#00ffffff"))
     }
@@ -549,8 +573,6 @@ struct Search: View {
 
 struct Search_Previews: PreviewProvider {
     static var previews: some View {
-        GeometryReader {proxy in
-            Search(proxy: proxy)
-        }
+        Search()
     }
 }
